@@ -33,31 +33,31 @@ async function saveToGoogleDrive(company, anos, parsed) {
   try {
     const R = parsed || {};
     const payload = {
-      type:       "backup",
-      empresa:    R.empresa || company,
-      anos:       (R.anos || anos).join(", "),
-      avaliacao:  R.avaliacao_global || "—",
-      data:       new Date().toLocaleDateString("pt-PT"),
-      pago:       false,
-      sumario:    R.sumario?.texto || "—",
-      destaques:  R.sumario?.destaques || [],
-      indicadores: R.indicadores || {},
-      analise:    R.analise_detalhada || {},
-      swot:       R.swot || {},
+      type:          "backup",
+      empresa:       R.empresa || company,
+      anos:          (R.anos || anos).join(", "),
+      avaliacao:     R.avaliacao_global || "",
+      data:          new Date().toLocaleDateString("pt-PT"),
+      pago:          false,
+      sumario:       R.sumario?.texto || R.sumario || "",
+      destaques:     R.sumario?.destaques || [],
+      indicadores:   R.indicadores || {},
+      analise:       R.analise_detalhada || R.analise || {},
+      swot:          R.swot || {},
       recomendacoes: R.recomendacoes || {},
-      conclusao:  R.conclusao || "—",
+      conclusao:     R.conclusao || "",
     };
 
-    // no-cors evita bloqueio CORS — o Drive recebe mas não devolve resposta
+    // Envia via Cloudflare Worker (sem CORS) para o Google Apps Script
     await fetch(GOOGLE_SCRIPT_URL, {
       method:  "POST",
       mode:    "no-cors",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "text/plain" },
       body:    JSON.stringify(payload),
-    });    console.log("✓ Relatório guardado no Google Drive");
+    });
+    console.log("Backup enviado para Google Drive");
   } catch (err) {
-    // Falha silenciosa — não afecta o cliente
-    console.warn("Aviso: backup Drive falhou:", err.message);
+    console.warn("Backup Drive falhou:", err.message);
   }
 }
 
