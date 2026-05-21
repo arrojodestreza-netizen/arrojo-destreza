@@ -789,7 +789,7 @@ O JSON deve ter exactamente esta estrutura (preencha com os valores reais extra�
 IMPORTANTE: Substitua TODOS os valores de exemplo pelos valores reais dos documentos fornecidos. Se um valor não estiver disponível nos documentos, use null. Seja preciso com os valores numéricos. Use português europeu.` });
       setProgress(60);
 
-      const res = await fetch("/.netlify/functions/analyze", {
+      const res = await fetch("https://arrojo-proxy.arrojo-destreza.workers.dev/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ model: "claude-sonnet-4-5", max_tokens: 4000, messages: [{ role: "user", content }] }),
