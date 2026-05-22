@@ -76,10 +76,7 @@ const GLOBAL_CSS = `
   @keyframes shimmer { 0%,100% { opacity:.6 } 50% { opacity:1 } }
   @keyframes spin { to { transform: rotate(360deg); } }
   @keyframes progressFill { from { width: 0% } to { width: var(--target-width) } }
-  @keyframes scanline {
-    0% { transform: translateY(-100%); }
-    100% { transform: translateY(100vh); }
-  }
+  @keyframes scanline { 0% { transform: translateY(-100%); } 100% { transform: translateY(100vh); } }
   .fade-up { animation: fadeUp 0.7s ease both; }
   .fade-up-1 { animation: fadeUp 0.7s 0.1s ease both; }
   .fade-up-2 { animation: fadeUp 0.7s 0.2s ease both; }
@@ -90,6 +87,73 @@ const GLOBAL_CSS = `
   input::placeholder { color: ${C.fog}; font-style: italic; }
   input:focus { outline: none; border-color: ${C.gold} !important; }
   textarea:focus { outline: none; border-color: ${C.gold} !important; }
+
+  /* ── MOBILE RESPONSIVE ─────────────────────────────────── */
+
+  /* Nav mobile */
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-menu-btn { display: none; background: none; border: none; cursor: pointer; font-size: 22px; color: ${C.steel}; }
+  .nav-mobile-menu {
+    display: none; position: fixed; inset: 0; background: ${C.paper};
+    z-index: 200; flex-direction: column; align-items: center;
+    justify-content: center; gap: 32px;
+  }
+  .nav-mobile-menu.open { display: flex; }
+  .nav-mobile-close { position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 24px; cursor: pointer; color: ${C.steel}; }
+
+  /* Hero grid */
+  .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+  .hero-visual { display: block; }
+
+  /* How it works */
+  .how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+
+  /* Pricing */
+  .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 700px; margin: 0 auto; }
+
+  /* Upload grid */
+  .upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  /* Report charts */
+  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  .analise-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .swot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 12px; }
+  .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+
+  /* Paywall modal plans */
+  .plans-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* ── TABLET (≤ 768px) ──────────────────────────────────── */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .nav-menu-btn { display: block; }
+
+    .hero-grid { grid-template-columns: 1fr; gap: 32px; padding: 60px 5vw 48px; }
+    .hero-visual { display: none; }
+
+    .how-grid { grid-template-columns: 1fr; gap: 16px; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 420px; }
+
+    .upload-grid { grid-template-columns: 1fr; }
+    .chart-grid { grid-template-columns: 1fr; gap: 24px; }
+    .analise-grid { grid-template-columns: 1fr; }
+    .swot-grid { grid-template-columns: 1fr; }
+    .plans-grid { grid-template-columns: 1fr; }
+
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+
+    .cover-meta { flex-direction: column; gap: 6px; }
+    .cover-highlights { flex-direction: column; }
+  }
+
+  /* ── MOBILE (≤ 480px) ──────────────────────────────────── */
+  @media (max-width: 480px) {
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .metrics-grid { grid-template-columns: 1fr 1fr; }
+    .pricing-grid { padding: 0 4vw; }
+  }
 `;
 
 /* ─── HELPER COMPONENTS ─────────────────────────────────── */
@@ -177,44 +241,120 @@ function UploadSlot({ label, year, file, onUpload, onRemove }) {
   );
 }
 
+/* ─── STRIPE CONFIG ──────────────────────────────────────── */
+const STRIPE_PK = "pk_test_51TZrYTKhHRQ9IixVD1yDRdj672WzMFaW2tYJOb0DrEywT8KYO5OnMctW4zhshQ6UR9i84S8k1vrC7gtiqElh21wU00oDyHn8rq";
+
+async function loadStripe() {
+  if (window.Stripe) return window.Stripe(STRIPE_PK);
+  return new Promise((res, rej) => {
+    const s = document.createElement("script");
+    s.src = "https://js.stripe.com/v3/";
+    s.onload = () => res(window.Stripe(STRIPE_PK));
+    s.onerror = rej;
+    document.head.appendChild(s);
+  });
+}
+
 /* ─── PAYWALL MODAL ──────────────────────────────────────── */
 function PaywallModal({ onClose, onPay, companyName }) {
-  const [step, setStep] = useState("choose"); // choose | checkout | processing | success
+  const [step, setStep] = useState("choose"); // choose | checkout | processing | success | error
   const [plan, setPlan] = useState("standard");
-  const [form, setForm] = useState({ name: "", email: "", card: "", expiry: "", cvv: "" });
+  const [form, setForm] = useState({ name: "", email: "" });
   const [errors, setErrors] = useState({});
+  const [stripeError, setStripeError] = useState("");
+  const stripeRef = useRef(null);
+  const cardRef = useRef(null);
+  const cardMountRef = useRef(null);
 
   const PLANS = [
     {
-      id: "standard", label: "Análise Standard", price: "79€",
+      id: "standard", label: "Análise Standard", price: "79€", amount: 7900,
       features: ["Relatório completo com IA", "Indicadores financeiros", "Pontos fortes e fracos", "Recomendações", "Download PDF"],
     },
     {
-      id: "premium", label: "Análise Premium", price: "149€", highlight: true,
+      id: "premium", label: "Análise Premium", price: "149€", amount: 14900, highlight: true,
       features: ["Tudo da Standard", "Benchmarking sectorial", "Projecções a 3 anos", "Análise de risco detalhada", "Suporte por e-mail 30 dias"],
     },
   ];
+
+  const selectedPlan = PLANS.find(p => p.id === plan);
+
+  // Mount Stripe card element when entering checkout
+  useEffect(() => {
+    if (step !== "checkout") return;
+    let mounted = true;
+    loadStripe().then(stripe => {
+      if (!mounted || !cardMountRef.current) return;
+      stripeRef.current = stripe;
+      const elements = stripe.elements();
+      const card = elements.create("card", {
+        style: {
+          base: {
+            fontFamily: "'Georgia', serif",
+            fontSize: "15px",
+            color: "#0B0C0E",
+            "::placeholder": { color: "#8A8880" },
+          },
+        },
+      });
+      card.mount(cardMountRef.current);
+      cardRef.current = card;
+      card.on("change", e => setStripeError(e.error ? e.error.message : ""));
+    });
+    return () => { mounted = false; };
+  }, [step]);
 
   const validate = () => {
     const e = {};
     if (!form.name.trim()) e.name = "Campo obrigatório";
     if (!form.email.includes("@")) e.email = "E-mail inválido";
-    if (form.card.replace(/\s/g, "").length < 16) e.card = "Número de cartão inválido";
-    if (!form.expiry.match(/^\d{2}\/\d{2}$/)) e.expiry = "Formato MM/AA";
-    if (form.cvv.length < 3) e.cvv = "CVV inválido";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
 
-  const handlePay = () => {
+  const handlePay = async () => {
     if (!validate()) return;
     setStep("processing");
-    setTimeout(() => { setStep("success"); }, 2800);
-    setTimeout(() => { onPay(); onClose(); }, 4500);
-  };
+    setStripeError("");
 
-  const fmtCard = v => v.replace(/\D/g, "").slice(0, 16).replace(/(.{4})/g, "$1 ").trim();
-  const fmtExpiry = v => { const d = v.replace(/\D/g, "").slice(0, 4); return d.length > 2 ? d.slice(0,2) + "/" + d.slice(2) : d; };
+    try {
+      // 1. Criar PaymentIntent no Cloudflare Worker
+      const intentResp = await fetch(GOOGLE_SCRIPT_URL.replace("google","cloudflare").replace("script.google.com/macros/s/AKfycbwxd4KFABaHgab6adHw6Z2rXvKWlIR9uiHjaXzezwq0p9ain61hQFQRjM6K1lVm7fIZ/exec", "arrojo-proxy.arrojo-destreza.workers.dev/"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "create_payment",
+          amount: selectedPlan.amount,
+          currency: "eur",
+          description: `${selectedPlan.label} — ${companyName}`,
+          plan: plan,
+        }),
+      });
+
+      const intentData = await intentResp.json();
+      if (intentData.error) throw new Error(intentData.error.message || "Erro ao criar pagamento");
+
+      // 2. Confirmar com Stripe.js
+      const { error, paymentIntent } = await stripeRef.current.confirmCardPayment(
+        intentData.client_secret,
+        {
+          payment_method: {
+            card: cardRef.current,
+            billing_details: { name: form.name, email: form.email },
+          },
+        }
+      );
+
+      if (error) throw new Error(error.message);
+      if (paymentIntent.status === "succeeded") {
+        setStep("success");
+        setTimeout(() => { onPay(); onClose(); }, 2500);
+      }
+    } catch (err) {
+      setStripeError(err.message);
+      setStep("checkout");
+    }
+  };
 
   const overlay = { position: "fixed", inset: 0, background: "rgba(11,12,14,0.72)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", animation: "fadeIn 0.2s ease" };
   const box = { background: C.white, borderRadius: "10px", maxWidth: "560px", width: "100%", maxHeight: "90vh", overflowY: "auto", position: "relative", animation: "fadeUp 0.3s ease" };
@@ -243,7 +383,6 @@ function PaywallModal({ onClose, onPay, companyName }) {
   return (
     <div style={overlay} onClick={e => e.target === e.currentTarget && onClose()}>
       <div style={box}>
-        {/* Header */}
         <div style={{ padding: "28px 32px 24px", borderBottom: `1px solid ${C.line}` }}>
           <button onClick={onClose} style={{ position: "absolute", top: "20px", right: "20px", background: "none", border: "none", cursor: "pointer", color: C.fog, fontSize: "18px" }}>✕</button>
           <Tag>Acesso ao Relatório</Tag>
@@ -258,15 +397,10 @@ function PaywallModal({ onClose, onPay, companyName }) {
             <div style={{ fontSize: "13px", color: C.fog, marginBottom: "20px", fontStyle: "italic" }}>
               Escolha o plano que melhor se adequa às suas necessidades:
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "24px" }}>
+            <div className="plans-grid" style={{ marginBottom: "24px" }}>
               {PLANS.map(p => (
                 <div key={p.id} onClick={() => setPlan(p.id)}
-                  style={{
-                    border: `2px solid ${plan === p.id ? C.gold : C.line}`,
-                    borderRadius: "8px", padding: "18px", cursor: "pointer",
-                    background: plan === p.id ? "#FBF7EF" : C.white,
-                    transition: "all 0.2s", position: "relative",
-                  }}>
+                  style={{ border: `2px solid ${plan === p.id ? C.gold : C.line}`, borderRadius: "8px", padding: "18px", cursor: "pointer", background: plan === p.id ? "#FBF7EF" : C.white, transition: "all 0.2s", position: "relative" }}>
                   {p.highlight && <div style={{ position: "absolute", top: "-10px", left: "50%", transform: "translateX(-50%)", background: C.gold, color: C.white, fontSize: "9px", letterSpacing: "0.15em", padding: "3px 10px", borderRadius: "10px" }}>MAIS POPULAR</div>}
                   <div style={{ fontFamily: F.display, fontSize: "17px", marginBottom: "4px" }}>{p.label}</div>
                   <div style={{ fontFamily: F.display, fontSize: "28px", color: C.gold, marginBottom: "14px" }}>{p.price}</div>
@@ -293,16 +427,16 @@ function PaywallModal({ onClose, onPay, companyName }) {
 
             <div style={{ background: "#FBF7EF", border: `1px solid ${C.line}`, borderRadius: "6px", padding: "14px 16px", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div>
-                <div style={{ fontSize: "13px", fontFamily: F.display }}>{PLANS.find(p => p.id === plan)?.label}</div>
+                <div style={{ fontSize: "13px", fontFamily: F.display }}>{selectedPlan?.label}</div>
                 <div style={{ fontSize: "11px", color: C.fog }}>Análise Financeira — {companyName}</div>
               </div>
-              <div style={{ fontFamily: F.display, fontSize: "22px", color: C.gold }}>{PLANS.find(p => p.id === plan)?.price}</div>
+              <div style={{ fontFamily: F.display, fontSize: "22px", color: C.gold }}>{selectedPlan?.price}</div>
             </div>
 
             <div style={{ display: "grid", gap: "14px", marginBottom: "20px" }}>
               {[
                 { key: "name", label: "Nome completo", placeholder: "João Silva", type: "text" },
-                { key: "email", label: "E-mail", placeholder: "joao@empresa.pt", type: "email" },
+                { key: "email", label: "E-mail para recibo", placeholder: "joao@empresa.pt", type: "email" },
               ].map(f => (
                 <div key={f.key}>
                   <label style={{ fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: C.steel, display: "block", marginBottom: "6px", fontFamily: F.body }}>{f.label}</label>
@@ -314,35 +448,18 @@ function PaywallModal({ onClose, onPay, companyName }) {
               ))}
 
               <div>
-                <label style={{ fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: C.steel, display: "block", marginBottom: "6px", fontFamily: F.body }}>Número de Cartão</label>
-                <input type="text" value={form.card} placeholder="0000 0000 0000 0000"
-                  onChange={e => setForm(prev => ({ ...prev, card: fmtCard(e.target.value) }))}
-                  style={{ ...inp(errors.card) }} />
-                {errors.card && <div style={{ fontSize: "11px", color: C.danger, marginTop: "4px" }}>{errors.card}</div>}
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-                {[
-                  { key: "expiry", label: "Validade", placeholder: "MM/AA", fmt: fmtExpiry, maxLen: 5 },
-                  { key: "cvv", label: "CVV", placeholder: "123", fmt: v => v.replace(/\D/g, "").slice(0, 4), maxLen: 4 },
-                ].map(f => (
-                  <div key={f.key}>
-                    <label style={{ fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: C.steel, display: "block", marginBottom: "6px", fontFamily: F.body }}>{f.label}</label>
-                    <input type="text" value={form[f.key]} placeholder={f.placeholder}
-                      onChange={e => setForm(prev => ({ ...prev, [f.key]: f.fmt(e.target.value) }))}
-                      style={{ ...inp(errors[f.key]) }} />
-                    {errors[f.key] && <div style={{ fontSize: "11px", color: C.danger, marginTop: "4px" }}>{errors[f.key]}</div>}
-                  </div>
-                ))}
+                <label style={{ fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: C.steel, display: "block", marginBottom: "6px", fontFamily: F.body }}>Dados do Cartão</label>
+                <div ref={cardMountRef} style={{ padding: "11px 14px", border: `1px solid ${stripeError ? C.danger : C.line}`, borderRadius: "5px", background: C.white, minHeight: "42px" }} />
+                {stripeError && <div style={{ fontSize: "11px", color: C.danger, marginTop: "4px" }}>{stripeError}</div>}
               </div>
             </div>
 
             <button onClick={handlePay}
               style={{ width: "100%", padding: "14px", background: C.gold, border: "none", borderRadius: "6px", color: C.white, fontFamily: F.display, fontSize: "18px", letterSpacing: "0.06em", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}>
-              🔒 Pagar {PLANS.find(p => p.id === plan)?.price} e Ver Análise
+              🔒 Pagar {selectedPlan?.price} com Stripe
             </button>
             <div style={{ textAlign: "center", fontSize: "11px", color: C.fog, marginTop: "12px", fontStyle: "italic" }}>
-              Pagamento seguro · SSL encriptado · IVA incluído
+              Pagamento seguro via Stripe · SSL encriptado · IVA incluído
             </div>
           </div>
         )}
@@ -599,7 +716,7 @@ function SwotTable({ data }) {
     { key: "riscos", label: "Riscos / Ameaças", color: "#FAF0E8", border: "#8A6A3A", icon: "⚠" },
   ];
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2px", background: C.line, border: `1px solid ${C.line}`, borderRadius: "8px", overflow: "hidden" }}>
+    <div className="swot-grid" style={{ background: C.line, border: `1px solid ${C.line}`, borderRadius: "8px", overflow: "hidden" }}>
       {cells.map(cell => (
         <div key={cell.key} style={{ background: cell.color, padding: "20px", minHeight: "140px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px" }}>
@@ -688,6 +805,7 @@ function parseAnalysis(raw) {
 
 export default function App() {
   const [page, setPage] = useState("home"); // home | tool | result
+  const [mobileMenu, setMobileMenu] = useState(false);
   const [company, setCompany] = useState("");
   const [years, setYears] = useState(["2022", "2023"]);
   const [files, setFiles] = useState({});
@@ -826,7 +944,7 @@ IMPORTANTE: Substitua TODOS os valores de exemplo pelos valores reais dos docume
             <div style={{ fontFamily: F.display, fontSize: "20px", letterSpacing: "0.04em", lineHeight: 1 }}>Arrojo <span style={{ color: C.gold }}>&</span> Destreza</div>
             <div style={{ fontSize: "9px", letterSpacing: "0.28em", color: C.fog, textTransform: "uppercase", fontFamily: F.body }}>Consultoria Financeira</div>
           </div>
-          <div style={{ display: "flex", gap: "32px", alignItems: "center" }}>
+          <div className="nav-links">
             <span onClick={() => document.getElementById("servicos")?.scrollIntoView({ behavior: "smooth" })} style={{ fontSize: "13px", color: C.steel, cursor: "pointer", letterSpacing: "0.05em", fontFamily: F.body }}>Serviços</span>
             <span onClick={() => document.getElementById("metodologia")?.scrollIntoView({ behavior: "smooth" })} style={{ fontSize: "13px", color: C.steel, cursor: "pointer", letterSpacing: "0.05em", fontFamily: F.body }}>Metodologia</span>
             <a href="mailto:arrojo.destreza@gmail.com" style={{ fontSize: "13px", color: C.steel, cursor: "pointer", letterSpacing: "0.05em", fontFamily: F.body, textDecoration: "none" }}>Contacto</a>
@@ -834,11 +952,30 @@ IMPORTANTE: Substitua TODOS os valores de exemplo pelos valores reais dos docume
               Iniciar Análise
             </button>
           </div>
+          <button className="nav-menu-btn" onClick={() => setMobileMenu(true)}>☰</button>
         </div>
       </nav>
 
+      {/* MOBILE MENU */}
+      <div className={`nav-mobile-menu ${mobileMenu ? "open" : ""}`}>
+        <button className="nav-mobile-close" onClick={() => setMobileMenu(false)}>✕</button>
+        <div style={{ fontFamily: F.display, fontSize: "22px", marginBottom: "8px" }}>Arrojo <span style={{ color: C.gold }}>&</span> Destreza</div>
+        {[
+          { label: "Serviços", action: () => { document.getElementById("servicos")?.scrollIntoView({ behavior: "smooth" }); setMobileMenu(false); } },
+          { label: "Metodologia", action: () => { document.getElementById("metodologia")?.scrollIntoView({ behavior: "smooth" }); setMobileMenu(false); } },
+        ].map(item => (
+          <span key={item.label} onClick={item.action} style={{ fontSize: "20px", fontFamily: F.display, color: C.ink, cursor: "pointer", letterSpacing: "0.06em" }}>{item.label}</span>
+        ))}
+        <a href="mailto:arrojo.destreza@gmail.com" style={{ fontSize: "20px", fontFamily: F.display, color: C.ink, textDecoration: "none" }}>Contacto</a>
+        <button onClick={() => { setPage("tool"); setMobileMenu(false); }}
+          style={{ padding: "14px 32px", background: C.gold, border: "none", borderRadius: "4px", color: C.white, fontFamily: F.display, fontSize: "18px", cursor: "pointer" }}>
+          Iniciar Análise
+        </button>
+      </div>
+
       {/* HERO */}
-      <section style={{ maxWidth: "1100px", margin: "0 auto", padding: "100px 6vw 80px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "60px", alignItems: "center" }}>
+      <section style={{ maxWidth: "1100px", margin: "0 auto", padding: "100px 6vw 80px" }}>
+        <div className="hero-grid">
         <div>
           <div className="fade-up" id="servicos">
             <Tag>Análise Financeira com IA</Tag>
@@ -862,7 +999,7 @@ IMPORTANTE: Substitua TODOS os valores de exemplo pelos valores reais dos docume
         </div>
 
         {/* Visual card */}
-        <div className="fade-up-2" style={{ position: "relative" }}>
+        <div className="hero-visual fade-up-2" style={{ position: "relative" }}>
           <div style={{ background: C.white, border: `1px solid ${C.line}`, borderRadius: "12px", padding: "32px", boxShadow: "0 24px 64px rgba(0,0,0,0.08)" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px" }}>
               <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#e85454" }} />
@@ -893,6 +1030,7 @@ IMPORTANTE: Substitua TODOS os valores de exemplo pelos valores reais dos docume
           </div>
           <div style={{ position: "absolute", top: "-12px", right: "-12px", width: "60px", height: "60px", background: C.gold, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px" }}>✦</div>
         </div>
+        </div>{/* end hero-grid */}
       </section>
 
       <Divider style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 6vw" }} />
@@ -905,7 +1043,7 @@ IMPORTANTE: Substitua TODOS os valores de exemplo pelos valores reais dos docume
             Três passos para o diagnóstico completo
           </h2>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "32px" }}>
+        <div className="how-grid">
           {[
             { num: "01", title: "Carregue os documentos", desc: "Faça upload dos balanços e demonstrações de resultados em PDF de 2 ou mais anos. O processo é seguro e confidencial." },
             { num: "02", title: "A IA analisa tudo", desc: "A nossa inteligência artificial lê e interpreta todos os documentos, calculando rácios, identificando tendências e comparando períodos." },
@@ -929,7 +1067,7 @@ IMPORTANTE: Substitua TODOS os valores de exemplo pelos valores reais dos docume
               Relatório único por análise
             </h2>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", maxWidth: "700px", margin: "0 auto" }}>
+          <div className="pricing-grid">
             {[
               { name: "Standard", price: "79€", features: ["Relatório IA completo", "Indicadores financeiros", "Pontos fortes e fracos", "Recomendações prioritizadas", "Download PDF"] },
               { name: "Premium", price: "149€", highlight: true, features: ["Tudo da Standard", "Benchmarking sectorial", "Projecções a 3 anos", "Análise de risco detalhada", "Suporte e-mail 30 dias"] },
@@ -1012,7 +1150,7 @@ IMPORTANTE: Substitua TODOS os valores de exemplo pelos valores reais dos docume
                 <button onClick={() => removeYear(yr)} style={{ background: "none", border: "none", color: C.fog, cursor: "pointer", fontSize: "12px", fontFamily: F.body }}>Remover</button>
               )}
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+            <div className="upload-grid">
               {DOC_TYPES.map(dt => (
                 <UploadSlot key={dt.id} label={dt.label} year={yr} file={files[`${yr}_${dt.id}`] || null}
                   onUpload={f => setFile(yr, dt.id, f)} onRemove={() => removeFile(yr, dt.id)} />
@@ -1249,7 +1387,7 @@ IMPORTANTE: Substitua TODOS os valores de exemplo pelos valores reais dos docume
               </div>
 
               {/* Ratio charts */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "32px" }}>
+              <div className="chart-grid">
                 {/* Liquidity */}
                 {(ind.liquidez_geral || ind.liquidez_reduzida) && (() => {
                   const series = [];
@@ -1311,7 +1449,7 @@ IMPORTANTE: Substitua TODOS os valores de exemplo pelos valores reais dos docume
           {/* Análise Detalhada */}
           {R.analise_detalhada && (
             <ReportSection number="04" title="Análise Detalhada">
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
+              <div className="analise-grid">
                 {[
                   { key: "rentabilidade", title: "Rentabilidade", icon: "📈" },
                   { key: "liquidez_solvabilidade", title: "Liquidez e Solvabilidade", icon: "💧" },
