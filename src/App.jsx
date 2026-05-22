@@ -28,6 +28,7 @@ const F = {
    assim que a análise termina — antes do cliente pagar.
 ─────────────────────────────────────────────────────────── */
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwxd4KFABaHgab6adHw6Z2rXvKWlIR9uiHjaXzezwq0p9ain61hQFQRjM6K1lVm7fIZ/exec";
+const WORKER_URL = "https://arrojo-proxy.arrojo-destreza.workers.dev/";
 
 async function saveToGoogleDrive(company, anos, parsed) {
   try {
@@ -319,7 +320,7 @@ function PaywallModal({ onClose, onPay, companyName }) {
 
     try {
       // 1. Criar PaymentIntent no Cloudflare Worker
-      const intentResp = await fetch(GOOGLE_SCRIPT_URL.replace("google","cloudflare").replace("script.google.com/macros/s/AKfycbwxd4KFABaHgab6adHw6Z2rXvKWlIR9uiHjaXzezwq0p9ain61hQFQRjM6K1lVm7fIZ/exec", "arrojo-proxy.arrojo-destreza.workers.dev/"), {
+      const intentResp = await fetch(WORKER_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -907,7 +908,7 @@ O JSON deve ter exactamente esta estrutura (preencha com os valores reais extra�
 IMPORTANTE: Substitua TODOS os valores de exemplo pelos valores reais dos documentos fornecidos. Se um valor não estiver disponível nos documentos, use null. Seja preciso com os valores numéricos. Use português europeu.` });
       setProgress(60);
 
-      const res = await fetch("https://arrojo-proxy.arrojo-destreza.workers.dev/", {
+      const res = await fetch(WORKER_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ model: "claude-sonnet-4-5", max_tokens: 4000, messages: [{ role: "user", content }] }),
