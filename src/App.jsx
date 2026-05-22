@@ -814,13 +814,22 @@ const DOC_TYPES = [
 
 function parseAnalysis(raw) {
   try {
-    const clean = raw.replace(/```json\s*/gi, "").replace(/```\s*/g, "").trim();
+    // Remover blocos de código markdown ```json ... ```
+    let clean = raw
+      .replace(/^```json\s*/gim, "")
+      .replace(/^```\s*/gim, "")
+      .trim();
+
+    // Tentar encontrar o JSON entre { }
     const start = clean.indexOf("{");
     const end = clean.lastIndexOf("}");
-    if (start !== -1 && end !== -1) {
-      return JSON.parse(clean.slice(start, end + 1));
+    if (start !== -1 && end !== -1 && end > start) {
+      const jsonStr = clean.slice(start, end + 1);
+      return JSON.parse(jsonStr);
     }
-  } catch(e) {}
+  } catch(e) {
+    console.warn("parseAnalysis error:", e.message);
+  }
   // fallback: wrap as plain text
   return { _fallback: raw };
 }
@@ -874,7 +883,7 @@ export default function App() {
       content.push({ type: "text", text: `Você é um analista financeiro sénior especializado em empresas portuguesas/europeias.
 Analise TODOS os documentos financeiros fornecidos da empresa "${company}" (anos: ${yearsStr}).
 
-Responda EXCLUSIVAMENTE com um objecto JSON válido, sem texto antes ou depois, sem markdown, sem blocos de código.
+Responda EXCLUSIVAMENTE com um objecto JSON válido. PROIBIDO usar blocos de código, PROIBIDO usar \`\`\`json, PROIBIDO qualquer texto antes ou depois do JSON. A resposta deve começar com { e terminar com }.
 O JSON deve ter exactamente esta estrutura (preencha com os valores reais extraídos dos documentos):
 
 {
