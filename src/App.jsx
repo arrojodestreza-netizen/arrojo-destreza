@@ -911,7 +911,7 @@ IMPORTANTE: Substitua TODOS os valores de exemplo pelos valores reais dos docume
       const res = await fetch(WORKER_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "claude-sonnet-4-5", max_tokens: 4000, messages: [{ role: "user", content }] }),
+        body: JSON.stringify({ type: "analyze", payload: { model: "claude-sonnet-4-5", max_tokens: 4000, messages: [{ role: "user", content }] } }),
       });
       setProgress(85); setStatusMsg("A preparar relatório…");
       if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || "Erro na API"); }
