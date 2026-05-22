@@ -320,7 +320,6 @@ function PaywallModal({ onClose, onPay, companyName }) {
     if (!validate()) return;
     setStripeError("");
 
-    // Guardar referência ao card ANTES de qualquer mudança de estado
     const stripe = stripeRef.current;
     const card = cardRef.current;
 
@@ -329,10 +328,24 @@ function PaywallModal({ onClose, onPay, companyName }) {
       return;
     }
 
+    // Criar método de pagamento PRIMEIRO (antes de mudar step)
+    // Isto captura os dados do cartão enquanto o Element ainda está montado
+    const { error: pmError, paymentMethod } = await stripe.createPaymentMethod({
+      type: "card",
+      card: card,
+      billing_details: { name: form.name, email: form.email },
+    });
+
+    if (pmError) {
+      setStripeError(pmError.message);
+      return;
+    }
+
+    // Só agora mudamos o step (o paymentMethod já está criado, não precisa do Element)
     setStep("processing");
 
     try {
-      // 1. Criar PaymentIntent no Cloudflare Worker
+      // 1. Criar PaymentIntent no Worker
       const intentResp = await fetch(WORKER_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -348,15 +361,10 @@ function PaywallModal({ onClose, onPay, companyName }) {
       const intentData = await intentResp.json();
       if (intentData.error) throw new Error(intentData.error.message || "Erro ao criar pagamento");
 
-      // 2. Confirmar com Stripe.js usando referências guardadas
+      // 2. Confirmar com o paymentMethod já criado (não precisa do Element)
       const { error, paymentIntent } = await stripe.confirmCardPayment(
         intentData.client_secret,
-        {
-          payment_method: {
-            card: card,
-            billing_details: { name: form.name, email: form.email },
-          },
-        }
+        { payment_method: paymentMethod.id }
       );
 
       if (error) throw new Error(error.message);
