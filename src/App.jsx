@@ -315,8 +315,18 @@ function PaywallModal({ onClose, onPay, companyName }) {
 
   const handlePay = async () => {
     if (!validate()) return;
-    setStep("processing");
     setStripeError("");
+
+    // Guardar referência ao card ANTES de qualquer mudança de estado
+    const stripe = stripeRef.current;
+    const card = cardRef.current;
+
+    if (!stripe || !card) {
+      setStripeError("Erro ao carregar o Stripe. Recarregue a página.");
+      return;
+    }
+
+    setStep("processing");
 
     try {
       // 1. Criar PaymentIntent no Cloudflare Worker
@@ -335,12 +345,12 @@ function PaywallModal({ onClose, onPay, companyName }) {
       const intentData = await intentResp.json();
       if (intentData.error) throw new Error(intentData.error.message || "Erro ao criar pagamento");
 
-      // 2. Confirmar com Stripe.js
-      const { error, paymentIntent } = await stripeRef.current.confirmCardPayment(
+      // 2. Confirmar com Stripe.js usando referências guardadas
+      const { error, paymentIntent } = await stripe.confirmCardPayment(
         intentData.client_secret,
         {
           payment_method: {
-            card: cardRef.current,
+            card: card,
             billing_details: { name: form.name, email: form.email },
           },
         }
