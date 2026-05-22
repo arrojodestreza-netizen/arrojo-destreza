@@ -370,7 +370,7 @@ function PaywallModal({ onClose, onPay, companyName }) {
       if (error) throw new Error(error.message);
       if (paymentIntent.status === "succeeded") {
         setStep("success");
-        setTimeout(() => { onPay(); onClose(); }, 2500);
+        setTimeout(() => { onPay(plan); onClose(); }, 2500);
       }
     } catch (err) {
       setStripeError(err.message);
@@ -846,6 +846,7 @@ export default function App() {
   const [rawResult, setRawResult] = useState(null);
   const [result, setResult] = useState(null);
   const [paid, setPaid] = useState(false);
+  const [paidPlan, setPaidPlan] = useState("standard");
   const [showPaywall, setShowPaywall] = useState(false);
   const [error, setError] = useState(null);
 
@@ -883,61 +884,37 @@ export default function App() {
       content.push({ type: "text", text: `Você é um analista financeiro sénior especializado em empresas portuguesas/europeias.
 Analise TODOS os documentos financeiros fornecidos da empresa "${company}" (anos: ${yearsStr}).
 
-Responda com JSON puro seguindo exactamente esta estrutura (sem markdown, sem blocos de código):
+Produza uma análise financeira completa e detalhada com as seguintes secções:
 
-{
-  "empresa": "${company}",
-  "anos": ${JSON.stringify(years.filter(yr => Object.keys(files).some(k => k.startsWith(yr))))},
-  "avaliacao_global": "Bom",
-  "sumario": {
-    "texto": "Parágrafo de síntese executiva com 3-4 frases descrevendo a situação financeira geral.",
-    "destaques": ["destaque positivo 1", "destaque 2", "ponto de atenção 1"]
-  },
-  "financeiros": {
-    "volume_negocios": {"2022": 1000000, "2023": 1100000},
-    "resultado_liquido": {"2022": 50000, "2023": 65000},
-    "ebitda": {"2022": 120000, "2023": 140000},
-    "total_ativo": {"2022": 800000, "2023": 850000},
-    "capital_proprio": {"2022": 300000, "2023": 365000},
-    "divida_financeira": {"2022": 250000, "2023": 220000},
-    "fundo_maneio": {"2022": 80000, "2023": 95000}
-  },
-  "indicadores": {
-    "liquidez_geral": {"2022": 1.5, "2023": 1.7, "referencia": "> 1.5", "descricao": "Capacidade de cumprir obrigações de curto prazo"},
-    "liquidez_reduzida": {"2022": 1.1, "2023": 1.2, "referencia": "> 1.0", "descricao": "Liquidez excluindo existências"},
-    "autonomia_financeira": {"2022": 37.5, "2023": 42.9, "referencia": "> 33%", "descricao": "Percentagem de activos financiada por capitais próprios"},
-    "roe": {"2022": 10.2, "2023": 12.7, "referencia": "> 10%", "descricao": "Retorno sobre o capital próprio"},
-    "roa": {"2022": 4.8, "2023": 6.1, "referencia": "> 5%", "descricao": "Retorno sobre o activo total"},
-    "margem_liquida": {"2022": 5.0, "2023": 5.9, "referencia": "> 5%", "descricao": "Resultado líquido / Volume de negócios"},
-    "margem_ebitda": {"2022": 12.0, "2023": 12.7, "referencia": "> 10%", "descricao": "EBITDA / Volume de negócios"},
-    "divida_ebitda": {"2022": 2.1, "2023": 1.6, "referencia": "< 3.0x", "descricao": "Alavancagem financeira"},
-    "pme": {"2022": 45, "2023": 42, "referencia": "< 45 dias", "descricao": "Prazo médio de recebimentos"},
-    "pmp": {"2022": 60, "2023": 55, "referencia": "30-60 dias", "descricao": "Prazo médio de pagamentos"}
-  },
-  "analise_detalhada": {
-    "rentabilidade": "Análise detalhada da rentabilidade com evolução entre anos e factores explicativos.",
-    "liquidez_solvabilidade": "Análise da liquidez e solvabilidade com comparação entre períodos.",
-    "estrutura_capital": "Análise da estrutura de financiamento e endividamento.",
-    "eficiencia_operacional": "Análise dos ciclos de exploração, rotações e eficiência."
-  },
-  "swot": {
-    "forcas": ["força 1 específica", "força 2 específica", "força 3 específica"],
-    "fraquezas": ["fraqueza 1 específica", "fraqueza 2 específica", "fraqueza 3 específica"],
-    "oportunidades": ["oportunidade 1", "oportunidade 2"],
-    "riscos": ["risco 1 específico", "risco 2 específico"]
-  },
-  "recomendacoes": {
-    "imediato": ["acção concreta 1 (0-3 meses)", "acção concreta 2", "acção concreta 3"],
-    "medio": ["acção concreta 1 (3-12 meses)", "acção concreta 2", "acção concreta 3"],
-    "longo": ["acção estratégica 1 (1-3 anos)", "acção estratégica 2"]
-  },
-  "conclusao": "Parágrafo de conclusão com perspectivas e prioridade de intervenção."
-}
+1. AVALIAÇÃO GLOBAL (uma palavra: Excelente, Bom, Aceitável, Preocupante ou Crítico)
 
-IMPORTANTE: Substitua TODOS os valores de exemplo pelos valores reais dos documentos fornecidos. Se um valor não estiver disponível nos documentos, use null. Seja preciso com os valores numéricos. Use português europeu.` });
+2. SUMÁRIO EXECUTIVO
+Texto de síntese de 3-4 frases. Depois lista de 4-5 destaques principais.
+
+3. DADOS FINANCEIROS (valores numéricos por ano):
+Volume de negócios, Resultado líquido, EBITDA, Total do activo, Capital próprio, Dívida financeira, Fundo de maneio.
+
+4. INDICADORES E RÁCIOS (valores por ano):
+Liquidez Geral, Liquidez Reduzida, Autonomia Financeira (%), ROE (%), ROA (%), Margem Líquida (%), Margem EBITDA (%), Dívida/EBITDA (x), PMR (dias), PMP (dias).
+
+5. ANÁLISE DETALHADA
+Quatro parágrafos sobre: Rentabilidade, Liquidez e Solvabilidade, Estrutura de Capital, Eficiência Operacional.
+
+6. PONTOS FORTES E FRACOS
+Lista de forças, fraquezas, oportunidades e riscos.
+
+7. RECOMENDAÇÕES
+Acções imediatas (0-3 meses), médio prazo (3-12 meses), longo prazo (1-3 anos).
+
+8. CONCLUSÃO
+Parágrafo final com perspectivas.
+
+Use português europeu. Seja específico com números e comparações entre anos.` });
+
       setProgress(60);
 
-      const res = await fetch(WORKER_URL, {
+      // PASSO 1: Análise em texto livre
+      const res1 = await fetch(WORKER_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -945,15 +922,91 @@ IMPORTANTE: Substitua TODOS os valores de exemplo pelos valores reais dos docume
           payload: {
             model: "claude-sonnet-4-5",
             max_tokens: 4000,
-            system: "Você é um analista financeiro sénior. Responda SEMPRE com JSON puro e válido, sem markdown, sem blocos de código, sem texto antes ou depois. A resposta começa com { e termina com }.",
             messages: [{ role: "user", content }]
           }
         }),
       });
-      setProgress(85); setStatusMsg("A preparar relatório…");
-      if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || "Erro na API"); }
-      const data = await res.json();
-      const text = data.content.map(b => b.text || "").join("\n");
+      if (!res1.ok) { const e = await res1.json(); throw new Error(e.error?.message || "Erro na análise"); }
+      const data1 = await res1.json();
+      const analiseTexto = data1.content.map(b => b.text || "").join("\n");
+
+      setProgress(75); setStatusMsg("A estruturar o relatório…");
+
+      // PASSO 2: Converter análise para JSON estruturado
+      const yearsFiltered = years.filter(yr => Object.keys(files).some(k => k.startsWith(yr)));
+      const res2 = await fetch(WORKER_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "analyze",
+          payload: {
+            model: "claude-sonnet-4-5",
+            max_tokens: 4000,
+            system: "Converte texto de análise financeira para JSON válido. Responde APENAS com JSON, sem markdown, sem blocos de código, sem texto adicional. A resposta começa com { e termina com }.",
+            messages: [{
+              role: "user",
+              content: `Converte esta análise financeira para JSON com exactamente esta estrutura. Usa os valores reais do texto. Responde só com JSON válido, sem blocos de código:
+
+ANÁLISE:
+${analiseTexto}
+
+ESTRUTURA JSON:
+{
+  "empresa": "${company}",
+  "anos": ${JSON.stringify(yearsFiltered)},
+  "avaliacao_global": "Bom",
+  "sumario": {
+    "texto": "texto do sumário executivo",
+    "destaques": ["destaque 1", "destaque 2", "destaque 3"]
+  },
+  "financeiros": {
+    "volume_negocios": ${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},
+    "resultado_liquido": ${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},
+    "ebitda": ${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},
+    "total_ativo": ${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},
+    "capital_proprio": ${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},
+    "divida_financeira": ${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))}
+  },
+  "indicadores": {
+    "liquidez_geral": ${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y => [y, 0])), "referencia": "> 1.5", "descricao": "Capacidade de cumprir obrigações de curto prazo"})},
+    "liquidez_reduzida": ${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y => [y, 0])), "referencia": "> 1.0", "descricao": "Liquidez excluindo existências"})},
+    "autonomia_financeira": ${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y => [y, 0])), "referencia": "> 33%", "descricao": "Percentagem de activos financiada por capitais próprios"})},
+    "roe": ${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y => [y, 0])), "referencia": "> 10%", "descricao": "Retorno sobre o capital próprio"})},
+    "roa": ${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y => [y, 0])), "referencia": "> 5%", "descricao": "Retorno sobre o activo total"})},
+    "margem_liquida": ${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y => [y, 0])), "referencia": "> 5%", "descricao": "Resultado líquido / Volume de negócios"})},
+    "margem_ebitda": ${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y => [y, 0])), "referencia": "> 10%", "descricao": "EBITDA / Volume de negócios"})},
+    "divida_ebitda": ${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y => [y, 0])), "referencia": "< 3.0x", "descricao": "Alavancagem financeira"})},
+    "pme": ${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y => [y, 0])), "referencia": "< 45 dias", "descricao": "Prazo médio de recebimentos"})},
+    "pmp": ${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y => [y, 0])), "referencia": "30-60 dias", "descricao": "Prazo médio de pagamentos"})}
+  },
+  "analise_detalhada": {
+    "rentabilidade": "texto",
+    "liquidez_solvabilidade": "texto",
+    "estrutura_capital": "texto",
+    "eficiencia_operacional": "texto"
+  },
+  "swot": {
+    "forcas": ["força 1"],
+    "fraquezas": ["fraqueza 1"],
+    "oportunidades": ["oportunidade 1"],
+    "riscos": ["risco 1"]
+  },
+  "recomendacoes": {
+    "imediato": ["acção 1"],
+    "medio": ["acção 1"],
+    "longo": ["acção 1"]
+  },
+  "conclusao": "texto da conclusão"
+}`
+            }]
+          }
+        }),
+      });
+
+      setProgress(88); setStatusMsg("A preparar relatório…");
+      if (!res2.ok) { const e = await res2.json(); throw new Error(e.error?.message || "Erro na estruturação"); }
+      const data2 = await res2.json();
+      const text = data2.content.map(b => b.text || "").join("\n");
       const parsed = parseAnalysis(text);
       setRawResult(text);
       setResult(parsed);
@@ -1401,7 +1454,7 @@ IMPORTANTE: Substitua TODOS os valores de exemplo pelos valores reais dos docume
           <>
           {/* FULL PAID CONTENT */}
 
-          {/* Indicadores */}
+          {/* Indicadores — Standard e Premium */}
           {Object.keys(ind).length > 0 && (
             <ReportSection number="03" title="Indicadores e Rácios Financeiros">
               {/* KPI cards grid */}
@@ -1484,6 +1537,9 @@ IMPORTANTE: Substitua TODOS os valores de exemplo pelos valores reais dos docume
             </ReportSection>
           )}
 
+          {/* Secções 04-07 — apenas Premium */}
+          {paidPlan === "premium" ? (<>
+
           {/* Análise Detalhada */}
           {R.analise_detalhada && (
             <ReportSection number="04" title="Análise Detalhada">
@@ -1534,6 +1590,23 @@ IMPORTANTE: Substitua TODOS os valores de exemplo pelos valores reais dos docume
             </ReportSection>
           )}
 
+          </>) : (
+            /* Standard — upgrade CTA para Premium */
+            <div style={{ background: C.cream, border: `1px solid ${C.line}`, borderRadius: "10px", padding: "36px", textAlign: "center", margin: "32px 0" }}>
+              <div style={{ fontFamily: F.display, fontSize: "24px", marginBottom: "10px", color: C.ink }}>
+                Actualize para <span style={{ color: C.gold, fontStyle: "italic" }}>Premium</span>
+              </div>
+              <p style={{ fontFamily: F.body, fontSize: "14px", color: C.fog, marginBottom: "24px", lineHeight: 1.8 }}>
+                O plano Standard inclui Sumário, Evolução Financeira e Indicadores.<br />
+                Para aceder à Análise Detalhada, SWOT, Recomendações e Conclusão actualize para Premium (149€).
+              </p>
+              <button onClick={() => setShowPaywall(true)}
+                style={{ padding: "13px 32px", background: C.gold, border: "none", borderRadius: "6px", color: C.white, fontFamily: F.display, fontSize: "18px", cursor: "pointer" }}>
+                Actualizar para Premium → 149€
+              </button>
+            </div>
+          )}
+
           {/* Footer */}
           <div style={{ textAlign: "center", padding: "48px 0 20px" }}>
             <Divider style={{ marginBottom: "20px" }} />
@@ -1550,7 +1623,7 @@ IMPORTANTE: Substitua TODOS os valores de exemplo pelos valores reais dos docume
         <PaywallModal
           companyName={company}
           onClose={() => setShowPaywall(false)}
-          onPay={() => { setPaid(true); setShowPaywall(false); }}
+          onPay={(p) => { setPaid(true); setPaidPlan(p || "standard"); setShowPaywall(false); }}
         />
       )}
     </>
