@@ -883,8 +883,7 @@ export default function App() {
       content.push({ type: "text", text: `Você é um analista financeiro sénior especializado em empresas portuguesas/europeias.
 Analise TODOS os documentos financeiros fornecidos da empresa "${company}" (anos: ${yearsStr}).
 
-Responda EXCLUSIVAMENTE com um objecto JSON válido. PROIBIDO usar blocos de código, PROIBIDO usar \`\`\`json, PROIBIDO qualquer texto antes ou depois do JSON. A resposta deve começar com { e terminar com }.
-O JSON deve ter exactamente esta estrutura (preencha com os valores reais extraídos dos documentos):
+Responda com JSON puro seguindo exactamente esta estrutura (sem markdown, sem blocos de código):
 
 {
   "empresa": "${company}",
@@ -941,7 +940,15 @@ IMPORTANTE: Substitua TODOS os valores de exemplo pelos valores reais dos docume
       const res = await fetch(WORKER_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "analyze", payload: { model: "claude-sonnet-4-5", max_tokens: 4000, messages: [{ role: "user", content }] } }),
+        body: JSON.stringify({
+          type: "analyze",
+          payload: {
+            model: "claude-sonnet-4-5",
+            max_tokens: 4000,
+            system: "Você é um analista financeiro sénior. Responda SEMPRE com JSON puro e válido, sem markdown, sem blocos de código, sem texto antes ou depois. A resposta começa com { e termina com }.",
+            messages: [{ role: "user", content }]
+          }
+        }),
       });
       setProgress(85); setStatusMsg("A preparar relatório…");
       if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || "Erro na API"); }
