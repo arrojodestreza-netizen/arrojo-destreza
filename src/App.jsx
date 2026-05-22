@@ -813,24 +813,35 @@ const DOC_TYPES = [
 ];
 
 function parseAnalysis(raw) {
-  try {
-    // Remover blocos de código markdown ```json ... ```
-    let clean = raw
-      .replace(/^```json\s*/gim, "")
-      .replace(/^```\s*/gim, "")
-      .trim();
+  if (!raw) return { _fallback: raw };
 
-    // Tentar encontrar o JSON entre { }
-    const start = clean.indexOf("{");
-    const end = clean.lastIndexOf("}");
-    if (start !== -1 && end !== -1 && end > start) {
-      const jsonStr = clean.slice(start, end + 1);
-      return JSON.parse(jsonStr);
-    }
-  } catch(e) {
-    console.warn("parseAnalysis error:", e.message);
+  let text = raw;
+
+  // Tentar extrair JSON de dentro de bloco ```json ... ```
+  const codeBlockMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (codeBlockMatch) {
+    text = codeBlockMatch[1].trim();
   }
-  // fallback: wrap as plain text
+
+  // Remover qualquer markdown residual
+  text = text.replace(/^```json\s*/gim, "").replace(/^```\s*/gim, "").trim();
+
+  // Tentar parse directo
+  try {
+    return JSON.parse(text);
+  } catch(e) {}
+
+  // Encontrar o maior bloco JSON válido entre { }
+  const start = text.indexOf("{");
+  const end = text.lastIndexOf("}");
+  if (start !== -1 && end !== -1 && end > start) {
+    try {
+      return JSON.parse(text.slice(start, end + 1));
+    } catch(e) {
+      console.warn("JSON parse failed:", e.message);
+    }
+  }
+
   return { _fallback: raw };
 }
 
@@ -1007,6 +1018,9 @@ ESTRUTURA JSON:
       if (!res2.ok) { const e = await res2.json(); throw new Error(e.error?.message || "Erro na estruturação"); }
       const data2 = await res2.json();
       const text = data2.content.map(b => b.text || "").join("\n");
+      console.log("JSON recebido (primeiros 500 chars):", text.slice(0, 500));
+      console.log("Começa com {:", text.trim().startsWith("{"));
+      console.log("Termina com }:", text.trim().endsWith("}"));
       const parsed = parseAnalysis(text);
       setRawResult(text);
       setResult(parsed);
