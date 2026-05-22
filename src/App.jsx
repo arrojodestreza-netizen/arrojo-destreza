@@ -263,6 +263,7 @@ function PaywallModal({ onClose, onPay, companyName }) {
   const [form, setForm] = useState({ name: "", email: "" });
   const [errors, setErrors] = useState({});
   const [stripeError, setStripeError] = useState("");
+  const [cardReady, setCardReady] = useState(false);
   const stripeRef = useRef(null);
   const cardRef = useRef(null);
   const cardMountRef = useRef(null);
@@ -283,6 +284,7 @@ function PaywallModal({ onClose, onPay, companyName }) {
   // Mount Stripe card element when entering checkout
   useEffect(() => {
     if (step !== "checkout") return;
+    setCardReady(false);
     let mounted = true;
     loadStripe().then(stripe => {
       if (!mounted || !cardMountRef.current) return;
@@ -300,7 +302,8 @@ function PaywallModal({ onClose, onPay, companyName }) {
       });
       card.mount(cardMountRef.current);
       cardRef.current = card;
-      card.on("change", e => setStripeError(e.error ? e.error.message : ""));
+      card.on("ready", () => { if (mounted) setCardReady(true); });
+      card.on("change", e => { if (mounted) setStripeError(e.error ? e.error.message : ""); });
     });
     return () => { mounted = false; };
   }, [step]);
@@ -465,9 +468,9 @@ function PaywallModal({ onClose, onPay, companyName }) {
               </div>
             </div>
 
-            <button onClick={handlePay}
-              style={{ width: "100%", padding: "14px", background: C.gold, border: "none", borderRadius: "6px", color: C.white, fontFamily: F.display, fontSize: "18px", letterSpacing: "0.06em", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}>
-              🔒 Pagar {selectedPlan?.price} com Stripe
+            <button onClick={handlePay} disabled={!cardReady}
+              style={{ width: "100%", padding: "14px", background: cardReady ? C.gold : C.line, border: "none", borderRadius: "6px", color: C.white, fontFamily: F.display, fontSize: "18px", letterSpacing: "0.06em", cursor: cardReady ? "pointer" : "not-allowed", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", transition: "all 0.2s" }}>
+              🔒 {cardReady ? `Pagar ${selectedPlan?.price} com Stripe` : "A carregar pagamento…"}
             </button>
             <div style={{ textAlign: "center", fontSize: "11px", color: C.fog, marginTop: "12px", fontStyle: "italic" }}>
               Pagamento seguro via Stripe · SSL encriptado · IVA incluído
