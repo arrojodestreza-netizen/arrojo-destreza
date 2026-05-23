@@ -817,14 +817,14 @@ function parseAnalysis(raw) {
 
   let text = raw;
 
-  // Tentar extrair JSON de dentro de bloco ```json ... ```
+  // Extrair JSON de dentro de bloco ```json ... ``` (qualquer posição)
   const codeBlockMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
   if (codeBlockMatch) {
     text = codeBlockMatch[1].trim();
+  } else {
+    // Remover backticks residuais em qualquer posição
+    text = text.replace(/```json/gi, "").replace(/```/g, "").trim();
   }
-
-  // Remover qualquer markdown residual
-  text = text.replace(/^```json\s*/gim, "").replace(/^```\s*/gim, "").trim();
 
   // Tentar parse directo
   try {
