@@ -815,16 +815,11 @@ const DOC_TYPES = [
 function parseAnalysis(raw) {
   if (!raw) return { _fallback: raw };
 
-  let text = raw;
-
-  // Extrair JSON de dentro de bloco ```json ... ``` (qualquer posição)
-  const codeBlockMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
-  if (codeBlockMatch) {
-    text = codeBlockMatch[1].trim();
-  } else {
-    // Remover backticks residuais em qualquer posição
-    text = text.replace(/```json/gi, "").replace(/```/g, "").trim();
-  }
+  // Remover TODOS os backticks e variações antes de tentar o parse
+  let text = raw
+    .replace(/`{3,}\s*json\s*/gi, "")  // ```json, ``` json, ````json etc
+    .replace(/`{3,}\s*/g, "")           // ``` restantes
+    .trim();
 
   // Tentar parse directo
   try {
