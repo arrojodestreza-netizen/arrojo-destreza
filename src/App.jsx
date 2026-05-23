@@ -947,7 +947,7 @@ Use português europeu. Seja específico com números e comparações entre anos
           type: "analyze",
           payload: {
             model: "claude-sonnet-4-5",
-            max_tokens: 4000,
+            max_tokens: 6000,
             system: "Converte texto de análise financeira para JSON válido. Responde APENAS com JSON, sem markdown, sem blocos de código, sem texto adicional. A resposta começa com { e termina com }.",
             messages: [{
               role: "user",
@@ -1013,7 +1013,10 @@ ESTRUTURA JSON:
       if (!res2.ok) { const e = await res2.json(); throw new Error(e.error?.message || "Erro na estruturação"); }
       const data2 = await res2.json();
       const text = data2.content.map(b => b.text || "").join("\n");
-      console.log("JSON recebido (primeiros 500 chars):", text.slice(0, 500));
+      console.log("=== RESPOSTA JSON ===");
+      console.log("Tamanho:", text.length);
+      console.log("Início:", text.slice(0, 100));
+      console.log("Fim:", text.slice(-100));
       console.log("Começa com {:", text.trim().startsWith("{"));
       console.log("Termina com }:", text.trim().endsWith("}"));
       const parsed = parseAnalysis(text);
