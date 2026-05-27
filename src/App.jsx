@@ -258,15 +258,19 @@ async function loadStripe() {
 
 /* ─── PAYWALL MODAL ──────────────────────────────────────── */
 function PaywallModal({ onClose, onPay, companyName }) {
-  const [step, setStep] = useState("choose"); // choose | checkout | processing | success | error
+  const [step, setStep] = useState("choose");   // choose | checkout | mbway | processing | success | error
   const [plan, setPlan] = useState("standard");
-  const [form, setForm] = useState({ name: "", email: "" });
+  const [payMethod, setPayMethod] = useState("card"); // card | mbway
+  const [form, setForm] = useState({ name: "", email: "", phone: "" });
   const [errors, setErrors] = useState({});
   const [stripeError, setStripeError] = useState("");
   const [cardReady, setCardReady] = useState(false);
+  const [mbwayStatus, setMbwayStatus] = useState(""); // waiting | success | error
+  const [mbwayOrderId, setMbwayOrderId] = useState("");
   const stripeRef = useRef(null);
   const cardRef = useRef(null);
   const cardMountRef = useRef(null);
+  const pollRef = useRef(null);
 
   const PLANS = [
     {
@@ -281,9 +285,8 @@ function PaywallModal({ onClose, onPay, companyName }) {
 
   const selectedPlan = PLANS.find(p => p.id === plan);
 
-  // Mount Stripe card element when entering checkout
   useEffect(() => {
-    if (step !== "checkout") return;
+    if (step !== "checkout" || payMethod !== "card") return;
     setCardReady(false);
     let mounted = true;
     loadStripe().then(stripe => {
@@ -291,14 +294,7 @@ function PaywallModal({ onClose, onPay, companyName }) {
       stripeRef.current = stripe;
       const elements = stripe.elements();
       const card = elements.create("card", {
-        style: {
-          base: {
-            fontFamily: "'Georgia', serif",
-            fontSize: "15px",
-            color: "#0B0C0E",
-            "::placeholder": { color: "#8A8880" },
-          },
-        },
+        style: { base: { fontFamily: "'Georgia', serif", fontSize: "15px", color: "#0B0C0E", "::placeholder": { color: "#8A8880" } } },
       });
       card.mount(cardMountRef.current);
       cardRef.current = card;
@@ -306,67 +302,44 @@ function PaywallModal({ onClose, onPay, companyName }) {
       card.on("change", e => { if (mounted) setStripeError(e.error ? e.error.message : ""); });
     });
     return () => { mounted = false; };
-  }, [step]);
+  }, [step, payMethod]);
+
+  // Limpar polling ao fechar
+  useEffect(() => () => { if (pollRef.current) clearInterval(pollRef.current); }, []);
 
   const validate = () => {
     const e = {};
     if (!form.name.trim()) e.name = "Campo obrigatório";
     if (!form.email.includes("@")) e.email = "E-mail inválido";
+    if (payMethod === "mbway" && !/^9[1236]\d{7}$/.test(form.phone.replace(/\s/g, ""))) {
+      e.phone = "Número MB WAY inválido (ex: 912345678)";
+    }
     setErrors(e);
     return Object.keys(e).length === 0;
   };
 
-  const handlePay = async () => {
+  const handlePayCard = async () => {
     if (!validate()) return;
-    setStripeError("");
-
     const stripe = stripeRef.current;
     const card = cardRef.current;
+    if (!stripe || !card) { setStripeError("Erro ao carregar o Stripe."); return; }
 
-    if (!stripe || !card) {
-      setStripeError("Erro ao carregar o Stripe. Recarregue a página.");
-      return;
-    }
-
-    // Criar método de pagamento PRIMEIRO (antes de mudar step)
-    // Isto captura os dados do cartão enquanto o Element ainda está montado
     const { error: pmError, paymentMethod } = await stripe.createPaymentMethod({
-      type: "card",
-      card: card,
+      type: "card", card,
       billing_details: { name: form.name, email: form.email },
     });
+    if (pmError) { setStripeError(pmError.message); return; }
 
-    if (pmError) {
-      setStripeError(pmError.message);
-      return;
-    }
-
-    // Só agora mudamos o step (o paymentMethod já está criado, não precisa do Element)
     setStep("processing");
-
     try {
-      // 1. Criar PaymentIntent no Worker
       const intentResp = await fetch(WORKER_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: "create_payment",
-          amount: selectedPlan.amount,
-          currency: "eur",
-          description: `${selectedPlan.label} — ${companyName}`,
-          plan: plan,
-        }),
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "create_payment", amount: selectedPlan.amount, currency: "eur", description: `${selectedPlan.label} — ${companyName}`, plan }),
       });
-
       const intentData = await intentResp.json();
       if (intentData.error) throw new Error(intentData.error.message || "Erro ao criar pagamento");
 
-      // 2. Confirmar com o paymentMethod já criado (não precisa do Element)
-      const { error, paymentIntent } = await stripe.confirmCardPayment(
-        intentData.client_secret,
-        { payment_method: paymentMethod.id }
-      );
-
+      const { error, paymentIntent } = await stripe.confirmCardPayment(intentData.client_secret, { payment_method: paymentMethod.id });
       if (error) throw new Error(error.message);
       if (paymentIntent.status === "succeeded") {
         setStep("success");
@@ -378,6 +351,58 @@ function PaywallModal({ onClose, onPay, companyName }) {
     }
   };
 
+  const handlePayMBWay = async () => {
+    if (!validate()) return;
+    setStep("processing");
+    const orderId = `AD-${Date.now()}`;
+    setMbwayOrderId(orderId);
+    try {
+      const resp = await fetch(WORKER_URL, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "create_mbway",
+          phone: form.phone.replace(/\s/g, ""),
+          amount: selectedPlan.amount,
+          orderId,
+          email: form.email,
+          description: `${selectedPlan.label} — ${companyName}`,
+        }),
+      });
+      const data = await resp.json();
+      // Estado 000 = pedido enviado com sucesso
+      const sent = JSON.stringify(data).includes("000") || data.Estado === "000" || data.estado === "000";
+      if (!sent) throw new Error("Erro ao enviar pedido MB WAY. Verifique o número.");
+
+      setStep("mbway");
+      setMbwayStatus("waiting");
+
+      // Polling para verificar pagamento (a cada 5 segundos, máx 4 minutos)
+      let attempts = 0;
+      pollRef.current = setInterval(async () => {
+        attempts++;
+        if (attempts > 48) { clearInterval(pollRef.current); setMbwayStatus("error"); return; }
+        try {
+          const checkResp = await fetch(WORKER_URL, {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ type: "check_mbway", orderId }),
+          });
+          const checkData = await checkResp.json();
+          if (checkData.paid) {
+            clearInterval(pollRef.current);
+            setMbwayStatus("success");
+            setStep("success");
+            setTimeout(() => { onPay(plan); onClose(); }, 2500);
+          }
+        } catch(e) {}
+      }, 5000);
+    } catch (err) {
+      setStripeError(err.message);
+      setStep("checkout");
+    }
+  };
+
+  const handlePay = () => payMethod === "card" ? handlePayCard() : handlePayMBWay();
+
   const overlay = { position: "fixed", inset: 0, background: "rgba(11,12,14,0.72)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", animation: "fadeIn 0.2s ease" };
   const box = { background: C.white, borderRadius: "10px", maxWidth: "560px", width: "100%", maxHeight: "90vh", overflowY: "auto", position: "relative", animation: "fadeUp 0.3s ease" };
   const inp = (err) => ({ width: "100%", padding: "10px 14px", border: `1px solid ${err ? C.danger : C.line}`, borderRadius: "5px", fontFamily: F.body, fontSize: "15px", color: C.ink, background: C.white });
@@ -388,6 +413,30 @@ function PaywallModal({ onClose, onPay, companyName }) {
         <div style={{ width: "48px", height: "48px", border: `3px solid ${C.line}`, borderTopColor: C.gold, borderRadius: "50%", margin: "0 auto 24px", animation: "spin 0.8s linear infinite" }} />
         <div style={{ fontFamily: F.display, fontSize: "22px", marginBottom: "10px" }}>A processar pagamento…</div>
         <div style={{ color: C.fog, fontSize: "14px" }}>Por favor aguarde</div>
+      </div>
+    </div>
+  );
+
+  if (step === "mbway") return (
+    <div style={overlay}>
+      <div style={{ ...box, padding: "48px 40px", textAlign: "center" }}>
+        <div style={{ fontSize: "48px", marginBottom: "16px" }}>📱</div>
+        <div style={{ fontFamily: F.display, fontSize: "24px", marginBottom: "10px" }}>Confirme no MB WAY</div>
+        <p style={{ color: C.fog, fontSize: "14px", lineHeight: 1.7, marginBottom: "20px" }}>
+          Foi enviado um pedido de pagamento de <strong>{selectedPlan?.price}</strong> para o número <strong>{form.phone}</strong>.<br />
+          Abra a app MB WAY e confirme o pagamento.
+        </p>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", color: C.fog, fontSize: "13px" }}>
+          <div style={{ width: "16px", height: "16px", border: `2px solid ${C.gold}`, borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+          A aguardar confirmação…
+        </div>
+        <div style={{ marginTop: "20px", fontSize: "11px", color: C.fog, fontStyle: "italic" }}>
+          O pedido expira em 4 minutos
+        </div>
+        <button onClick={() => { clearInterval(pollRef.current); setStep("checkout"); }}
+          style={{ marginTop: "16px", background: "none", border: "none", color: C.fog, cursor: "pointer", fontSize: "13px", textDecoration: "underline" }}>
+          Cancelar
+        </button>
       </div>
     </div>
   );
@@ -416,9 +465,7 @@ function PaywallModal({ onClose, onPay, companyName }) {
 
         {step === "choose" && (
           <div style={{ padding: "24px 32px" }}>
-            <div style={{ fontSize: "13px", color: C.fog, marginBottom: "20px", fontStyle: "italic" }}>
-              Escolha o plano que melhor se adequa às suas necessidades:
-            </div>
+            <div style={{ fontSize: "13px", color: C.fog, marginBottom: "20px", fontStyle: "italic" }}>Escolha o plano:</div>
             <div className="plans-grid" style={{ marginBottom: "24px" }}>
               {PLANS.map(p => (
                 <div key={p.id} onClick={() => setPlan(p.id)}
@@ -447,14 +494,29 @@ function PaywallModal({ onClose, onPay, companyName }) {
           <div style={{ padding: "24px 32px" }}>
             <button onClick={() => setStep("choose")} style={{ background: "none", border: "none", color: C.fog, cursor: "pointer", fontSize: "13px", marginBottom: "20px", display: "flex", alignItems: "center", gap: "6px" }}>← Voltar</button>
 
+            {/* Resumo */}
             <div style={{ background: "#FBF7EF", border: `1px solid ${C.line}`, borderRadius: "6px", padding: "14px 16px", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div>
                 <div style={{ fontSize: "13px", fontFamily: F.display }}>{selectedPlan?.label}</div>
-                <div style={{ fontSize: "11px", color: C.fog }}>Análise Financeira — {companyName}</div>
+                <div style={{ fontSize: "11px", color: C.fog }}>{companyName}</div>
               </div>
               <div style={{ fontFamily: F.display, fontSize: "22px", color: C.gold }}>{selectedPlan?.price}</div>
             </div>
 
+            {/* Método de pagamento */}
+            <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+              {[
+                { id: "card", label: "💳 Cartão" },
+                { id: "mbway", label: "📱 MB WAY" },
+              ].map(m => (
+                <button key={m.id} onClick={() => { setPayMethod(m.id); setStripeError(""); setErrors({}); }}
+                  style={{ flex: 1, padding: "10px", border: `2px solid ${payMethod === m.id ? C.gold : C.line}`, borderRadius: "6px", background: payMethod === m.id ? "#FBF7EF" : C.white, cursor: "pointer", fontFamily: F.body, fontSize: "14px", color: payMethod === m.id ? C.gold : C.steel, fontWeight: payMethod === m.id ? "600" : "400", transition: "all 0.2s" }}>
+                  {m.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Campos comuns */}
             <div style={{ display: "grid", gap: "14px", marginBottom: "20px" }}>
               {[
                 { key: "name", label: "Nome completo", placeholder: "João Silva", type: "text" },
@@ -469,19 +531,36 @@ function PaywallModal({ onClose, onPay, companyName }) {
                 </div>
               ))}
 
-              <div>
-                <label style={{ fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: C.steel, display: "block", marginBottom: "6px", fontFamily: F.body }}>Dados do Cartão</label>
-                <div ref={cardMountRef} style={{ padding: "11px 14px", border: `1px solid ${stripeError ? C.danger : C.line}`, borderRadius: "5px", background: C.white, minHeight: "42px" }} />
-                {stripeError && <div style={{ fontSize: "11px", color: C.danger, marginTop: "4px" }}>{stripeError}</div>}
-              </div>
+              {/* Campo cartão */}
+              {payMethod === "card" && (
+                <div>
+                  <label style={{ fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: C.steel, display: "block", marginBottom: "6px", fontFamily: F.body }}>Dados do Cartão</label>
+                  <div ref={cardMountRef} style={{ padding: "11px 14px", border: `1px solid ${stripeError ? C.danger : C.line}`, borderRadius: "5px", background: C.white, minHeight: "42px" }} />
+                  {stripeError && <div style={{ fontSize: "11px", color: C.danger, marginTop: "4px" }}>{stripeError}</div>}
+                </div>
+              )}
+
+              {/* Campo MB WAY */}
+              {payMethod === "mbway" && (
+                <div>
+                  <label style={{ fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: C.steel, display: "block", marginBottom: "6px", fontFamily: F.body }}>Número de Telemóvel MB WAY</label>
+                  <input type="tel" value={form.phone} placeholder="912 345 678"
+                    onChange={e => setForm(prev => ({ ...prev, phone: e.target.value }))}
+                    style={{ ...inp(errors.phone) }} />
+                  {errors.phone && <div style={{ fontSize: "11px", color: C.danger, marginTop: "4px" }}>{errors.phone}</div>}
+                  {stripeError && <div style={{ fontSize: "11px", color: C.danger, marginTop: "4px" }}>{stripeError}</div>}
+                </div>
+              )}
             </div>
 
-            <button onClick={handlePay} disabled={!cardReady}
-              style={{ width: "100%", padding: "14px", background: cardReady ? C.gold : C.line, border: "none", borderRadius: "6px", color: C.white, fontFamily: F.display, fontSize: "18px", letterSpacing: "0.06em", cursor: cardReady ? "pointer" : "not-allowed", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", transition: "all 0.2s" }}>
-              🔒 {cardReady ? `Pagar ${selectedPlan?.price} com Stripe` : "A carregar pagamento…"}
+            <button onClick={handlePay} disabled={payMethod === "card" && !cardReady}
+              style={{ width: "100%", padding: "14px", background: (payMethod === "mbway" || cardReady) ? C.gold : C.line, border: "none", borderRadius: "6px", color: C.white, fontFamily: F.display, fontSize: "18px", letterSpacing: "0.06em", cursor: (payMethod === "mbway" || cardReady) ? "pointer" : "not-allowed", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", transition: "all 0.2s" }}>
+              {payMethod === "card"
+                ? `🔒 ${cardReady ? `Pagar ${selectedPlan?.price} com Cartão` : "A carregar…"}`
+                : `📱 Pagar ${selectedPlan?.price} com MB WAY`}
             </button>
             <div style={{ textAlign: "center", fontSize: "11px", color: C.fog, marginTop: "12px", fontStyle: "italic" }}>
-              Pagamento seguro via Stripe · SSL encriptado · IVA incluído
+              Pagamento seguro · SSL encriptado · IVA incluído
             </div>
           </div>
         )}
