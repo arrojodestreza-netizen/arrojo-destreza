@@ -243,7 +243,7 @@ function UploadSlot({ label, year, file, onUpload, onRemove }) {
 }
 
 /* ─── STRIPE CONFIG ──────────────────────────────────────── */
-const STRIPE_PK = "pk_test_51TZrYTKhHRQ9IixVD1yDRdj672WzMFaW2tYJOb0DrEywT8KYO5OnMctW4zhshQ6UR9i84S8k1vrC7gtiqElh21wU00oDyHn8rq";
+const STRIPE_PK = "pk_live_51TZrY746j0PZ8qyWhdsU6Z11l1lqa7YjlFIunI7wzu6iTlh1vJHEtpYcvXDnD64EkjFNV8iCgVguoEf7Eqv7CSbZ00MpyeLmib";
 
 async function loadStripe() {
   if (window.Stripe) return window.Stripe(STRIPE_PK);
