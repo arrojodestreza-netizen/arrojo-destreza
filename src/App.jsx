@@ -369,10 +369,10 @@ function PaywallModal({ onClose, onPay, companyName }) {
         }),
       });
       const data = await resp.json();
-      // Estado 000 = pedido enviado com sucesso
-      const sent = JSON.stringify(data).includes("000") || data.Estado === "000" || data.estado === "000";
-      if (!sent) throw new Error("Erro ao enviar pedido MB WAY. Verifique o número.");
+      const sent = data.sent || data.Estado === "000";
+      if (!sent) throw new Error(`Erro MB WAY: ${data.MsgDescricao || data.raw || "Verifique o número."}`);
 
+      const idPedido = data.idPedido || data.IdPedido || orderId;
       setStep("mbway");
       setMbwayStatus("waiting");
 
@@ -384,7 +384,7 @@ function PaywallModal({ onClose, onPay, companyName }) {
         try {
           const checkResp = await fetch(WORKER_URL, {
             method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ type: "check_mbway", orderId }),
+            body: JSON.stringify({ type: "check_mbway", idPedido }),
           });
           const checkData = await checkResp.json();
           if (checkData.paid) {
