@@ -261,7 +261,7 @@ function PaywallModal({ onClose, onPay, companyName }) {
   const [step, setStep] = useState("choose");   // choose | checkout | mbway | processing | success | error
   const [plan, setPlan] = useState("standard");
   const [payMethod, setPayMethod] = useState("card"); // card | mbway
-  const [form, setForm] = useState({ name: "", email: "", phone: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", nif: "", morada: "", localidade: "", codigopostal: "" });
   const [errors, setErrors] = useState({});
   const [stripeError, setStripeError] = useState("");
   const [cardReady, setCardReady] = useState(false);
@@ -311,6 +311,8 @@ function PaywallModal({ onClose, onPay, companyName }) {
     const e = {};
     if (!form.name.trim()) e.name = "Campo obrigatório";
     if (!form.email.includes("@")) e.email = "E-mail inválido";
+    if (!form.nif.trim() || form.nif.replace(/\s/g,"").length < 9) e.nif = "NIF inválido (9 dígitos)";
+    if (!form.morada.trim()) e.morada = "Campo obrigatório";
     if (payMethod === "mbway" && !/^9[1236]\d{7}$/.test(form.phone.replace(/\s/g, ""))) {
       e.phone = "Número MB WAY inválido (ex: 912345678)";
     }
@@ -326,7 +328,16 @@ function PaywallModal({ onClose, onPay, companyName }) {
 
     const { error: pmError, paymentMethod } = await stripe.createPaymentMethod({
       type: "card", card,
-      billing_details: { name: form.name, email: form.email },
+      billing_details: {
+        name: form.name,
+        email: form.email,
+        address: {
+          line1: form.morada,
+          postal_code: form.codigopostal,
+          city: form.localidade,
+          country: "PT",
+        },
+      },
     });
     if (pmError) { setStripeError(pmError.message); return; }
 
@@ -334,7 +345,19 @@ function PaywallModal({ onClose, onPay, companyName }) {
     try {
       const intentResp = await fetch(WORKER_URL, {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "create_payment", amount: selectedPlan.amount, currency: "eur", description: `${selectedPlan.label} — ${companyName}`, plan }),
+        body: JSON.stringify({
+          type: "create_payment",
+          amount: selectedPlan.amount,
+          currency: "eur",
+          description: `${selectedPlan.label} — ${companyName}`,
+          plan,
+          cliente_nome: form.name,
+          cliente_email: form.email,
+          cliente_nif: form.nif,
+          cliente_morada: form.morada,
+          cliente_codigopostal: form.codigopostal,
+          cliente_localidade: form.localidade,
+        }),
       });
       const intentData = await intentResp.json();
       if (intentData.error) throw new Error(intentData.error.message || "Erro ao criar pagamento");
@@ -366,6 +389,11 @@ function PaywallModal({ onClose, onPay, companyName }) {
           orderId,
           email: form.email,
           description: `${selectedPlan.label} — ${companyName}`,
+          cliente_nome: form.name,
+          cliente_nif: form.nif,
+          cliente_morada: form.morada,
+          cliente_codigopostal: form.codigopostal,
+          cliente_localidade: form.localidade,
         }),
       });
       const data = await resp.json();
@@ -518,9 +546,19 @@ function PaywallModal({ onClose, onPay, companyName }) {
 
             {/* Campos comuns */}
             <div style={{ display: "grid", gap: "14px", marginBottom: "20px" }}>
+
+              {/* Secção dados de faturação */}
+              <div style={{ fontSize: "11px", letterSpacing: "0.18em", textTransform: "uppercase", color: C.gold, fontFamily: F.body, borderBottom: `1px solid ${C.line}`, paddingBottom: "6px", marginBottom: "2px" }}>
+                Dados de Faturação
+              </div>
+
               {[
-                { key: "name", label: "Nome completo", placeholder: "João Silva", type: "text" },
-                { key: "email", label: "E-mail para recibo", placeholder: "joao@empresa.pt", type: "email" },
+                { key: "name",    label: "Nome / Empresa",    placeholder: "João Silva ou Empresa Lda.", type: "text" },
+                { key: "nif",     label: "NIF",               placeholder: "123456789",                  type: "text" },
+                { key: "morada",  label: "Morada",            placeholder: "Rua das Flores, 123",        type: "text" },
+                { key: "codigopostal", label: "Código Postal", placeholder: "4450-123",                  type: "text" },
+                { key: "localidade",   label: "Localidade",   placeholder: "Porto",                      type: "text" },
+                { key: "email",   label: "E-mail para recibo", placeholder: "joao@empresa.pt",           type: "email" },
               ].map(f => (
                 <div key={f.key}>
                   <label style={{ fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: C.steel, display: "block", marginBottom: "6px", fontFamily: F.body }}>{f.label}</label>
