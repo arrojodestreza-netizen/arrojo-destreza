@@ -1,1 +1,268 @@
+{
+  "lang": "en",
+  "langName": "English",
+
+  "nav": {
+    "services": "Services",
+    "methodology": "Methodology",
+    "contact": "Contact",
+    "startAnalysis": "Start Analysis"
+  },
+
+  "hero": {
+    "tag": "AI-Powered Financial Analysis",
+    "title1": "Precise and actionable",
+    "title2": "financial diagnosis",
+    "description": "Upload your company's financial documents — balance sheets and income statements — and receive in minutes a complete professional analysis with concrete improvement recommendations.",
+    "cta": "Analyse my company",
+    "ctaExample": "See report example",
+    "recommendationLabel": "Key Recommendation"
+  },
+
+  "how": {
+    "tag": "How It Works",
+    "title": "Three steps to a complete diagnosis",
+    "steps": [
+      {
+        "num": "01",
+        "title": "Upload your documents",
+        "desc": "Upload balance sheets and income statements in PDF format for 2 or more years. The process is secure and confidential."
+      },
+      {
+        "num": "02",
+        "title": "AI analyses everything",
+        "desc": "Our artificial intelligence reads and interprets all documents, calculating ratios, identifying trends and comparing periods."
+      },
+      {
+        "num": "03",
+        "title": "Access the full report",
+        "desc": "After payment confirmation, you immediately access the detailed report with indicators, critical points and an action plan."
+      }
+    ]
+  },
+
+  "pricing": {
+    "tag": "Pricing",
+    "title": "Single report per analysis",
+    "mostPopular": "MOST POPULAR",
+    "plans": [
+      {
+        "name": "Standard",
+        "price": "€79",
+        "features": [
+          "Complete AI report",
+          "Financial indicators",
+          "Strengths and weaknesses",
+          "Prioritised recommendations",
+          "PDF download"
+        ]
+      },
+      {
+        "name": "Premium",
+        "price": "€149",
+        "features": [
+          "Everything in Standard",
+          "Sector benchmarking",
+          "3-year projections",
+          "Detailed risk analysis",
+          "Email support 30 days"
+        ]
+      }
+    ],
+    "cta": "Get started →"
+  },
+
+  "footer": {
+    "tagline": "FINANCIAL CONSULTING",
+    "rights": "© 2025 Arrojo & Destreza Lda. · All rights reserved · Matosinhos, Portugal",
+    "legal": "Terms & Conditions · Privacy Policy"
+  },
+
+  "tool": {
+    "title": "Analyse your company",
+    "description": "Upload the financial documents below. The analysis is ready in seconds — and is unlocked after payment confirmation.",
+    "companyLabel": "Company Name",
+    "companyPlaceholder": "e.g. Smith & Associates Ltd.",
+    "addYear": "+ Add another year",
+    "removeYear": "Remove",
+    "analyzeBtn": "Analyse Company ✦",
+    "analyzingBtn": "Analysing…",
+    "disclaimer": "Upload at least 2 documents to start · Results are unlocked upon payment",
+    "uploadDrag": "Drag the PDF or click to select",
+    "uploadLoaded": "Uploaded",
+    "docTypes": {
+      "balance": "Balance Sheet",
+      "income": "Income Statement"
+    },
+    "status": {
+      "preparing": "Preparing documents…",
+      "processing": "Processing {{doc}} {{year}}…",
+      "analyzing": "Analysing with artificial intelligence…",
+      "structuring": "Structuring the report…",
+      "finishing": "Preparing report…",
+      "done": "Analysis complete"
+    }
+  },
+
+  "paywall": {
+    "tag": "Report Access",
+    "title": "Financial Analysis",
+    "choosePlan": "Choose your plan:",
+    "continueBtn": "Continue to Payment →",
+    "back": "← Back",
+    "payCard": "🔒 Pay {{price}} by Card",
+    "payMbway": "📱 Pay {{price}} by MB WAY",
+    "loading": "Loading…",
+    "security": "Secure payment · SSL encrypted · VAT included",
+    "unlockBtn": "View Full Report → from €79",
+    "unlockAccess": "Unlock Full Report",
+    "processing": "Processing payment…",
+    "processingWait": "Please wait",
+    "mbwayTitle": "Confirm in MB WAY",
+    "mbwayDesc": "A payment request of {{price}} has been sent to {{phone}}. Open the MB WAY app and confirm the payment.",
+    "mbwayWaiting": "Waiting for confirmation…",
+    "mbwayExpires": "The request expires in 4 minutes",
+    "mbwayCancel": "Cancel",
+    "successTitle": "Payment Confirmed",
+    "successSub": "Loading your analysis…",
+    "paywallTitle": "Full analysis",
+    "paywallSub": "available after payment",
+    "paywallDesc": "The summary and financial evolution are available for free. To access all ratios, detailed charts, SWOT analysis and recommendations, please confirm payment.",
+    "accessImmediate": "Immediate access · VAT included · Satisfaction guarantee",
+    "upgradeTitle": "Upgrade to",
+    "upgradePremium": "Premium",
+    "upgradeDesc": "The Standard plan includes Summary, Financial Evolution and Indicators. To access Detailed Analysis, SWOT, Recommendations and Conclusion, upgrade to Premium (€149).",
+    "upgradeBtn": "Upgrade to Premium → €149",
+    "deblocked": "Unlocked ✓",
+    "print": "⬇ Print / PDF",
+    "billing": "Billing Details",
+    "fields": {
+      "name": "Name / Company",
+      "namePlaceholder": "John Smith or Company Ltd.",
+      "nif": "VAT Number",
+      "nifPlaceholder": "123456789",
+      "morada": "Address",
+      "moradaPlaceholder": "123 High Street",
+      "cp": "Postal Code",
+      "cpPlaceholder": "SW1A 1AA",
+      "localidade": "City",
+      "localidadePlaceholder": "London",
+      "email": "E-mail for receipt",
+      "emailPlaceholder": "john@company.com",
+      "phone": "MB WAY Phone Number",
+      "phonePlaceholder": "912 345 678",
+      "card": "Card Details"
+    },
+    "errors": {
+      "name": "Required field",
+      "email": "Invalid e-mail",
+      "nif": "Invalid VAT number (9 digits)",
+      "morada": "Required field",
+      "phone": "Invalid MB WAY number (e.g. 912345678)"
+    },
+    "methods": {
+      "card": "💳 Card",
+      "mbway": "📱 MB WAY"
+    },
+    "planFeatures": {
+      "standard": [
+        "Complete AI report",
+        "Financial indicators",
+        "Strengths and weaknesses",
+        "Recommendations",
+        "PDF download"
+      ],
+      "premium": [
+        "Everything in Standard",
+        "Sector benchmarking",
+        "3-year projections",
+        "Detailed risk analysis",
+        "Email support 30 days"
+      ]
+    }
+  },
+
+  "report": {
+    "tag": "Financial Analysis Report",
+    "issued": "Issued on",
+    "exercise": "Financial Year",
+    "sections": {
+      "s01": "Executive Summary",
+      "s02": "Financial Evolution",
+      "s03": "Financial Indicators & Ratios",
+      "s04": "Detailed Analysis",
+      "s05": "Strengths, Weaknesses, Opportunities & Risks",
+      "s06": "Recommendations & Action Plan",
+      "s07": "Conclusion"
+    },
+    "kpis": {
+      "volume_negocios": "Revenue",
+      "resultado_liquido": "Net Profit",
+      "ebitda": "EBITDA",
+      "total_ativo": "Total Assets",
+      "capital_proprio": "Equity",
+      "divida_financeira": "Financial Debt",
+      "liquidez_geral": "Current Ratio",
+      "liquidez_reduzida": "Quick Ratio",
+      "autonomia_financeira": "Financial Autonomy",
+      "roe": "ROE",
+      "roa": "ROA",
+      "margem_liquida": "Net Margin",
+      "margem_ebitda": "EBITDA Margin",
+      "divida_ebitda": "Debt / EBITDA",
+      "pme": "Days Sales Outstanding",
+      "pmp": "Days Payable Outstanding"
+    },
+    "charts": {
+      "volume_negocios": "Revenue",
+      "resultado_liquido": "Net Profit",
+      "ebitda": "EBITDA",
+      "capital": "Capital Structure",
+      "liquidez": "Liquidity Ratios",
+      "rentabilidade": "Profitability",
+      "ciclo": "Operating Cycle (days)",
+      "autonomia": "Financial Autonomy"
+    },
+    "swot": {
+      "forcas": "Strengths",
+      "fraquezas": "Weaknesses",
+      "oportunidades": "Opportunities",
+      "riscos": "Risks / Threats"
+    },
+    "actions": {
+      "imediato": "Immediate",
+      "imediatoSub": "0 – 3 months",
+      "medio": "Medium Term",
+      "medioSub": "3 – 12 months",
+      "longo": "Long Term",
+      "longoSub": "1 – 3 years"
+    },
+    "analysis": {
+      "rentabilidade": "Profitability",
+      "liquidez_solvabilidade": "Liquidity & Solvency",
+      "estrutura_capital": "Capital Structure",
+      "eficiencia_operacional": "Operational Efficiency"
+    },
+    "ratings": {
+      "Excelente": "Excellent",
+      "Bom": "Good",
+      "Aceitável": "Acceptable",
+      "Preocupante": "Concerning",
+      "Crítico": "Critical"
+    },
+    "footer": "Report produced by Arrojo & Destreza — Financial Consulting",
+    "poweredBy": "Powered by Claude AI",
+    "activo": "Total Assets",
+    "capProprio": "Equity",
+    "divida": "Debt",
+    "ref": "Reference"
+  },
+
+  "aiPrompt": {
+    "role": "You are a senior financial analyst specialised in European companies.",
+    "instruction": "Analyse ALL financial documents provided for the company \"{{company}}\" (years: {{years}}).",
+    "language": "Respond in English.",
+    "sections": "Produce a complete and detailed financial analysis with the following sections:\n\n1. GLOBAL RATING (one word: Excellent, Good, Acceptable, Concerning or Critical)\n\n2. EXECUTIVE SUMMARY\nSummary text of 3-4 sentences. Then a list of 4-5 key highlights.\n\n3. FINANCIAL DATA (numerical values per year):\nRevenue, Net profit, EBITDA, Total assets, Equity, Financial debt, Working capital.\n\n4. INDICATORS & RATIOS (values per year):\nCurrent Ratio, Quick Ratio, Financial Autonomy (%), ROE (%), ROA (%), Net Margin (%), EBITDA Margin (%), Debt/EBITDA (x), DSO (days), DPO (days).\n\n5. DETAILED ANALYSIS\nFour paragraphs on: Profitability, Liquidity and Solvency, Capital Structure, Operational Efficiency.\n\n6. STRENGTHS & WEAKNESSES\nList of strengths, weaknesses, opportunities and risks.\n\n7. RECOMMENDATIONS\nImmediate actions (0-3 months), medium term (3-12 months), long term (1-3 years).\n\n8. CONCLUSION\nFinal paragraph with outlook.\n\nBe specific with numbers and year-on-year comparisons."
+  }
+}
 
