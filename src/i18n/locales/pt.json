@@ -1,1 +1,268 @@
+{
+  "lang": "pt",
+  "langName": "Português",
+
+  "nav": {
+    "services": "Serviços",
+    "methodology": "Metodologia",
+    "contact": "Contacto",
+    "startAnalysis": "Iniciar Análise"
+  },
+
+  "hero": {
+    "tag": "Análise Financeira com IA",
+    "title1": "Diagnóstico financeiro",
+    "title2": "preciso e accionável",
+    "description": "Carregue os documentos financeiros da sua empresa — balanços e demonstrações de resultados — e receba em minutos uma análise profissional completa com recomendações concretas de melhoria.",
+    "cta": "Analisar a minha empresa",
+    "ctaExample": "Ver exemplo de relatório",
+    "recommendationLabel": "Recomendação Principal"
+  },
+
+  "how": {
+    "tag": "Como Funciona",
+    "title": "Três passos para o diagnóstico completo",
+    "steps": [
+      {
+        "num": "01",
+        "title": "Carregue os documentos",
+        "desc": "Faça upload dos balanços e demonstrações de resultados em PDF de 2 ou mais anos. O processo é seguro e confidencial."
+      },
+      {
+        "num": "02",
+        "title": "A IA analisa tudo",
+        "desc": "A nossa inteligência artificial lê e interpreta todos os documentos, calculando rácios, identificando tendências e comparando períodos."
+      },
+      {
+        "num": "03",
+        "title": "Aceda ao relatório completo",
+        "desc": "Após confirmação do pagamento, acede imediatamente ao relatório detalhado com indicadores, pontos críticos e plano de acção."
+      }
+    ]
+  },
+
+  "pricing": {
+    "tag": "Preços",
+    "title": "Relatório único por análise",
+    "mostPopular": "MAIS POPULAR",
+    "plans": [
+      {
+        "name": "Standard",
+        "price": "79€",
+        "features": [
+          "Relatório IA completo",
+          "Indicadores financeiros",
+          "Pontos fortes e fracos",
+          "Recomendações prioritizadas",
+          "Download PDF"
+        ]
+      },
+      {
+        "name": "Premium",
+        "price": "149€",
+        "features": [
+          "Tudo da Standard",
+          "Benchmarking sectorial",
+          "Projecções a 3 anos",
+          "Análise de risco detalhada",
+          "Suporte e-mail 30 dias"
+        ]
+      }
+    ],
+    "cta": "Começar →"
+  },
+
+  "footer": {
+    "tagline": "CONSULTORIA FINANCEIRA",
+    "rights": "© 2025 Arrojo & Destreza Lda. · Todos os direitos reservados · Matosinhos, Portugal",
+    "legal": "Termos & Condições · Política de Privacidade"
+  },
+
+  "tool": {
+    "title": "Análise da sua empresa",
+    "description": "Carregue os documentos financeiros abaixo. A análise fica pronta em segundos — e é desbloqueada após confirmação de pagamento.",
+    "companyLabel": "Nome da Empresa",
+    "companyPlaceholder": "Ex: Silva & Associados, Lda.",
+    "addYear": "+ Adicionar ano adicional",
+    "removeYear": "Remover",
+    "analyzeBtn": "Analisar Empresa ✦",
+    "analyzingBtn": "A analisar…",
+    "disclaimer": "Carregue pelo menos 2 documentos para iniciar · O resultado é desbloqueado mediante pagamento",
+    "uploadDrag": "Arraste o PDF ou clique para seleccionar",
+    "uploadLoaded": "Carregado",
+    "docTypes": {
+      "balance": "Balanço",
+      "income": "Dem. Resultados"
+    },
+    "status": {
+      "preparing": "A preparar documentos…",
+      "processing": "A processar {{doc}} {{year}}…",
+      "analyzing": "A analisar com inteligência artificial…",
+      "structuring": "A estruturar o relatório…",
+      "finishing": "A preparar relatório…",
+      "done": "Análise concluída"
+    }
+  },
+
+  "paywall": {
+    "tag": "Acesso ao Relatório",
+    "title": "Análise Financeira",
+    "choosePlan": "Escolha o plano:",
+    "continueBtn": "Continuar para Pagamento →",
+    "back": "← Voltar",
+    "payCard": "🔒 Pagar {{price}} com Cartão",
+    "payMbway": "📱 Pagar {{price}} com MB WAY",
+    "loading": "A carregar…",
+    "security": "Pagamento seguro · SSL encriptado · IVA incluído",
+    "unlockBtn": "Ver Relatório Completo → a partir de 79€",
+    "unlockAccess": "Desbloquear Relatório Completo",
+    "processing": "A processar pagamento…",
+    "processingWait": "Por favor aguarde",
+    "mbwayTitle": "Confirme no MB WAY",
+    "mbwayDesc": "Foi enviado um pedido de pagamento de {{price}} para o número {{phone}}. Abra a app MB WAY e confirme o pagamento.",
+    "mbwayWaiting": "A aguardar confirmação…",
+    "mbwayExpires": "O pedido expira em 4 minutos",
+    "mbwayCancel": "Cancelar",
+    "successTitle": "Pagamento Confirmado",
+    "successSub": "A carregar a sua análise…",
+    "paywallTitle": "Análise completa",
+    "paywallSub": "disponível após pagamento",
+    "paywallDesc": "O sumário e a evolução financeira estão disponíveis gratuitamente. Para aceder a todos os rácios, gráficos detalhados, análise SWOT e plano de recomendações, confirme o pagamento.",
+    "accessImmediate": "Acesso imediato · IVA incluído · Garantia de satisfação",
+    "upgradeTitle": "Actualize para",
+    "upgradePremium": "Premium",
+    "upgradeDesc": "O plano Standard inclui Sumário, Evolução Financeira e Indicadores. Para aceder à Análise Detalhada, SWOT, Recomendações e Conclusão actualize para Premium (149€).",
+    "upgradeBtn": "Actualizar para Premium → 149€",
+    "deblocked": "Desbloqueado ✓",
+    "print": "⬇ Imprimir / PDF",
+    "billing": "Dados de Faturação",
+    "fields": {
+      "name": "Nome / Empresa",
+      "namePlaceholder": "João Silva ou Empresa Lda.",
+      "nif": "NIF",
+      "nifPlaceholder": "123456789",
+      "morada": "Morada",
+      "moradaPlaceholder": "Rua das Flores, 123",
+      "cp": "Código Postal",
+      "cpPlaceholder": "4450-123",
+      "localidade": "Localidade",
+      "localidadePlaceholder": "Porto",
+      "email": "E-mail para recibo",
+      "emailPlaceholder": "joao@empresa.pt",
+      "phone": "Número de Telemóvel MB WAY",
+      "phonePlaceholder": "912 345 678",
+      "card": "Dados do Cartão"
+    },
+    "errors": {
+      "name": "Campo obrigatório",
+      "email": "E-mail inválido",
+      "nif": "NIF inválido (9 dígitos)",
+      "morada": "Campo obrigatório",
+      "phone": "Número MB WAY inválido (ex: 912345678)"
+    },
+    "methods": {
+      "card": "💳 Cartão",
+      "mbway": "📱 MB WAY"
+    },
+    "planFeatures": {
+      "standard": [
+        "Relatório completo com IA",
+        "Indicadores financeiros",
+        "Pontos fortes e fracos",
+        "Recomendações",
+        "Download PDF"
+      ],
+      "premium": [
+        "Tudo da Standard",
+        "Benchmarking sectorial",
+        "Projecções a 3 anos",
+        "Análise de risco detalhada",
+        "Suporte por e-mail 30 dias"
+      ]
+    }
+  },
+
+  "report": {
+    "tag": "Relatório de Análise Financeira",
+    "issued": "Emitido em",
+    "exercise": "Exercício",
+    "sections": {
+      "s01": "Sumário Executivo",
+      "s02": "Evolução Financeira",
+      "s03": "Indicadores e Rácios Financeiros",
+      "s04": "Análise Detalhada",
+      "s05": "Pontos Fortes, Fracos, Oportunidades e Riscos",
+      "s06": "Recomendações e Plano de Acção",
+      "s07": "Conclusão"
+    },
+    "kpis": {
+      "volume_negocios": "Volume de Negócios",
+      "resultado_liquido": "Resultado Líquido",
+      "ebitda": "EBITDA",
+      "total_ativo": "Total do Activo",
+      "capital_proprio": "Capital Próprio",
+      "divida_financeira": "Dívida Financeira",
+      "liquidez_geral": "Liquidez Geral",
+      "liquidez_reduzida": "Liquidez Reduzida",
+      "autonomia_financeira": "Autonomia Financeira",
+      "roe": "ROE",
+      "roa": "ROA",
+      "margem_liquida": "Margem Líquida",
+      "margem_ebitda": "Margem EBITDA",
+      "divida_ebitda": "Dívida / EBITDA",
+      "pme": "Prazo Méd. Recebimentos",
+      "pmp": "Prazo Méd. Pagamentos"
+    },
+    "charts": {
+      "volume_negocios": "Volume de Negócios",
+      "resultado_liquido": "Resultado Líquido",
+      "ebitda": "EBITDA",
+      "capital": "Estrutura de Capital",
+      "liquidez": "Rácios de Liquidez",
+      "rentabilidade": "Rentabilidade",
+      "ciclo": "Ciclo de Exploração (dias)",
+      "autonomia": "Autonomia Financeira"
+    },
+    "swot": {
+      "forcas": "Forças",
+      "fraquezas": "Fraquezas",
+      "oportunidades": "Oportunidades",
+      "riscos": "Riscos / Ameaças"
+    },
+    "actions": {
+      "imediato": "Imediato",
+      "imediatoSub": "0 – 3 meses",
+      "medio": "Médio Prazo",
+      "medioSub": "3 – 12 meses",
+      "longo": "Longo Prazo",
+      "longoSub": "1 – 3 anos"
+    },
+    "analysis": {
+      "rentabilidade": "Rentabilidade",
+      "liquidez_solvabilidade": "Liquidez e Solvabilidade",
+      "estrutura_capital": "Estrutura de Capital",
+      "eficiencia_operacional": "Eficiência Operacional"
+    },
+    "ratings": {
+      "Excelente": "Excelente",
+      "Bom": "Bom",
+      "Aceitável": "Aceitável",
+      "Preocupante": "Preocupante",
+      "Crítico": "Crítico"
+    },
+    "footer": "Relatório produzido por Arrojo & Destreza — Consultoria Financeira",
+    "poweredBy": "Powered by Claude AI",
+    "activo": "Activo Total",
+    "capProprio": "Cap. Próprio",
+    "divida": "Dívida",
+    "ref": "Referência"
+  },
+
+  "aiPrompt": {
+    "role": "Você é um analista financeiro sénior especializado em empresas portuguesas/europeias.",
+    "instruction": "Analise TODOS os documentos financeiros fornecidos da empresa \"{{company}}\" (anos: {{years}}).",
+    "language": "Responda em português europeu (Portugal).",
+    "sections": "Produza uma análise financeira completa e detalhada com as seguintes secções:\n\n1. AVALIAÇÃO GLOBAL (uma palavra: Excelente, Bom, Aceitável, Preocupante ou Crítico)\n\n2. SUMÁRIO EXECUTIVO\nTexto de síntese de 3-4 frases. Depois lista de 4-5 destaques principais.\n\n3. DADOS FINANCEIROS (valores numéricos por ano):\nVolume de negócios, Resultado líquido, EBITDA, Total do activo, Capital próprio, Dívida financeira, Fundo de maneio.\n\n4. INDICADORES E RÁCIOS (valores por ano):\nLiquidez Geral, Liquidez Reduzida, Autonomia Financeira (%), ROE (%), ROA (%), Margem Líquida (%), Margem EBITDA (%), Dívida/EBITDA (x), PMR (dias), PMP (dias).\n\n5. ANÁLISE DETALHADA\nQuatro parágrafos sobre: Rentabilidade, Liquidez e Solvabilidade, Estrutura de Capital, Eficiência Operacional.\n\n6. PONTOS FORTES E FRACOS\nLista de forças, fraquezas, oportunidades e riscos.\n\n7. RECOMENDAÇÕES\nAcções imediatas (0-3 meses), médio prazo (3-12 meses), longo prazo (1-3 anos).\n\n8. CONCLUSÃO\nParágrafo final com perspectivas.\n\nSeja específico com números e comparações entre anos."
+  }
+}
 
