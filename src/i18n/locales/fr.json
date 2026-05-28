@@ -1,14 +1,12 @@
 {
   "lang": "fr",
   "langName": "Français",
-
   "nav": {
     "services": "Services",
     "methodology": "Méthodologie",
     "contact": "Contact",
     "startAnalysis": "Démarrer l'Analyse"
   },
-
   "hero": {
     "tag": "Analyse Financière par IA",
     "title1": "Diagnostic financier",
@@ -18,7 +16,6 @@
     "ctaExample": "Voir un exemple de rapport",
     "recommendationLabel": "Recommandation Principale"
   },
-
   "how": {
     "tag": "Comment Ça Marche",
     "title": "Trois étapes pour un diagnostic complet",
@@ -40,7 +37,6 @@
       }
     ]
   },
-
   "pricing": {
     "tag": "Tarifs",
     "title": "Rapport unique par analyse",
@@ -71,13 +67,11 @@
     ],
     "cta": "Commencer →"
   },
-
   "footer": {
     "tagline": "CONSEIL FINANCIER",
     "rights": "© 2025 Arrojo & Destreza Lda. · Tous droits réservés · Matosinhos, Portugal",
     "legal": "Conditions Générales · Politique de Confidentialité"
   },
-
   "tool": {
     "title": "Analysez votre entreprise",
     "description": "Chargez les documents financiers ci-dessous. L'analyse est prête en quelques secondes — et se débloque après confirmation du paiement.",
@@ -103,7 +97,6 @@
       "done": "Analyse terminée"
     }
   },
-
   "paywall": {
     "tag": "Accès au Rapport",
     "title": "Analyse Financière",
@@ -181,7 +174,6 @@
       ]
     }
   },
-
   "report": {
     "tag": "Rapport d'Analyse Financière",
     "issued": "Émis le",
@@ -257,12 +249,98 @@
     "divida": "Dette",
     "ref": "Référence"
   },
-
   "aiPrompt": {
     "role": "Vous êtes un analyste financier senior spécialisé dans les entreprises européennes.",
     "instruction": "Analysez TOUS les documents financiers fournis pour l'entreprise \"{{company}}\" (années : {{years}}).",
     "language": "Répondez en français.",
     "sections": "Produisez une analyse financière complète et détaillée avec les sections suivantes :\n\n1. ÉVALUATION GLOBALE (un mot : Excellent, Bon, Acceptable, Préoccupant ou Critique)\n\n2. RÉSUMÉ EXÉCUTIF\nTexte de synthèse de 3-4 phrases. Puis liste de 4-5 points forts principaux.\n\n3. DONNÉES FINANCIÈRES (valeurs numériques par année) :\nChiffre d'affaires, Résultat net, EBITDA, Total actif, Capitaux propres, Dette financière, Fonds de roulement.\n\n4. INDICATEURS ET RATIOS (valeurs par année) :\nRatio de liquidité, Liquidité réduite, Autonomie financière (%), ROE (%), ROA (%), Marge nette (%), Marge EBITDA (%), Dette/EBITDA (x), DMR (jours), DMP (jours).\n\n5. ANALYSE DÉTAILLÉE\nQuatre paragraphes sur : Rentabilité, Liquidité et Solvabilité, Structure du Capital, Efficacité Opérationnelle.\n\n6. FORCES ET FAIBLESSES\nListe des forces, faiblesses, opportunités et risques.\n\n7. RECOMMANDATIONS\nActions immédiates (0-3 mois), moyen terme (3-12 mois), long terme (1-3 ans).\n\n8. CONCLUSION\nParagraphe final avec perspectives.\n\nSoyez précis avec les chiffres et les comparaisons d'une année à l'autre."
+  },
+  "legal": {
+    "tcTitle": "Conditions Générales d'Utilisation",
+    "ppTitle": "Politique de Confidentialité",
+    "updated": "Dernière mise à jour : 28 mai 2025",
+    "backHome": "← Retour au site",
+    "tcTag": "Documents Légaux",
+    "ppTag": "RGPD · Protection des Données",
+    "tc": {
+      "s01": {
+        "title": "Identification du Prestataire",
+        "body": "Le service YourCFO, accessible sur yourcfo.app, est exploité par Arrojo & Destreza Lda., NIF 517 674 670, Rua do Matim, 130, 4450-736 Matosinhos, Portugal. E-mail : info@yourcfo.app"
+      },
+      "s02": {
+        "title": "Objet et Champ d'Application",
+        "body": "Les présentes CGU régissent l'accès et l'utilisation de la plateforme YourCFO, qui fournit des services d'analyse financière automatisée par intelligence artificielle. Le service est destiné exclusivement aux personnes morales et aux professionnels libéraux. L'utilisation de la plateforme implique l'acceptation entière des présentes CGU."
+      },
+      "s03": {
+        "title": "Description du Service",
+        "body": "La plateforme YourCFO permet de télécharger des documents financiers en PDF, d'obtenir une analyse financière automatisée par IA et d'accéder à un rapport avec indicateurs, ratios, analyse SWOT et recommandations. Formule Standard : 79€ (TVA incluse). Formule Premium : 149€ (TVA incluse). Le rapport est disponible immédiatement après confirmation du paiement."
+      },
+      "s04": {
+        "title": "Processus de Paiement",
+        "body": "Le paiement est traité par carte de crédit/débit (Stripe Payments Europe, Ltd.) ou MB WAY (ifthenpay, Lda.). Arrojo & Destreza Lda. ne stocke pas de données de carte. Une facture est émise après confirmation du paiement."
+      },
+      "s05": {
+        "title": "Politique de Remboursement",
+        "body": "Aucun remboursement n'est effectué après la livraison du rapport, le service étant fourni immédiatement et intégralement au moment du paiement, sauf erreur imputable à Arrojo & Destreza Lda. Réclamations : info@yourcfo.app dans les 48 heures."
+      },
+      "s06": {
+        "title": "Nature et Limites de l'Analyse",
+        "body": "Le rapport est à titre informatif et d'aide à la décision uniquement, et ne constitue pas un conseil financier, comptable, fiscal ou juridique. Arrojo & Destreza Lda. n'est pas responsable des décisions prises sur la base du rapport."
+      },
+      "s07": {
+        "title": "Propriété Intellectuelle",
+        "body": "Le rapport est à usage exclusif de l'utilisateur ayant effectué le paiement. Toute reproduction ou commercialisation sans autorisation expresse d'Arrojo & Destreza Lda. est interdite."
+      },
+      "s08": {
+        "title": "Responsabilité",
+        "body": "Arrojo & Destreza Lda. n'est pas responsable des dommages résultant de l'impossibilité d'utiliser la plateforme, d'inexactitudes dues à des documents incorrects, ou de décisions prises sur la base du rapport."
+      },
+      "s09": {
+        "title": "Droit Applicable",
+        "body": "Régi par le droit portugais. Tribunal de la comarca de Matosinhos. Résolution de litiges en ligne : ec.europa.eu/consumers/odr."
+      },
+      "s10": {
+        "title": "Modifications",
+        "body": "Arrojo & Destreza Lda. se réserve le droit de mettre à jour ces CGU à tout moment. Les modifications entrent en vigueur à la date de leur publication sur yourcfo.app."
+      }
+    },
+    "pp": {
+      "s01": {
+        "title": "Responsable du Traitement",
+        "body": "Arrojo & Destreza Lda., NIF 517 674 670, Rua do Matim, 130, 4450-736 Matosinhos, Portugal. E-mail : info@yourcfo.app"
+      },
+      "s02": {
+        "title": "Données Collectées",
+        "body": "Données de facturation : nom/entreprise, numéro de TVA, adresse, e-mail. Données d'utilisation : Google Analytics (navigation, IP anonymisée). Documents financiers : traités uniquement pour générer le rapport, non stockés en permanence."
+      },
+      "s03": {
+        "title": "Finalité et Base Légale",
+        "body": "Exécution du contrat de service (art. 6(1)(b) RGPD). Émission de facture — obligation légale (art. 6(1)(c) RGPD). Analyse statistique — intérêt légitime via Google Analytics (art. 6(1)(f) RGPD)."
+      },
+      "s04": {
+        "title": "Destinataires",
+        "body": "Stripe (paiements par carte), ifthenpay (MB WAY), weoInvoice (facturation), Google LLC (Drive et Analytics), Anthropic PBC (IA), Cloudflare Inc. (infrastructure). Nous ne vendons pas de données à des tiers à des fins commerciales."
+      },
+      "s05": {
+        "title": "Conservation des Données",
+        "body": "Données de facturation : 10 ans (obligation légale). Copies de rapports (Google Drive) : période nécessaire. Données de navigation (Analytics) : 26 mois."
+      },
+      "s06": {
+        "title": "Cookies",
+        "body": "Cookies nécessaires : fonctionnement technique (Stripe, Cloudflare). Cookies analytiques : Google Analytics — nécessitent consentement. Gérez vos préférences dans les paramètres du navigateur."
+      },
+      "s07": {
+        "title": "Vos Droits",
+        "body": "Droits d'accès, rectification, effacement, limitation, portabilité et opposition. Contactez info@yourcfo.app (réponse sous 30 jours). Réclamations auprès de l'autorité de contrôle."
+      },
+      "s08": {
+        "title": "Sécurité",
+        "body": "Transmission chiffrée HTTPS/TLS. Paiements traités par des entités certifiées PCI-DSS. Accès restreint aux données."
+      },
+      "s09": {
+        "title": "Contact",
+        "body": "info@yourcfo.app · Rua do Matim, 130, 4450-736 Matosinhos, Portugal. Nous garantissons une réponse dans les 30 jours ouvrables."
+      }
+    }
   }
 }
-
