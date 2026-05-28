@@ -61,6 +61,37 @@ async function saveToGoogleDrive(company, anos, parsed) {
   }
 }
 
+/* ─── NOTIFICAÇÃO DE FATURA APÓS PAGAMENTO ──────────────────
+   Envia email para info@yourcfo.app com dados prontos
+   a copiar para o weoInvoice.
+─────────────────────────────────────────────────────────── */
+async function notificarFatura(metodo, selectedPlan, form, company) {
+  try {
+    await fetch(GOOGLE_SCRIPT_URL, {
+      method:  "POST",
+      mode:    "no-cors",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify({
+        type:                  "fatura",
+        empresa:               company,
+        plano:                 selectedPlan.label,
+        valor:                 selectedPlan.price,
+        metodo:                metodo === "card" ? "Cartão" : "MB WAY",
+        cliente_nome:          form.name,
+        cliente_nif:           form.nif,
+        cliente_email:         form.email,
+        cliente_morada:        form.morada,
+        cliente_codigopostal:  form.codigopostal,
+        cliente_localidade:    form.localidade,
+        data:                  new Date().toLocaleDateString("pt-PT"),
+      }),
+    });
+    console.log("Notificação de fatura enviada");
+  } catch (err) {
+    console.warn("Notificação fatura falhou:", err.message);
+  }
+}
+
 /* ─── GLOBAL CSS ─────────────────────────────────────────── */
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
@@ -363,6 +394,7 @@ function PaywallModal({ onClose, onPay, companyName }) {
       const { error, paymentIntent } = await stripe.confirmCardPayment(intentData.client_secret, { payment_method: paymentMethod.id });
       if (error) throw new Error(error.message);
       if (paymentIntent.status === "succeeded") {
+        notificarFatura("card", selectedPlan, form, companyName);
         setStep("success");
         setTimeout(() => { onPay(plan); onClose(); }, 2500);
       }
@@ -414,6 +446,7 @@ function PaywallModal({ onClose, onPay, companyName }) {
           const checkData = await checkResp.json();
           if (checkData.paid) {
             clearInterval(pollRef.current);
+            notificarFatura("mbway", selectedPlan, form, companyName);
             setMbwayStatus("success");
             setStep("success");
             setTimeout(() => { onPay(plan); onClose(); }, 2500);
@@ -1151,7 +1184,7 @@ ESTRUTURA JSON:
           <div className="nav-links">
             <span onClick={() => document.getElementById("servicos")?.scrollIntoView({ behavior: "smooth" })} style={{ fontSize: "13px", color: C.steel, cursor: "pointer", letterSpacing: "0.05em", fontFamily: F.body }}>Serviços</span>
             <span onClick={() => document.getElementById("metodologia")?.scrollIntoView({ behavior: "smooth" })} style={{ fontSize: "13px", color: C.steel, cursor: "pointer", letterSpacing: "0.05em", fontFamily: F.body }}>Metodologia</span>
-            <a href="mailto:arrojo.destreza@gmail.com" style={{ fontSize: "13px", color: C.steel, cursor: "pointer", letterSpacing: "0.05em", fontFamily: F.body, textDecoration: "none" }}>Contacto</a>
+            <a href="mailto:info@yourcfo.app" style={{ fontSize: "13px", color: C.steel, cursor: "pointer", letterSpacing: "0.05em", fontFamily: F.body, textDecoration: "none" }}>Contacto</a>
             <button onClick={() => setPage("tool")} style={{ padding: "9px 22px", background: C.gold, border: "none", borderRadius: "4px", color: C.white, fontFamily: F.display, fontSize: "15px", cursor: "pointer", letterSpacing: "0.06em" }}>
               Iniciar Análise
             </button>
@@ -1170,7 +1203,7 @@ ESTRUTURA JSON:
         ].map(item => (
           <span key={item.label} onClick={item.action} style={{ fontSize: "20px", fontFamily: F.display, color: C.ink, cursor: "pointer", letterSpacing: "0.06em" }}>{item.label}</span>
         ))}
-        <a href="mailto:arrojo.destreza@gmail.com" style={{ fontSize: "20px", fontFamily: F.display, color: C.ink, textDecoration: "none" }}>Contacto</a>
+        <a href="mailto:info@yourcfo.app" style={{ fontSize: "20px", fontFamily: F.display, color: C.ink, textDecoration: "none" }}>Contacto</a>
         <button onClick={() => { setPage("tool"); setMobileMenu(false); }}
           style={{ padding: "14px 32px", background: C.gold, border: "none", borderRadius: "4px", color: C.white, fontFamily: F.display, fontSize: "18px", cursor: "pointer" }}>
           Iniciar Análise
@@ -1303,7 +1336,7 @@ ESTRUTURA JSON:
           Arrojo <span style={{ color: C.gold }}>&</span> Destreza
         </div>
         <div style={{ fontSize: "12px", letterSpacing: "0.15em", marginBottom: "16px" }}>CONSULTORIA FINANCEIRA</div>
-        <a href="mailto:arrojo.destreza@gmail.com" style={{ fontSize: "13px", color: C.gold, display: "block", marginBottom: "16px", textDecoration: "none", letterSpacing: "0.04em" }}>arrojo.destreza@gmail.com</a>
+        <a href="mailto:info@yourcfo.app" style={{ fontSize: "13px", color: C.gold, display: "block", marginBottom: "16px", textDecoration: "none", letterSpacing: "0.04em" }}>info@yourcfo.app</a>
         <div style={{ fontSize: "12px" }}>© 2025 Arrojo & Destreza · Todos os direitos reservados · Matosinhos, Portugal</div>
       </footer>
     </>
