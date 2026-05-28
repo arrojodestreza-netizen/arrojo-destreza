@@ -1,1 +1,268 @@
+{
+  "lang": "de",
+  "langName": "Deutsch",
+
+  "nav": {
+    "services": "Leistungen",
+    "methodology": "Methodik",
+    "contact": "Kontakt",
+    "startAnalysis": "Analyse starten"
+  },
+
+  "hero": {
+    "tag": "KI-gestützte Finanzanalyse",
+    "title1": "Präzise und umsetzbare",
+    "title2": "Finanzdiagnose",
+    "description": "Laden Sie die Finanzdokumente Ihres Unternehmens hoch — Bilanzen und Gewinn- und Verlustrechnungen — und erhalten Sie in wenigen Minuten eine vollständige professionelle Analyse mit konkreten Verbesserungsempfehlungen.",
+    "cta": "Mein Unternehmen analysieren",
+    "ctaExample": "Beispielbericht ansehen",
+    "recommendationLabel": "Hauptempfehlung"
+  },
+
+  "how": {
+    "tag": "So Funktioniert Es",
+    "title": "Drei Schritte zur vollständigen Diagnose",
+    "steps": [
+      {
+        "num": "01",
+        "title": "Dokumente hochladen",
+        "desc": "Laden Sie Bilanzen und Gewinn- und Verlustrechnungen als PDF für 2 oder mehr Jahre hoch. Der Vorgang ist sicher und vertraulich."
+      },
+      {
+        "num": "02",
+        "title": "KI analysiert alles",
+        "desc": "Unsere künstliche Intelligenz liest und interpretiert alle Dokumente, berechnet Kennzahlen, identifiziert Trends und vergleicht Perioden."
+      },
+      {
+        "num": "03",
+        "title": "Zugang zum vollständigen Bericht",
+        "desc": "Nach Zahlungsbestätigung erhalten Sie sofort Zugang zum detaillierten Bericht mit Indikatoren, kritischen Punkten und Aktionsplan."
+      }
+    ]
+  },
+
+  "pricing": {
+    "tag": "Preise",
+    "title": "Einmaliger Bericht pro Analyse",
+    "mostPopular": "AM BELIEBTESTEN",
+    "plans": [
+      {
+        "name": "Standard",
+        "price": "79€",
+        "features": [
+          "Vollständiger KI-Bericht",
+          "Finanzkennzahlen",
+          "Stärken und Schwächen",
+          "Priorisierte Empfehlungen",
+          "PDF-Download"
+        ]
+      },
+      {
+        "name": "Premium",
+        "price": "149€",
+        "features": [
+          "Alles aus Standard",
+          "Branchen-Benchmarking",
+          "3-Jahres-Prognosen",
+          "Detaillierte Risikoanalyse",
+          "E-Mail-Support 30 Tage"
+        ]
+      }
+    ],
+    "cta": "Jetzt starten →"
+  },
+
+  "footer": {
+    "tagline": "FINANZBERATUNG",
+    "rights": "© 2025 Arrojo & Destreza Lda. · Alle Rechte vorbehalten · Matosinhos, Portugal",
+    "legal": "AGB & Datenschutzerklärung"
+  },
+
+  "tool": {
+    "title": "Analysieren Sie Ihr Unternehmen",
+    "description": "Laden Sie die Finanzdokumente unten hoch. Die Analyse ist in Sekunden fertig — und wird nach Zahlungsbestätigung freigeschaltet.",
+    "companyLabel": "Unternehmensname",
+    "companyPlaceholder": "z.B. Müller & Partner GmbH",
+    "addYear": "+ Weiteres Jahr hinzufügen",
+    "removeYear": "Entfernen",
+    "analyzeBtn": "Unternehmen analysieren ✦",
+    "analyzingBtn": "Analyse läuft…",
+    "disclaimer": "Laden Sie mindestens 2 Dokumente hoch · Ergebnisse werden nach Zahlung freigeschaltet",
+    "uploadDrag": "PDF hierher ziehen oder zum Auswählen klicken",
+    "uploadLoaded": "Hochgeladen",
+    "docTypes": {
+      "balance": "Bilanz",
+      "income": "GuV"
+    },
+    "status": {
+      "preparing": "Dokumente werden vorbereitet…",
+      "processing": "{{doc}} {{year}} wird verarbeitet…",
+      "analyzing": "Analyse mit künstlicher Intelligenz…",
+      "structuring": "Bericht wird strukturiert…",
+      "finishing": "Bericht wird vorbereitet…",
+      "done": "Analyse abgeschlossen"
+    }
+  },
+
+  "paywall": {
+    "tag": "Berichtszugang",
+    "title": "Finanzanalyse",
+    "choosePlan": "Wählen Sie Ihren Plan:",
+    "continueBtn": "Weiter zur Zahlung →",
+    "back": "← Zurück",
+    "payCard": "🔒 {{price}} per Karte bezahlen",
+    "payMbway": "📱 {{price}} per MB WAY bezahlen",
+    "loading": "Wird geladen…",
+    "security": "Sichere Zahlung · SSL-verschlüsselt · MwSt. enthalten",
+    "unlockBtn": "Vollständigen Bericht ansehen → ab 79€",
+    "unlockAccess": "Vollständigen Bericht freischalten",
+    "processing": "Zahlung wird verarbeitet…",
+    "processingWait": "Bitte warten",
+    "mbwayTitle": "In MB WAY bestätigen",
+    "mbwayDesc": "Eine Zahlungsanforderung über {{price}} wurde an die Nummer {{phone}} gesendet. Öffnen Sie die MB WAY-App und bestätigen Sie die Zahlung.",
+    "mbwayWaiting": "Warte auf Bestätigung…",
+    "mbwayExpires": "Die Anfrage läuft in 4 Minuten ab",
+    "mbwayCancel": "Abbrechen",
+    "successTitle": "Zahlung bestätigt",
+    "successSub": "Ihre Analyse wird geladen…",
+    "paywallTitle": "Vollständige Analyse",
+    "paywallSub": "nach Zahlung verfügbar",
+    "paywallDesc": "Die Zusammenfassung und die finanzielle Entwicklung sind kostenlos verfügbar. Um auf alle Kennzahlen, detaillierte Diagramme, SWOT-Analyse und Empfehlungen zuzugreifen, bestätigen Sie bitte die Zahlung.",
+    "accessImmediate": "Sofortiger Zugang · MwSt. enthalten · Zufriedenheitsgarantie",
+    "upgradeTitle": "Upgraden auf",
+    "upgradePremium": "Premium",
+    "upgradeDesc": "Der Standard-Plan umfasst Zusammenfassung, Finanzentwicklung und Indikatoren. Für Detaillierte Analyse, SWOT, Empfehlungen und Fazit upgraden Sie auf Premium (149€).",
+    "upgradeBtn": "Auf Premium upgraden → 149€",
+    "deblocked": "Freigeschaltet ✓",
+    "print": "⬇ Drucken / PDF",
+    "billing": "Rechnungsdaten",
+    "fields": {
+      "name": "Name / Unternehmen",
+      "namePlaceholder": "Hans Müller oder Firma GmbH",
+      "nif": "USt-IdNr.",
+      "nifPlaceholder": "DE123456789",
+      "morada": "Adresse",
+      "moradaPlaceholder": "Musterstraße 123",
+      "cp": "Postleitzahl",
+      "cpPlaceholder": "10115",
+      "localidade": "Stadt",
+      "localidadePlaceholder": "Berlin",
+      "email": "E-Mail für Quittung",
+      "emailPlaceholder": "hans@unternehmen.de",
+      "phone": "MB WAY Telefonnummer",
+      "phonePlaceholder": "912 345 678",
+      "card": "Kartendaten"
+    },
+    "errors": {
+      "name": "Pflichtfeld",
+      "email": "Ungültige E-Mail",
+      "nif": "Ungültige USt-IdNr. (9 Stellen)",
+      "morada": "Pflichtfeld",
+      "phone": "Ungültige MB WAY Nummer (z.B. 912345678)"
+    },
+    "methods": {
+      "card": "💳 Karte",
+      "mbway": "📱 MB WAY"
+    },
+    "planFeatures": {
+      "standard": [
+        "Vollständiger KI-Bericht",
+        "Finanzkennzahlen",
+        "Stärken und Schwächen",
+        "Empfehlungen",
+        "PDF-Download"
+      ],
+      "premium": [
+        "Alles aus Standard",
+        "Branchen-Benchmarking",
+        "3-Jahres-Prognosen",
+        "Detaillierte Risikoanalyse",
+        "E-Mail-Support 30 Tage"
+      ]
+    }
+  },
+
+  "report": {
+    "tag": "Finanzbericht",
+    "issued": "Ausgestellt am",
+    "exercise": "Geschäftsjahr",
+    "sections": {
+      "s01": "Managementzusammenfassung",
+      "s02": "Finanzentwicklung",
+      "s03": "Finanzkennzahlen",
+      "s04": "Detaillierte Analyse",
+      "s05": "Stärken, Schwächen, Chancen und Risiken",
+      "s06": "Empfehlungen und Aktionsplan",
+      "s07": "Fazit"
+    },
+    "kpis": {
+      "volume_negocios": "Umsatz",
+      "resultado_liquido": "Jahresüberschuss",
+      "ebitda": "EBITDA",
+      "total_ativo": "Bilanzsumme",
+      "capital_proprio": "Eigenkapital",
+      "divida_financeira": "Finanzschulden",
+      "liquidez_geral": "Liquiditätsgrad",
+      "liquidez_reduzida": "Quick Ratio",
+      "autonomia_financeira": "Eigenkapitalquote",
+      "roe": "ROE",
+      "roa": "ROA",
+      "margem_liquida": "Nettomarge",
+      "margem_ebitda": "EBITDA-Marge",
+      "divida_ebitda": "Schulden / EBITDA",
+      "pme": "Forderungslaufzeit",
+      "pmp": "Verbindlichkeitslaufzeit"
+    },
+    "charts": {
+      "volume_negocios": "Umsatz",
+      "resultado_liquido": "Jahresüberschuss",
+      "ebitda": "EBITDA",
+      "capital": "Kapitalstruktur",
+      "liquidez": "Liquiditätskennzahlen",
+      "rentabilidade": "Rentabilität",
+      "ciclo": "Betriebszyklus (Tage)",
+      "autonomia": "Eigenkapitalquote"
+    },
+    "swot": {
+      "forcas": "Stärken",
+      "fraquezas": "Schwächen",
+      "oportunidades": "Chancen",
+      "riscos": "Risiken / Bedrohungen"
+    },
+    "actions": {
+      "imediato": "Sofort",
+      "imediatoSub": "0 – 3 Monate",
+      "medio": "Mittelfristig",
+      "medioSub": "3 – 12 Monate",
+      "longo": "Langfristig",
+      "longoSub": "1 – 3 Jahre"
+    },
+    "analysis": {
+      "rentabilidade": "Rentabilität",
+      "liquidez_solvabilidade": "Liquidität und Solvenz",
+      "estrutura_capital": "Kapitalstruktur",
+      "eficiencia_operacional": "Betriebliche Effizienz"
+    },
+    "ratings": {
+      "Excelente": "Ausgezeichnet",
+      "Bom": "Gut",
+      "Aceitável": "Akzeptabel",
+      "Preocupante": "Besorgniserregend",
+      "Crítico": "Kritisch"
+    },
+    "footer": "Bericht erstellt von Arrojo & Destreza — Finanzberatung",
+    "poweredBy": "Powered by Claude AI",
+    "activo": "Bilanzsumme",
+    "capProprio": "Eigenkapital",
+    "divida": "Schulden",
+    "ref": "Referenz"
+  },
+
+  "aiPrompt": {
+    "role": "Sie sind ein erfahrener Finanzanalyst, spezialisiert auf europäische Unternehmen.",
+    "instruction": "Analysieren Sie ALLE bereitgestellten Finanzdokumente des Unternehmens \"{{company}}\" (Jahre: {{years}}).",
+    "language": "Antworten Sie auf Deutsch.",
+    "sections": "Erstellen Sie eine vollständige und detaillierte Finanzanalyse mit den folgenden Abschnitten:\n\n1. GESAMTBEWERTUNG (ein Wort: Ausgezeichnet, Gut, Akzeptabel, Besorgniserregend oder Kritisch)\n\n2. MANAGEMENTZUSAMMENFASSUNG\nZusammenfassungstext mit 3-4 Sätzen. Dann Liste mit 4-5 wichtigsten Highlights.\n\n3. FINANZDATEN (numerische Werte pro Jahr):\nUmsatz, Jahresüberschuss, EBITDA, Bilanzsumme, Eigenkapital, Finanzschulden, Betriebskapital.\n\n4. KENNZAHLEN (Werte pro Jahr):\nLiquiditätsgrad, Quick Ratio, Eigenkapitalquote (%), ROE (%), ROA (%), Nettomarge (%), EBITDA-Marge (%), Schulden/EBITDA (x), Forderungslaufzeit (Tage), Verbindlichkeitslaufzeit (Tage).\n\n5. DETAILLIERTE ANALYSE\nVier Absätze über: Rentabilität, Liquidität und Solvenz, Kapitalstruktur, Betriebliche Effizienz.\n\n6. STÄRKEN UND SCHWÄCHEN\nListe der Stärken, Schwächen, Chancen und Risiken.\n\n7. EMPFEHLUNGEN\nSofortmaßnahmen (0-3 Monate), mittelfristig (3-12 Monate), langfristig (1-3 Jahre).\n\n8. FAZIT\nAbschließender Absatz mit Ausblick.\n\nSeien Sie präzise mit Zahlen und Jahresvergleichen."
+  }
+}
 
