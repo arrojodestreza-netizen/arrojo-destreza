@@ -1336,7 +1336,11 @@ ESTRUTURA JSON:
           <button onClick={() => setPage("home")} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px" }}>
             <span style={{ color: C.fog, fontSize: "13px" }}>←</span>
             <div>
-              <div style={{ fontFamily: F.display, fontSize: "18px", letterSpacing: "0.04em" }}>Arrojo <span style={{ color: C.gold }}>&</span> Destreza</div>
+<button onClick={() => { setPage("home"); setResult(null); setRawResult(null); setFiles({}); setCompany(""); setPaid(false); setPaidPlan("standard"); setError(null); }}
+  style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px" }}>
+  <span style={{ color: C.fog, fontSize: "13px" }}>←</span>
+  <div style={{ fontFamily: F.display, fontSize: "18px" }}>Arrojo <span style={{ color: C.gold }}>&</span> Destreza</div>
+</button>              
             </div>
           </button>
           <Tag>Análise Financeira</Tag>
