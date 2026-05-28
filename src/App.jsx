@@ -49,7 +49,6 @@ async function saveToGoogleDrive(company, anos, parsed) {
       conclusao:     R.conclusao || "",
     };
 
-    // Envia via Cloudflare Worker (sem CORS) para o Google Apps Script
     await fetch(GOOGLE_SCRIPT_URL, {
       method:  "POST",
       mode:    "no-cors",
@@ -258,14 +257,14 @@ async function loadStripe() {
 
 /* ─── PAYWALL MODAL ──────────────────────────────────────── */
 function PaywallModal({ onClose, onPay, companyName }) {
-  const [step, setStep] = useState("choose");   // choose | checkout | mbway | processing | success | error
+  const [step, setStep] = useState("choose");
   const [plan, setPlan] = useState("standard");
-  const [payMethod, setPayMethod] = useState("card"); // card | mbway
+  const [payMethod, setPayMethod] = useState("card");
   const [form, setForm] = useState({ name: "", email: "", phone: "", nif: "", morada: "", localidade: "", codigopostal: "" });
   const [errors, setErrors] = useState({});
   const [stripeError, setStripeError] = useState("");
   const [cardReady, setCardReady] = useState(false);
-  const [mbwayStatus, setMbwayStatus] = useState(""); // waiting | success | error
+  const [mbwayStatus, setMbwayStatus] = useState("");
   const [mbwayOrderId, setMbwayOrderId] = useState("");
   const stripeRef = useRef(null);
   const cardRef = useRef(null);
@@ -304,7 +303,6 @@ function PaywallModal({ onClose, onPay, companyName }) {
     return () => { mounted = false; };
   }, [step, payMethod]);
 
-  // Limpar polling ao fechar
   useEffect(() => () => { if (pollRef.current) clearInterval(pollRef.current); }, []);
 
   const validate = () => {
@@ -404,7 +402,6 @@ function PaywallModal({ onClose, onPay, companyName }) {
       setStep("mbway");
       setMbwayStatus("waiting");
 
-      // Polling para verificar pagamento (a cada 5 segundos, máx 4 minutos)
       let attempts = 0;
       pollRef.current = setInterval(async () => {
         attempts++;
@@ -522,7 +519,6 @@ function PaywallModal({ onClose, onPay, companyName }) {
           <div style={{ padding: "24px 32px" }}>
             <button onClick={() => setStep("choose")} style={{ background: "none", border: "none", color: C.fog, cursor: "pointer", fontSize: "13px", marginBottom: "20px", display: "flex", alignItems: "center", gap: "6px" }}>← Voltar</button>
 
-            {/* Resumo */}
             <div style={{ background: "#FBF7EF", border: `1px solid ${C.line}`, borderRadius: "6px", padding: "14px 16px", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div>
                 <div style={{ fontSize: "13px", fontFamily: F.display }}>{selectedPlan?.label}</div>
@@ -531,7 +527,6 @@ function PaywallModal({ onClose, onPay, companyName }) {
               <div style={{ fontFamily: F.display, fontSize: "22px", color: C.gold }}>{selectedPlan?.price}</div>
             </div>
 
-            {/* Método de pagamento */}
             <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
               {[
                 { id: "card", label: "💳 Cartão" },
@@ -544,21 +539,18 @@ function PaywallModal({ onClose, onPay, companyName }) {
               ))}
             </div>
 
-            {/* Campos comuns */}
             <div style={{ display: "grid", gap: "14px", marginBottom: "20px" }}>
-
-              {/* Secção dados de faturação */}
               <div style={{ fontSize: "11px", letterSpacing: "0.18em", textTransform: "uppercase", color: C.gold, fontFamily: F.body, borderBottom: `1px solid ${C.line}`, paddingBottom: "6px", marginBottom: "2px" }}>
                 Dados de Faturação
               </div>
 
               {[
-                { key: "name",    label: "Nome / Empresa",    placeholder: "João Silva ou Empresa Lda.", type: "text" },
-                { key: "nif",     label: "NIF",               placeholder: "123456789",                  type: "text" },
-                { key: "morada",  label: "Morada",            placeholder: "Rua das Flores, 123",        type: "text" },
-                { key: "codigopostal", label: "Código Postal", placeholder: "4450-123",                  type: "text" },
-                { key: "localidade",   label: "Localidade",   placeholder: "Porto",                      type: "text" },
-                { key: "email",   label: "E-mail para recibo", placeholder: "joao@empresa.pt",           type: "email" },
+                { key: "name",         label: "Nome / Empresa",     placeholder: "João Silva ou Empresa Lda.", type: "text" },
+                { key: "nif",          label: "NIF",                placeholder: "123456789",                  type: "text" },
+                { key: "morada",       label: "Morada",             placeholder: "Rua das Flores, 123",        type: "text" },
+                { key: "codigopostal", label: "Código Postal",      placeholder: "4450-123",                   type: "text" },
+                { key: "localidade",   label: "Localidade",         placeholder: "Porto",                      type: "text" },
+                { key: "email",        label: "E-mail para recibo", placeholder: "joao@empresa.pt",            type: "email" },
               ].map(f => (
                 <div key={f.key}>
                   <label style={{ fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: C.steel, display: "block", marginBottom: "6px", fontFamily: F.body }}>{f.label}</label>
@@ -569,7 +561,6 @@ function PaywallModal({ onClose, onPay, companyName }) {
                 </div>
               ))}
 
-              {/* Campo cartão */}
               {payMethod === "card" && (
                 <div>
                   <label style={{ fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: C.steel, display: "block", marginBottom: "6px", fontFamily: F.body }}>Dados do Cartão</label>
@@ -578,7 +569,6 @@ function PaywallModal({ onClose, onPay, companyName }) {
                 </div>
               )}
 
-              {/* Campo MB WAY */}
               {payMethod === "mbway" && (
                 <div>
                   <label style={{ fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: C.steel, display: "block", marginBottom: "6px", fontFamily: F.body }}>Número de Telemóvel MB WAY</label>
@@ -607,7 +597,7 @@ function PaywallModal({ onClose, onPay, companyName }) {
   );
 }
 
-/* ─── CHART COMPONENTS (using SVG — no external deps needed) ── */
+/* ─── CHART COMPONENTS ───────────────────────────────────── */
 const CHART_COLORS = ["#B8923A", "#3A4550", "#6B8A4E", "#8A5A2A", "#2A5A8A", "#8A2A5A"];
 
 function BarChart({ data, height = 200, yLabel = "", formatVal = v => v }) {
@@ -631,7 +621,6 @@ function BarChart({ data, height = 200, yLabel = "", formatVal = v => v }) {
   return (
     <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }}>
       <g transform={`translate(${PAD.l},${PAD.t})`}>
-        {/* Grid lines */}
         {[0, 0.25, 0.5, 0.75, 1].map((f, i) => {
           const y = hasNeg ? chartH * f : chartH * (1 - f);
           const val = hasNeg ? maxV * (1 - f * 2) : maxV * f;
@@ -644,9 +633,7 @@ function BarChart({ data, height = 200, yLabel = "", formatVal = v => v }) {
             </g>
           );
         })}
-        {/* Zero line */}
         {hasNeg && <line x1={0} y1={zeroY} x2={chartW} y2={zeroY} stroke={C.steel} strokeWidth="1.5" />}
-        {/* Bars */}
         {data.map((d, i) => {
           const x = gap * i + gap / 2 - barW / 2;
           const v = typeof d.value === "number" && isFinite(d.value) ? d.value : 0;
@@ -666,7 +653,6 @@ function BarChart({ data, height = 200, yLabel = "", formatVal = v => v }) {
             </g>
           );
         })}
-        {/* Axes */}
         <line x1={0} y1={0} x2={0} y2={chartH} stroke={C.line} strokeWidth="1.5" />
         <line x1={0} y1={chartH} x2={chartW} y2={chartH} stroke={C.line} strokeWidth="1.5" />
         {yLabel && <text x={-36} y={chartH / 2} textAnchor="middle" fontSize="9" fill={C.fog} fontFamily="Georgia, serif" transform={`rotate(-90,-36,${chartH/2})`}>{yLabel}</text>}
@@ -908,11 +894,11 @@ function ActionPlan({ actions }) {
 /* ─── RATING BADGE ───────────────────────────────────────── */
 function RatingBadge({ rating }) {
   const map = {
-    "Excelente": { color: "#2A5C2A", bg: "#E8F4E8", icon: "◆◆◆◆◆" },
-    "Bom":       { color: "#3A6A3A", bg: "#EEF6EE", icon: "◆◆◆◆◇" },
-    "Aceitável": { color: "#7A6A20", bg: "#FAF4E0", icon: "◆◆◆◇◇" },
+    "Excelente":   { color: "#2A5C2A", bg: "#E8F4E8", icon: "◆◆◆◆◆" },
+    "Bom":         { color: "#3A6A3A", bg: "#EEF6EE", icon: "◆◆◆◆◇" },
+    "Aceitável":   { color: "#7A6A20", bg: "#FAF4E0", icon: "◆◆◆◇◇" },
     "Preocupante": { color: "#8A5020", bg: "#FAF0E8", icon: "◆◆◇◇◇" },
-    "Crítico":   { color: "#8B2020", bg: "#FAE8E8", icon: "◆◇◇◇◇" },
+    "Crítico":     { color: "#8B2020", bg: "#FAE8E8", icon: "◆◇◇◇◇" },
   };
   const r = map[rating] || map["Aceitável"];
   return (
@@ -931,34 +917,23 @@ const DOC_TYPES = [
 
 function parseAnalysis(raw) {
   if (!raw) return { _fallback: raw };
-
-  // Remover TODOS os backticks e variações antes de tentar o parse
   let text = raw
-    .replace(/`{3,}\s*json\s*/gi, "")  // ```json, ``` json, ````json etc
-    .replace(/`{3,}\s*/g, "")           // ``` restantes
+    .replace(/`{3,}\s*json\s*/gi, "")
+    .replace(/`{3,}\s*/g, "")
     .trim();
-
-  // Tentar parse directo
-  try {
-    return JSON.parse(text);
-  } catch(e) {}
-
-  // Encontrar o maior bloco JSON válido entre { }
+  try { return JSON.parse(text); } catch(e) {}
   const start = text.indexOf("{");
   const end = text.lastIndexOf("}");
   if (start !== -1 && end !== -1 && end > start) {
-    try {
-      return JSON.parse(text.slice(start, end + 1));
-    } catch(e) {
+    try { return JSON.parse(text.slice(start, end + 1)); } catch(e) {
       console.warn("JSON parse failed:", e.message);
     }
   }
-
   return { _fallback: raw };
 }
 
 export default function App() {
-  const [page, setPage] = useState("home"); // home | tool | result
+  const [page, setPage] = useState("home");
   const [mobileMenu, setMobileMenu] = useState(false);
   const [company, setCompany] = useState("");
   const [years, setYears] = useState(["2022", "2023"]);
@@ -975,6 +950,18 @@ export default function App() {
 
   const uploaded = Object.keys(files).length;
   const canAnalyze = company.trim().length > 0 && uploaded >= 2;
+
+  /* ── helper: reset completo para a home ── */
+  const goHome = () => {
+    setPage("home");
+    setResult(null);
+    setRawResult(null);
+    setFiles({});
+    setCompany("");
+    setPaid(false);
+    setPaidPlan("standard");
+    setError(null);
+  };
 
   const setFile = (yr, dt, f) => setFiles(p => ({ ...p, [`${yr}_${dt}`]: f }));
   const removeFile = (yr, dt) => setFiles(p => { const n = { ...p }; delete n[`${yr}_${dt}`]; return n; });
@@ -1036,7 +1023,6 @@ Use português europeu. Seja específico com números e comparações entre anos
 
       setProgress(60);
 
-      // PASSO 1: Análise em texto livre
       const res1 = await fetch(WORKER_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1055,7 +1041,6 @@ Use português europeu. Seja específico com números e comparações entre anos
 
       setProgress(75); setStatusMsg("A estruturar o relatório…");
 
-      // PASSO 2: Converter análise para JSON estruturado
       const yearsFiltered = years.filter(yr => Object.keys(files).some(k => k.startsWith(yr)));
       const res2 = await fetch(WORKER_URL, {
         method: "POST",
@@ -1141,7 +1126,6 @@ ESTRUTURA JSON:
       setResult(parsed);
       setProgress(100); setStatusMsg("Análise concluída");
 
-      // Guarda cópia no Google Drive da Arrojo & Destreza (antes do pagamento)
       saveToGoogleDrive(company, years, parsed);
 
       setPage("result");
@@ -1250,7 +1234,7 @@ ESTRUTURA JSON:
           </div>
           <div style={{ position: "absolute", top: "-12px", right: "-12px", width: "60px", height: "60px", background: C.gold, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px" }}>✦</div>
         </div>
-        </div>{/* end hero-grid */}
+        </div>
       </section>
 
       <Divider style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 6vw" }} />
@@ -1330,18 +1314,12 @@ ESTRUTURA JSON:
     <>
       <style>{GLOBAL_CSS}</style>
 
-      {/* NAV */}
+      {/* NAV — CORRIGIDO: botão simples, sem aninhamento */}
       <nav style={{ position: "sticky", top: 0, zIndex: 100, background: "rgba(245,240,232,0.92)", backdropFilter: "blur(12px)", borderBottom: `1px solid ${C.line}`, padding: "0 6vw" }}>
         <div style={{ maxWidth: "900px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: "64px" }}>
           <button onClick={() => setPage("home")} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px" }}>
             <span style={{ color: C.fog, fontSize: "13px" }}>←</span>
-            <div>
-<button onClick={() => { setPage("home"); setResult(null); setRawResult(null); setFiles({}); setCompany(""); setPaid(false); setPaidPlan("standard"); setError(null); }}
-  style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px" }}>
-  <span style={{ color: C.fog, fontSize: "13px" }}>←</span>
-  <div style={{ fontFamily: F.display, fontSize: "18px" }}>Arrojo <span style={{ color: C.gold }}>&</span> Destreza</div>
-</button>              
-            </div>
+            <div style={{ fontFamily: F.display, fontSize: "18px", letterSpacing: "0.04em" }}>Arrojo <span style={{ color: C.gold }}>&</span> Destreza</div>
           </button>
           <Tag>Análise Financeira</Tag>
         </div>
@@ -1416,7 +1394,6 @@ ESTRUTURA JSON:
     const fin = R.financeiros || {};
     const ind = R.indicadores || {};
 
-    // Build chart data helpers
     const toBarData = (obj) => anos.map(y => ({ label: y, value: obj?.[y] ?? null })).filter(d => d.value !== null);
     const toLineData = (obj) => anos.map(y => ({ label: y, value: obj?.[y] ?? null })).filter(d => d.value !== null);
     const fmtEur = v => v == null ? "—" : v >= 1e6 ? `${(v/1e6).toFixed(2)}M€` : v >= 1e3 ? `${(v/1e3).toFixed(0)}K€` : `${v}€`;
@@ -1435,10 +1412,13 @@ ESTRUTURA JSON:
         }
       `}</style>
 
-      {/* NAV */}
+      {/* NAV — CORRIGIDO: logo clicável que volta ao início e limpa estado */}
       <nav className="no-print" style={{ position: "sticky", top: 0, zIndex: 100, background: "rgba(245,240,232,0.96)", backdropFilter: "blur(12px)", borderBottom: `1px solid ${C.line}`, padding: "0 6vw" }}>
         <div style={{ maxWidth: "960px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: "64px" }}>
-          <div style={{ fontFamily: F.display, fontSize: "18px" }}>Arrojo <span style={{ color: C.gold }}>&</span> Destreza</div>
+          <button onClick={goHome} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px" }}>
+            <span style={{ color: C.fog, fontSize: "13px" }}>←</span>
+            <div style={{ fontFamily: F.display, fontSize: "18px" }}>Arrojo <span style={{ color: C.gold }}>&</span> Destreza</div>
+          </button>
           <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
             {!paid && (
               <button onClick={() => setShowPaywall(true)}
@@ -1476,7 +1456,6 @@ ESTRUTURA JSON:
             {R.avaliacao_global && <RatingBadge rating={R.avaliacao_global} />}
           </div>
 
-          {/* Summary highlights */}
           {R.sumario?.destaques && (
             <div style={{ display: "flex", gap: "12px", marginTop: "28px", flexWrap: "wrap" }}>
               {R.sumario.destaques.map((d, i) => (
@@ -1497,8 +1476,6 @@ ESTRUTURA JSON:
               {R.sumario.texto}
             </p>
           )}
-
-          {/* Top KPIs strip */}
           {Object.keys(fin).length > 0 && (
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "12px", marginTop: "8px" }}>
               {[
@@ -1515,7 +1492,7 @@ ESTRUTURA JSON:
           )}
         </ReportSection>
 
-        {/* ── SECTION 2 — EVOLUÇÃO FINANCEIRA (charts) ── */}
+        {/* ── SECTION 2 — EVOLUÇÃO FINANCEIRA ── */}
         {Object.keys(fin).length > 0 && (
           <ReportSection number="02" title="Evolução Financeira">
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "32px" }}>
@@ -1553,9 +1530,8 @@ ESTRUTURA JSON:
           </ReportSection>
         )}
 
-        {/* ── SECTION 3 — INDICADORES & RÁCIOS ── */}
+        {/* ── SECTION 3+ — PAYWALL ou CONTEÚDO PAGO ── */}
         {!paid ? (
-          /* PAYWALL for sections 3+ */
           <div style={{ position: "relative", marginTop: "0" }}>
             <div style={{ filter: "blur(5px)", userSelect: "none", pointerEvents: "none" }}>
               <ReportSection number="03" title="Indicadores e Rácios Financeiros">
@@ -1585,12 +1561,9 @@ ESTRUTURA JSON:
           </div>
         ) : (
           <>
-          {/* FULL PAID CONTENT */}
-
-          {/* Indicadores — Standard e Premium */}
+          {/* INDICADORES */}
           {Object.keys(ind).length > 0 && (
             <ReportSection number="03" title="Indicadores e Rácios Financeiros">
-              {/* KPI cards grid */}
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "12px", marginBottom: "36px" }}>
                 {Object.entries(ind).map(([key, val]) => {
                   const yVals = {};
@@ -1609,10 +1582,7 @@ ESTRUTURA JSON:
                   );
                 })}
               </div>
-
-              {/* Ratio charts */}
               <div className="chart-grid">
-                {/* Liquidity */}
                 {(ind.liquidez_geral || ind.liquidez_reduzida) && (() => {
                   const series = [];
                   if (ind.liquidez_geral) series.push({ name: "Liquidez Geral", data: toLineData(ind.liquidez_geral) });
@@ -1624,8 +1594,6 @@ ESTRUTURA JSON:
                     </div>
                   );
                 })()}
-
-                {/* Rentabilidade */}
                 {(ind.roe || ind.roa || ind.margem_liquida) && (() => {
                   const series = [];
                   if (ind.roe) series.push({ name: "ROE %", data: toLineData(ind.roe) });
@@ -1638,8 +1606,6 @@ ESTRUTURA JSON:
                     </div>
                   );
                 })()}
-
-                {/* PMR/PMP */}
                 {(ind.pme || ind.pmp) && (
                   <div>
                     <div style={{ fontSize: "11px", letterSpacing: "0.16em", textTransform: "uppercase", color: C.fog, fontFamily: F.body, marginBottom: "12px" }}>Ciclo de Exploração (dias)</div>
@@ -1649,8 +1615,6 @@ ESTRUTURA JSON:
                     ]} formatVal={fmtDays} height={180} />
                   </div>
                 )}
-
-                {/* Autonomia Financeira Gauge (last year) */}
                 {ind.autonomia_financeira && (() => {
                   const lastYr = anos.filter(y => ind.autonomia_financeira?.[y] != null).slice(-1)[0];
                   const val = ind.autonomia_financeira?.[lastYr];
@@ -1670,10 +1634,9 @@ ESTRUTURA JSON:
             </ReportSection>
           )}
 
-          {/* Secções 04-07 — apenas Premium */}
+          {/* SECÇÕES 04-07 — apenas Premium */}
           {paidPlan === "premium" ? (<>
 
-          {/* Análise Detalhada */}
           {R.analise_detalhada && (
             <ReportSection number="04" title="Análise Detalhada">
               <div className="analise-grid">
@@ -1695,28 +1658,24 @@ ESTRUTURA JSON:
             </ReportSection>
           )}
 
-          {/* SWOT */}
           {R.swot && (
             <ReportSection number="05" title="Pontos Fortes, Fracos, Oportunidades e Riscos">
               <SwotTable data={R.swot} />
             </ReportSection>
           )}
 
-          {/* Recomendações */}
           {R.recomendacoes && (
             <ReportSection number="06" title="Recomendações e Plano de Acção">
               <ActionPlan actions={R.recomendacoes} />
             </ReportSection>
           )}
 
-          {/* Conclusão */}
           {R.conclusao && (
             <ReportSection number="07" title="Conclusão">
               <p style={{ fontFamily: F.body, fontSize: "16px", lineHeight: 1.9, color: C.steel, maxWidth: "720px" }}>{R.conclusao}</p>
             </ReportSection>
           )}
 
-          {/* Fallback for unparsed text */}
           {R._fallback && (
             <ReportSection number="03" title="Análise Completa">
               <RichText content={R._fallback} />
@@ -1724,7 +1683,6 @@ ESTRUTURA JSON:
           )}
 
           </>) : (
-            /* Standard — upgrade CTA para Premium */
             <div style={{ background: C.cream, border: `1px solid ${C.line}`, borderRadius: "10px", padding: "36px", textAlign: "center", margin: "32px 0" }}>
               <div style={{ fontFamily: F.display, fontSize: "24px", marginBottom: "10px", color: C.ink }}>
                 Actualize para <span style={{ color: C.gold, fontStyle: "italic" }}>Premium</span>
@@ -1740,7 +1698,6 @@ ESTRUTURA JSON:
             </div>
           )}
 
-          {/* Footer */}
           <div style={{ textAlign: "center", padding: "48px 0 20px" }}>
             <Divider style={{ marginBottom: "20px" }} />
             <div style={{ fontSize: "11px", color: C.fog, fontStyle: "italic", fontFamily: F.body, lineHeight: 1.8 }}>
