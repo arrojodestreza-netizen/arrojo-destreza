@@ -667,6 +667,84 @@ function parseAnalysis(raw) {
 const DOC_TYPE_IDS = ["balance", "income"];
 
 /* ─── MAIN APP ───────────────────────────────────────────── */
+/* ─── LEGAL PAGE ─────────────────────────────────────────── */
+function LegalSection({ num, titleKey, bodyKey }) {
+  const { t } = useTranslation();
+  return (
+    <div style={{ marginBottom: "36px" }}>
+      <div style={{ display: "flex", alignItems: "baseline", gap: "16px", padding: "24px 0 14px", borderBottom: `2px solid ${C.ink}` }}>
+        <span style={{ fontFamily: F.mono, fontSize: "11px", color: C.gold, letterSpacing: "0.2em", minWidth: "28px" }}>{num}</span>
+        <h2 style={{ fontFamily: F.display, fontSize: "22px", fontWeight: 300, color: C.ink, margin: 0 }}>{t(titleKey)}</h2>
+      </div>
+      <p style={{ fontFamily: F.body, fontSize: "16px", lineHeight: 1.9, color: C.steel, marginTop: "16px", paddingBottom: "8px", borderBottom: `1px solid ${C.line}` }}>{t(bodyKey)}</p>
+    </div>
+  );
+}
+
+function LegalPage({ onBack }) {
+  const { t } = useTranslation();
+  return (
+    <>
+      <style>{GLOBAL_CSS}</style>
+      <nav style={{ position: "sticky", top: 0, zIndex: 100, background: "rgba(245,240,232,0.95)", backdropFilter: "blur(12px)", borderBottom: `1px solid ${C.line}`, padding: "0 6vw" }}>
+        <div style={{ maxWidth: "860px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: "64px" }}>
+          <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px" }}>
+            <span style={{ color: C.fog, fontSize: "13px" }}>←</span>
+            <div style={{ fontFamily: F.display, fontSize: "18px" }}>YourCFO <span style={{ color: C.gold }}>·</span> Arrojo & Destreza</div>
+          </button>
+          <LangSelector />
+        </div>
+      </nav>
+
+      <div style={{ maxWidth: "860px", margin: "0 auto", padding: "64px 6vw 120px" }}>
+
+        {/* ── TERMOS E CONDIÇÕES ── */}
+        <div style={{ marginBottom: "56px", paddingBottom: "32px", borderBottom: `2px solid ${C.ink}` }}>
+          <span style={{ display: "inline-block", padding: "3px 12px", border: `1px solid ${C.gold}`, borderRadius: "20px", fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.gold, fontFamily: F.body, marginBottom: "16px" }}>{t("legal.tcTag")}</span>
+          <h1 style={{ fontFamily: F.display, fontSize: "clamp(32px,5vw,48px)", fontWeight: 300, lineHeight: 1.1, color: C.ink }}>{t("legal.tcTitle")}</h1>
+          <p style={{ fontSize: "13px", color: C.fog, marginTop: "12px", fontFamily: F.body }}>{t("legal.updated")} · YourCFO / Arrojo & Destreza Lda.</p>
+        </div>
+
+        {["s01","s02","s03","s04","s05","s06","s07","s08","s09","s10"].map((s, i) => (
+          <LegalSection key={s} num={String(i+1).padStart(2,"0")} titleKey={`legal.tc.${s}.title`} bodyKey={`legal.tc.${s}.body`} />
+        ))}
+
+        {/* ── DIVIDER ── */}
+        <div style={{ display: "flex", alignItems: "center", gap: "16px", margin: "56px 0 48px" }}>
+          <div style={{ flex: 1, height: "1px", background: C.line }} />
+          <span style={{ color: C.gold, fontSize: "12px", letterSpacing: "0.3em" }}>✦</span>
+          <div style={{ flex: 1, height: "1px", background: C.line }} />
+        </div>
+
+        {/* ── POLÍTICA DE PRIVACIDADE ── */}
+        <div style={{ marginBottom: "56px", paddingBottom: "32px", borderBottom: `2px solid ${C.ink}` }}>
+          <span style={{ display: "inline-block", padding: "3px 12px", border: `1px solid ${C.gold}`, borderRadius: "20px", fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.gold, fontFamily: F.body, marginBottom: "16px" }}>{t("legal.ppTag")}</span>
+          <h1 style={{ fontFamily: F.display, fontSize: "clamp(32px,5vw,48px)", fontWeight: 300, lineHeight: 1.1, color: C.ink }}>{t("legal.ppTitle")}</h1>
+          <p style={{ fontSize: "13px", color: C.fog, marginTop: "12px", fontFamily: F.body }}>{t("legal.updated")} · YourCFO / Arrojo & Destreza Lda.</p>
+        </div>
+
+        {["s01","s02","s03","s04","s05","s06","s07","s08","s09"].map((s, i) => (
+          <LegalSection key={s} num={String(i+1).padStart(2,"0")} titleKey={`legal.pp.${s}.title`} bodyKey={`legal.pp.${s}.body`} />
+        ))}
+
+        {/* ── CONTACT BOX ── */}
+        <div style={{ background: C.ink, borderRadius: "8px", padding: "32px 36px", marginTop: "16px" }}>
+          <p style={{ color: "rgba(255,255,255,0.5)", fontFamily: F.body, fontSize: "14px", lineHeight: 1.8, margin: 0 }}>
+            <strong style={{ color: C.white }}>Arrojo & Destreza Lda.</strong> · NIF 517 674 670<br />
+            Rua do Matim, 130, 4450-736 Matosinhos, Portugal<br />
+            <a href="mailto:info@yourcfo.app" style={{ color: C.gold, textDecoration: "none" }}>info@yourcfo.app</a>
+          </p>
+        </div>
+      </div>
+
+      <footer style={{ background: C.ink, color: "rgba(255,255,255,0.5)", padding: "40px 6vw", textAlign: "center", fontFamily: F.body, fontSize: "13px" }}>
+        <div style={{ fontFamily: F.display, fontSize: "20px", color: C.white, marginBottom: "6px" }}>YourCFO <span style={{ color: C.gold }}>·</span> Arrojo & Destreza</div>
+        <div>© 2025 Arrojo & Destreza Lda. · Matosinhos, Portugal</div>
+      </footer>
+    </>
+  );
+}
+
 export default function App() {
   const { t, i18n: i18nInst } = useTranslation();
   const [page, setPage] = useState("home");
@@ -683,6 +761,8 @@ export default function App() {
   const [paidPlan, setPaidPlan] = useState("standard");
   const [showPaywall, setShowPaywall] = useState(false);
   const [showDemo, setShowDemo] = useState(false);
+
+  const goLegal = () => { setPage("legal"); window.scrollTo(0, 0); };
   const [error, setError] = useState(null);
 
   const uploaded = Object.keys(files).length;
@@ -691,6 +771,9 @@ export default function App() {
   const DOC_TYPES = DOC_TYPE_IDS.map(id => ({ id, label: t(`tool.docTypes.${id}`) }));
 
   const goHome = () => { setPage("home"); setResult(null); setRawResult(null); setFiles({}); setCompany(""); setPaid(false); setPaidPlan("standard"); setError(null); };
+
+  /* ── LEGAL PAGE ── */
+  if (page === "legal") return <LegalPage onBack={() => setPage("home")} />;
   const setFile = (yr, dt, f) => setFiles(p => ({ ...p, [`${yr}_${dt}`]: f }));
   const removeFile = (yr, dt) => setFiles(p => { const n = { ...p }; delete n[`${yr}_${dt}`]; return n; });
   const addYear = () => { const last = parseInt(years[years.length - 1]); setYears(p => [...p, String(last + 1)]); };
@@ -872,7 +955,7 @@ ${t("aiPrompt.sections")}` });
         <div style={{ fontSize: "12px", letterSpacing: "0.15em", marginBottom: "16px" }}>{t("footer.tagline")}</div>
         <a href="mailto:info@yourcfo.app" style={{ fontSize: "13px", color: C.gold, display: "block", marginBottom: "16px", textDecoration: "none", letterSpacing: "0.04em" }}>info@yourcfo.app</a>
         <div style={{ fontSize: "12px", marginBottom: "12px" }}>{t("footer.rights")}</div>
-        <a href="/legal.html" style={{ fontSize: "11px", color: C.fog, textDecoration: "none", letterSpacing: "0.08em", borderBottom: `1px solid ${C.fog}30`, paddingBottom: "2px" }}>{t("footer.legal")}</a>
+        <a href="/legal.html" onClick={e => { e.preventDefault(); goLegal(); }} style={{ fontSize: "11px", color: C.fog, textDecoration: "none", letterSpacing: "0.08em", borderBottom: `1px solid ${C.fog}30`, paddingBottom: "2px", cursor: "pointer" }}>{t("footer.legal")}</a>
       </footer>
 
       {/* ── DEMO MODAL ── */}
