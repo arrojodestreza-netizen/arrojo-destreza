@@ -1337,7 +1337,10 @@ ESTRUTURA JSON:
         </div>
         <div style={{ fontSize: "12px", letterSpacing: "0.15em", marginBottom: "16px" }}>CONSULTORIA FINANCEIRA</div>
         <a href="mailto:info@yourcfo.app" style={{ fontSize: "13px", color: C.gold, display: "block", marginBottom: "16px", textDecoration: "none", letterSpacing: "0.04em" }}>info@yourcfo.app</a>
-        <div style={{ fontSize: "12px" }}>© 2025 Arrojo & Destreza · Todos os direitos reservados · Matosinhos, Portugal</div>
+        <div style={{ fontSize: "12px", marginBottom: "12px" }}>© 2025 Arrojo & Destreza Lda. · Todos os direitos reservados · Matosinhos, Portugal</div>
+        <a href="/legal.html" style={{ fontSize: "11px", color: C.fog, textDecoration: "none", letterSpacing: "0.08em", borderBottom: `1px solid ${C.fog}30`, paddingBottom: "2px" }}>
+          Termos &amp; Condições · Política de Privacidade
+        </a>
       </footer>
     </>
   );
