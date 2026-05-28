@@ -1,1 +1,375 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Termos, Condições e Política de Privacidade — YourCFO</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Crimson+Pro:wght@300;400;500&display=swap');
 
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #F5F0E8;
+      color: #0B0C0E;
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.85;
+    }
+
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(245,240,232,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #D8D2C4;
+      padding: 0 6vw;
+    }
+    nav .inner {
+      max-width: 860px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    nav .brand { font-family: 'Cormorant Garamond', serif; font-size: 20px; letter-spacing: 0.04em; text-decoration: none; color: #0B0C0E; }
+    nav .brand span { color: #B8923A; }
+    nav a.back { font-family: 'Crimson Pro', serif; font-size: 14px; color: #8A8880; text-decoration: none; }
+    nav a.back:hover { color: #B8923A; }
+
+    .container { max-width: 860px; margin: 0 auto; padding: 64px 6vw 120px; }
+
+    .doc-header { margin-bottom: 56px; padding-bottom: 32px; border-bottom: 2px solid #0B0C0E; }
+    .doc-header .tag {
+      display: inline-block; padding: 3px 12px;
+      border: 1px solid #B8923A; border-radius: 20px;
+      font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+      color: #B8923A; font-family: 'Crimson Pro', serif; margin-bottom: 16px;
+    }
+    .doc-header h1 { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 300; line-height: 1.1; color: #0B0C0E; }
+    .doc-header .meta { font-size: 14px; color: #8A8880; margin-top: 12px; }
+
+    .divider {
+      display: flex; align-items: center; gap: 16px;
+      margin: 56px 0 48px;
+    }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #D8D2C4; }
+    .divider span { color: #B8923A; font-size: 12px; letter-spacing: 0.3em; }
+
+    .doc-section { margin-bottom: 48px; }
+    .doc-section h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px; font-weight: 300;
+      color: #0B0C0E; margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #D8D2C4;
+      display: flex; align-items: baseline; gap: 16px;
+    }
+    .doc-section h2 .num {
+      font-family: 'Courier New', monospace;
+      font-size: 11px; color: #B8923A;
+      letter-spacing: 0.2em; min-width: 28px;
+    }
+    .doc-section h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px; font-weight: 400;
+      color: #3A4550; margin: 24px 0 10px;
+    }
+    .doc-section p { margin-bottom: 14px; color: #3A4550; }
+    .doc-section ul, .doc-section ol {
+      margin: 10px 0 14px 0; padding-left: 0; list-style: none;
+    }
+    .doc-section ul li, .doc-section ol li {
+      display: flex; gap: 12px; margin-bottom: 8px; color: #3A4550;
+    }
+    .doc-section ul li::before { content: '▸'; color: #B8923A; flex-shrink: 0; margin-top: 2px; }
+    .doc-section ol { counter-reset: list; }
+    .doc-section ol li::before {
+      counter-increment: list;
+      content: counter(list) '.';
+      color: #B8923A; font-weight: 500; flex-shrink: 0; min-width: 20px;
+    }
+
+    .highlight-box {
+      background: #FBF7EF; border: 1px solid #D8D2C4;
+      border-left: 4px solid #B8923A;
+      border-radius: 6px; padding: 20px 24px; margin: 20px 0;
+    }
+    .highlight-box p { margin-bottom: 0; }
+
+    .contact-box {
+      background: #0B0C0E; border-radius: 8px;
+      padding: 32px 36px; margin-top: 16px;
+    }
+    .contact-box p { color: rgba(255,255,255,0.7); margin-bottom: 8px; }
+    .contact-box p:last-child { margin-bottom: 0; }
+    .contact-box a { color: #B8923A; text-decoration: none; }
+    .contact-box strong { color: #F5F0E8; }
+
+    footer {
+      background: #0B0C0E; color: rgba(255,255,255,0.5);
+      padding: 40px 6vw; text-align: center;
+      font-family: 'Crimson Pro', serif; font-size: 13px;
+    }
+    footer a { color: #B8923A; text-decoration: none; }
+
+    @media (max-width: 768px) {
+      .doc-header h1 { font-size: 36px; }
+      .container { padding: 40px 5vw 80px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="inner">
+    <a href="https://yourcfo.app" class="brand">YourCFO <span>&</span> Arrojo<span>&</span>Destreza</a>
+    <a href="https://yourcfo.app" class="back">← Voltar ao site</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- TERMOS E CONDIÇÕES                                      -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+
+  <div class="doc-header">
+    <div class="tag">Documentos Legais</div>
+    <h1>Termos e Condições<br>de Utilização</h1>
+    <p class="meta">Última actualização: 28 de Maio de 2025 · YourCFO / Arrojo & Destreza Lda.</p>
+  </div>
+
+  <div class="doc-section">
+    <h2><span class="num">01</span> Identificação do Prestador</h2>
+    <p>O serviço <strong>YourCFO</strong>, acessível em <strong>yourcfo.app</strong>, é operado por:</p>
+    <div class="highlight-box">
+      <p><strong>Arrojo & Destreza Lda.</strong><br>
+      NIF: 517 674 670<br>
+      Rua do Matim, 130, 4450-736 Matosinhos, Portugal<br>
+      E-mail: <a href="mailto:info@yourcfo.app">info@yourcfo.app</a></p>
+    </div>
+  </div>
+
+  <div class="doc-section">
+    <h2><span class="num">02</span> Objecto e Âmbito</h2>
+    <p>Os presentes Termos e Condições regulam o acesso e utilização da plataforma YourCFO, que disponibiliza serviços de análise financeira automatizada com recurso a inteligência artificial.</p>
+    <p>O serviço destina-se exclusivamente a:</p>
+    <ul>
+      <li>Pessoas colectivas (empresas, sociedades e outras entidades legais)</li>
+      <li>Profissionais liberais no exercício da sua actividade profissional</li>
+    </ul>
+    <p>A utilização da plataforma implica a aceitação integral e incondicional dos presentes Termos e Condições.</p>
+  </div>
+
+  <div class="doc-section">
+    <h2><span class="num">03</span> Descrição do Serviço</h2>
+    <p>A plataforma YourCFO permite ao utilizador:</p>
+    <ul>
+      <li>Carregar documentos financeiros em formato PDF (balanços e demonstrações de resultados)</li>
+      <li>Obter uma análise financeira automatizada com recurso a inteligência artificial</li>
+      <li>Aceder a um relatório com indicadores financeiros, rácios, análise SWOT e recomendações</li>
+    </ul>
+    <h3>Planos disponíveis</h3>
+    <ul>
+      <li><strong>Análise Standard — 79€ (IVA incluído):</strong> Relatório completo com sumário executivo, evolução financeira e indicadores e rácios financeiros</li>
+      <li><strong>Análise Premium — 149€ (IVA incluído):</strong> Tudo da Standard, acrescido de análise detalhada, SWOT, plano de recomendações e conclusão</li>
+    </ul>
+    <p>O relatório é disponibilizado imediatamente após confirmação do pagamento.</p>
+  </div>
+
+  <div class="doc-section">
+    <h2><span class="num">04</span> Processo de Pagamento</h2>
+    <p>O pagamento é processado através dos seguintes métodos:</p>
+    <ul>
+      <li><strong>Cartão de crédito/débito</strong> — processado pela Stripe Payments Europe, Ltd., entidade regulada pela Autoridade de Supervisão de Seguros e Fundos de Pensões (Central Bank of Ireland)</li>
+      <li><strong>MB WAY</strong> — processado pela ifthenpay, Lda.</li>
+    </ul>
+    <p>A Arrojo & Destreza Lda. não armazena dados de cartões de pagamento. Toda a informação de pagamento é processada directamente pelas entidades acima identificadas, em ambiente seguro e encriptado.</p>
+    <p>Após pagamento confirmado, é emitida factura nos termos da legislação fiscal portuguesa em vigor.</p>
+  </div>
+
+  <div class="doc-section">
+    <h2><span class="num">05</span> Política de Reembolsos</h2>
+    <div class="highlight-box">
+      <p>Dado que o serviço é prestado de forma imediata e integral no momento do pagamento — consistindo na disponibilização de um relatório digital gerado especificamente para o utilizador —, <strong>não são efectuados reembolsos após a entrega do relatório</strong>, salvo em caso de erro imputável à Arrojo & Destreza Lda. ou falha técnica comprovada que impeça o acesso ao relatório.</p>
+    </div>
+    <p>Em caso de reclamação, o utilizador deverá contactar <a href="mailto:info@yourcfo.app">info@yourcfo.app</a> no prazo de 48 horas após o pagamento.</p>
+  </div>
+
+  <div class="doc-section">
+    <h2><span class="num">06</span> Natureza e Limitações da Análise</h2>
+    <p>A análise financeira produzida pela plataforma YourCFO é gerada automaticamente por inteligência artificial com base exclusivamente nos documentos fornecidos pelo utilizador.</p>
+    <p>O utilizador reconhece expressamente que:</p>
+    <ul>
+      <li>O relatório tem natureza informativa e de apoio à decisão, não constituindo aconselhamento financeiro, contabilístico, fiscal ou jurídico</li>
+      <li>A qualidade e exactidão da análise dependem da qualidade e completude dos documentos fornecidos</li>
+      <li>A Arrojo & Destreza Lda. não se responsabiliza por decisões empresariais tomadas com base no relatório</li>
+      <li>O relatório não substitui a análise de um contabilista certificado, auditor ou consultor financeiro</li>
+    </ul>
+  </div>
+
+  <div class="doc-section">
+    <h2><span class="num">07</span> Propriedade Intelectual</h2>
+    <p>O relatório gerado é disponibilizado para uso exclusivo do utilizador que efectuou o pagamento. É proibida a reprodução, distribuição ou comercialização do relatório sem autorização expressa da Arrojo & Destreza Lda.</p>
+    <p>Todos os elementos da plataforma YourCFO — design, código, marca, conteúdos — são propriedade da Arrojo & Destreza Lda. e estão protegidos pela legislação aplicável em matéria de propriedade intelectual.</p>
+  </div>
+
+  <div class="doc-section">
+    <h2><span class="num">08</span> Responsabilidade</h2>
+    <p>A Arrojo & Destreza Lda. não se responsabiliza por danos directos ou indirectos resultantes de:</p>
+    <ul>
+      <li>Utilização ou impossibilidade de utilização da plataforma por razões alheias ao seu controlo</li>
+      <li>Inexactidões na análise decorrentes de documentos incompletos, incorrectos ou ilegíveis fornecidos pelo utilizador</li>
+      <li>Decisões tomadas com base no relatório gerado</li>
+      <li>Interrupções temporárias do serviço para manutenção ou actualização</li>
+    </ul>
+  </div>
+
+  <div class="doc-section">
+    <h2><span class="num">09</span> Lei Aplicável e Foro</h2>
+    <p>Os presentes Termos e Condições são regidos pela lei portuguesa. Em caso de litígio, as partes elegem o foro da comarca de Matosinhos, com expressa renúncia a qualquer outro.</p>
+    <p>O utilizador pode também recorrer à plataforma europeia de resolução de litígios em linha, disponível em <a href="https://ec.europa.eu/consumers/odr" target="_blank">ec.europa.eu/consumers/odr</a>.</p>
+  </div>
+
+  <div class="doc-section">
+    <h2><span class="num">10</span> Alterações aos Termos</h2>
+    <p>A Arrojo & Destreza Lda. reserva-se o direito de actualizar os presentes Termos e Condições a qualquer momento. As alterações entram em vigor na data da sua publicação em yourcfo.app. A utilização continuada do serviço após essa data implica a aceitação das alterações.</p>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SEPARADOR                                               -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+
+  <div class="divider"><span>✦</span></div>
+
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- POLÍTICA DE PRIVACIDADE                                 -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+
+  <div class="doc-header" style="margin-top: 0;">
+    <div class="tag">RGPD · Regulamento Geral de Protecção de Dados</div>
+    <h1>Política de<br>Privacidade</h1>
+    <p class="meta">Última actualização: 28 de Maio de 2025 · YourCFO / Arrojo & Destreza Lda.</p>
+  </div>
+
+  <div class="doc-section">
+    <h2><span class="num">01</span> Responsável pelo Tratamento</h2>
+    <div class="highlight-box">
+      <p><strong>Arrojo & Destreza Lda.</strong><br>
+      NIF: 517 674 670<br>
+      Rua do Matim, 130, 4450-736 Matosinhos, Portugal<br>
+      E-mail: <a href="mailto:info@yourcfo.app">info@yourcfo.app</a></p>
+    </div>
+  </div>
+
+  <div class="doc-section">
+    <h2><span class="num">02</span> Dados Recolhidos</h2>
+    <p>No âmbito da utilização da plataforma YourCFO, recolhemos os seguintes dados pessoais:</p>
+    <h3>Dados de faturação (fornecidos pelo utilizador)</h3>
+    <ul>
+      <li>Nome ou denominação social</li>
+      <li>Número de Identificação Fiscal (NIF)</li>
+      <li>Morada completa</li>
+      <li>Endereço de e-mail</li>
+    </ul>
+    <h3>Dados de utilização (recolhidos automaticamente)</h3>
+    <ul>
+      <li>Dados de navegação e comportamento no site, através do Google Analytics</li>
+      <li>Endereço IP (anonimizado pelo Google Analytics)</li>
+    </ul>
+    <h3>Documentos financeiros</h3>
+    <ul>
+      <li>Os documentos PDF carregados pelo utilizador são processados exclusivamente para geração do relatório e não são armazenados permanentemente nos nossos sistemas após a análise</li>
+    </ul>
+  </div>
+
+  <div class="doc-section">
+    <h2><span class="num">03</span> Finalidade e Base Legal do Tratamento</h2>
+    <ul>
+      <li><strong>Prestação do serviço contratado</strong> — execução do contrato (art. 6.º, n.º 1, al. b) RGPD)</li>
+      <li><strong>Emissão de fatura</strong> — cumprimento de obrigação legal (art. 6.º, n.º 1, al. c) RGPD)</li>
+      <li><strong>Melhoria do serviço e análise estatística</strong> — interesse legítimo (art. 6.º, n.º 1, al. f) RGPD), através do Google Analytics</li>
+    </ul>
+  </div>
+
+  <div class="doc-section">
+    <h2><span class="num">04</span> Destinatários dos Dados</h2>
+    <p>Os seus dados podem ser partilhados com os seguintes subcontratantes, exclusivamente para as finalidades indicadas:</p>
+    <ul>
+      <li><strong>Stripe Payments Europe, Ltd.</strong> — processamento de pagamentos por cartão</li>
+      <li><strong>ifthenpay, Lda.</strong> — processamento de pagamentos MB WAY</li>
+      <li><strong>weoInvoice (WEO Consulting)</strong> — emissão de faturas</li>
+      <li><strong>Google LLC</strong> — Google Drive (arquivo de cópias de relatórios) e Google Analytics (estatísticas de navegação)</li>
+      <li><strong>Anthropic, PBC</strong> — processamento de inteligência artificial para geração do relatório</li>
+      <li><strong>Cloudflare, Inc.</strong> — infraestrutura técnica e proxy de API</li>
+    </ul>
+    <p>Não vendemos, alugamos ou cedemos os seus dados a terceiros para fins comerciais ou de marketing.</p>
+  </div>
+
+  <div class="doc-section">
+    <h2><span class="num">05</span> Conservação dos Dados</h2>
+    <ul>
+      <li><strong>Dados de faturação</strong> — conservados pelo período legalmente exigido para efeitos fiscais e contabilísticos (10 anos, nos termos do Código Comercial)</li>
+      <li><strong>Cópias de relatórios</strong> — conservadas no Google Drive pelo período necessário à prestação do serviço e eventual resolução de litígios</li>
+      <li><strong>Dados de navegação</strong> — conservados pelo período definido nas políticas do Google Analytics (por defeito, 26 meses)</li>
+    </ul>
+  </div>
+
+  <div class="doc-section">
+    <h2><span class="num">06</span> Cookies</h2>
+    <p>A plataforma YourCFO utiliza os seguintes cookies:</p>
+    <ul>
+      <li><strong>Cookies estritamente necessários</strong> — para o funcionamento técnico do site (Stripe, Cloudflare)</li>
+      <li><strong>Cookies analíticos</strong> — Google Analytics, para análise de tráfego e comportamento de navegação. Estes cookies requerem o seu consentimento</li>
+    </ul>
+    <p>Pode gerir as suas preferências de cookies a qualquer momento através das definições do seu browser.</p>
+  </div>
+
+  <div class="doc-section">
+    <h2><span class="num">07</span> Direitos do Titular dos Dados</h2>
+    <p>Nos termos do RGPD, tem os seguintes direitos:</p>
+    <ul>
+      <li><strong>Acesso</strong> — obter confirmação sobre se os seus dados são tratados e aceder aos mesmos</li>
+      <li><strong>Rectificação</strong> — corrigir dados inexactos ou incompletos</li>
+      <li><strong>Apagamento</strong> — solicitar a eliminação dos seus dados ("direito a ser esquecido"), salvo quando o tratamento seja necessário para cumprimento de obrigação legal</li>
+      <li><strong>Limitação</strong> — solicitar a suspensão temporária do tratamento</li>
+      <li><strong>Portabilidade</strong> — receber os seus dados num formato estruturado e legível por máquina</li>
+      <li><strong>Oposição</strong> — opor-se ao tratamento baseado em interesse legítimo</li>
+    </ul>
+    <p>Para exercer qualquer destes direitos, contacte-nos através de <a href="mailto:info@yourcfo.app">info@yourcfo.app</a>. Responderemos no prazo de 30 dias.</p>
+    <p>Tem também o direito de apresentar reclamação à <strong>Comissão Nacional de Protecção de Dados (CNPD)</strong>, em <a href="https://www.cnpd.pt" target="_blank">cnpd.pt</a>.</p>
+  </div>
+
+  <div class="doc-section">
+    <h2><span class="num">08</span> Segurança</h2>
+    <p>Adoptamos medidas técnicas e organizativas adequadas para proteger os seus dados contra acesso não autorizado, perda ou destruição, nomeadamente:</p>
+    <ul>
+      <li>Transmissão de dados encriptada via HTTPS/TLS</li>
+      <li>Processamento de pagamentos por entidades certificadas PCI-DSS</li>
+      <li>Acesso restrito aos dados por parte dos colaboradores da Arrojo & Destreza Lda.</li>
+    </ul>
+  </div>
+
+  <div class="doc-section">
+    <h2><span class="num">09</span> Contacto</h2>
+    <div class="contact-box">
+      <p><strong>Para qualquer questão relacionada com privacidade ou protecção de dados:</strong></p>
+      <p>E-mail: <a href="mailto:info@yourcfo.app">info@yourcfo.app</a></p>
+      <p>Morada: Rua do Matim, 130, 4450-736 Matosinhos, Portugal</p>
+      <p style="margin-top: 16px; font-size: 14px;">Comprometemo-nos a responder a todas as solicitações no prazo de 30 dias úteis.</p>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div style="font-family: 'Cormorant Garamond', serif; font-size: 20px; color: #F5F0E8; margin-bottom: 6px;">
+    YourCFO <span style="color: #B8923A;">·</span> Arrojo & Destreza
+  </div>
+  <div style="letter-spacing: 0.15em; margin-bottom: 16px;">CONSULTORIA FINANCEIRA</div>
+  <a href="mailto:info@yourcfo.app" style="display: block; margin-bottom: 12px;">info@yourcfo.app</a>
+  <div>© 2025 Arrojo & Destreza Lda. · NIF 517 674 670 · Matosinhos, Portugal</div>
+</footer>
+
+</body>
+</html>
