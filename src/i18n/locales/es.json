@@ -1,1 +1,268 @@
+{
+  "lang": "es",
+  "langName": "Español",
+
+  "nav": {
+    "services": "Servicios",
+    "methodology": "Metodología",
+    "contact": "Contacto",
+    "startAnalysis": "Iniciar Análisis"
+  },
+
+  "hero": {
+    "tag": "Análisis Financiero con IA",
+    "title1": "Diagnóstico financiero",
+    "title2": "preciso y accionable",
+    "description": "Cargue los documentos financieros de su empresa — balances y cuentas de resultados — y reciba en minutos un análisis profesional completo con recomendaciones concretas de mejora.",
+    "cta": "Analizar mi empresa",
+    "ctaExample": "Ver ejemplo de informe",
+    "recommendationLabel": "Recomendación Principal"
+  },
+
+  "how": {
+    "tag": "Cómo Funciona",
+    "title": "Tres pasos para el diagnóstico completo",
+    "steps": [
+      {
+        "num": "01",
+        "title": "Cargue los documentos",
+        "desc": "Suba los balances y cuentas de resultados en PDF de 2 o más años. El proceso es seguro y confidencial."
+      },
+      {
+        "num": "02",
+        "title": "La IA lo analiza todo",
+        "desc": "Nuestra inteligencia artificial lee e interpreta todos los documentos, calculando ratios, identificando tendencias y comparando periodos."
+      },
+      {
+        "num": "03",
+        "title": "Acceda al informe completo",
+        "desc": "Tras la confirmación del pago, accede inmediatamente al informe detallado con indicadores, puntos críticos y plan de acción."
+      }
+    ]
+  },
+
+  "pricing": {
+    "tag": "Precios",
+    "title": "Informe único por análisis",
+    "mostPopular": "MÁS POPULAR",
+    "plans": [
+      {
+        "name": "Standard",
+        "price": "79€",
+        "features": [
+          "Informe completo con IA",
+          "Indicadores financieros",
+          "Puntos fuertes y débiles",
+          "Recomendaciones priorizadas",
+          "Descarga PDF"
+        ]
+      },
+      {
+        "name": "Premium",
+        "price": "149€",
+        "features": [
+          "Todo lo de Standard",
+          "Benchmarking sectorial",
+          "Proyecciones a 3 años",
+          "Análisis de riesgo detallado",
+          "Soporte e-mail 30 días"
+        ]
+      }
+    ],
+    "cta": "Empezar →"
+  },
+
+  "footer": {
+    "tagline": "CONSULTORÍA FINANCIERA",
+    "rights": "© 2025 Arrojo & Destreza Lda. · Todos los derechos reservados · Matosinhos, Portugal",
+    "legal": "Términos & Condiciones · Política de Privacidad"
+  },
+
+  "tool": {
+    "title": "Análisis de su empresa",
+    "description": "Cargue los documentos financieros a continuación. El análisis está listo en segundos — y se desbloquea tras la confirmación del pago.",
+    "companyLabel": "Nombre de la Empresa",
+    "companyPlaceholder": "Ej: García & Asociados, S.L.",
+    "addYear": "+ Añadir otro año",
+    "removeYear": "Eliminar",
+    "analyzeBtn": "Analizar Empresa ✦",
+    "analyzingBtn": "Analizando…",
+    "disclaimer": "Cargue al menos 2 documentos para iniciar · El resultado se desbloquea mediante pago",
+    "uploadDrag": "Arrastre el PDF o haga clic para seleccionar",
+    "uploadLoaded": "Cargado",
+    "docTypes": {
+      "balance": "Balance",
+      "income": "Cuenta de Resultados"
+    },
+    "status": {
+      "preparing": "Preparando documentos…",
+      "processing": "Procesando {{doc}} {{year}}…",
+      "analyzing": "Analizando con inteligencia artificial…",
+      "structuring": "Estructurando el informe…",
+      "finishing": "Preparando informe…",
+      "done": "Análisis completado"
+    }
+  },
+
+  "paywall": {
+    "tag": "Acceso al Informe",
+    "title": "Análisis Financiero",
+    "choosePlan": "Elija su plan:",
+    "continueBtn": "Continuar al Pago →",
+    "back": "← Volver",
+    "payCard": "🔒 Pagar {{price}} con Tarjeta",
+    "payMbway": "📱 Pagar {{price}} con MB WAY",
+    "loading": "Cargando…",
+    "security": "Pago seguro · SSL encriptado · IVA incluido",
+    "unlockBtn": "Ver Informe Completo → desde 79€",
+    "unlockAccess": "Desbloquear Informe Completo",
+    "processing": "Procesando pago…",
+    "processingWait": "Por favor espere",
+    "mbwayTitle": "Confirme en MB WAY",
+    "mbwayDesc": "Se ha enviado una solicitud de pago de {{price}} al número {{phone}}. Abra la app MB WAY y confirme el pago.",
+    "mbwayWaiting": "Esperando confirmación…",
+    "mbwayExpires": "La solicitud caduca en 4 minutos",
+    "mbwayCancel": "Cancelar",
+    "successTitle": "Pago Confirmado",
+    "successSub": "Cargando su análisis…",
+    "paywallTitle": "Análisis completo",
+    "paywallSub": "disponible tras el pago",
+    "paywallDesc": "El resumen y la evolución financiera están disponibles gratuitamente. Para acceder a todos los ratios, gráficos detallados, análisis DAFO y recomendaciones, confirme el pago.",
+    "accessImmediate": "Acceso inmediato · IVA incluido · Garantía de satisfacción",
+    "upgradeTitle": "Actualice a",
+    "upgradePremium": "Premium",
+    "upgradeDesc": "El plan Standard incluye Resumen, Evolución Financiera e Indicadores. Para acceder al Análisis Detallado, DAFO, Recomendaciones y Conclusión, actualice a Premium (149€).",
+    "upgradeBtn": "Actualizar a Premium → 149€",
+    "deblocked": "Desbloqueado ✓",
+    "print": "⬇ Imprimir / PDF",
+    "billing": "Datos de Facturación",
+    "fields": {
+      "name": "Nombre / Empresa",
+      "namePlaceholder": "Juan García o Empresa S.L.",
+      "nif": "NIF / CIF",
+      "nifPlaceholder": "B12345678",
+      "morada": "Dirección",
+      "moradaPlaceholder": "Calle Mayor, 123",
+      "cp": "Código Postal",
+      "cpPlaceholder": "28001",
+      "localidade": "Ciudad",
+      "localidadePlaceholder": "Madrid",
+      "email": "E-mail para recibo",
+      "emailPlaceholder": "juan@empresa.es",
+      "phone": "Número MB WAY",
+      "phonePlaceholder": "912 345 678",
+      "card": "Datos de la Tarjeta"
+    },
+    "errors": {
+      "name": "Campo obligatorio",
+      "email": "E-mail inválido",
+      "nif": "NIF inválido (9 dígitos)",
+      "morada": "Campo obligatorio",
+      "phone": "Número MB WAY inválido (ej: 912345678)"
+    },
+    "methods": {
+      "card": "💳 Tarjeta",
+      "mbway": "📱 MB WAY"
+    },
+    "planFeatures": {
+      "standard": [
+        "Informe completo con IA",
+        "Indicadores financieros",
+        "Puntos fuertes y débiles",
+        "Recomendaciones",
+        "Descarga PDF"
+      ],
+      "premium": [
+        "Todo lo de Standard",
+        "Benchmarking sectorial",
+        "Proyecciones a 3 años",
+        "Análisis de riesgo detallado",
+        "Soporte e-mail 30 días"
+      ]
+    }
+  },
+
+  "report": {
+    "tag": "Informe de Análisis Financiero",
+    "issued": "Emitido el",
+    "exercise": "Ejercicio",
+    "sections": {
+      "s01": "Resumen Ejecutivo",
+      "s02": "Evolución Financiera",
+      "s03": "Indicadores y Ratios Financieros",
+      "s04": "Análisis Detallado",
+      "s05": "Fortalezas, Debilidades, Oportunidades y Riesgos",
+      "s06": "Recomendaciones y Plan de Acción",
+      "s07": "Conclusión"
+    },
+    "kpis": {
+      "volume_negocios": "Cifra de Negocio",
+      "resultado_liquido": "Resultado Neto",
+      "ebitda": "EBITDA",
+      "total_ativo": "Total Activo",
+      "capital_proprio": "Patrimonio Neto",
+      "divida_financeira": "Deuda Financiera",
+      "liquidez_geral": "Ratio de Liquidez",
+      "liquidez_reduzida": "Ratio Rápido",
+      "autonomia_financeira": "Autonomía Financiera",
+      "roe": "ROE",
+      "roa": "ROA",
+      "margem_liquida": "Margen Neto",
+      "margem_ebitda": "Margen EBITDA",
+      "divida_ebitda": "Deuda / EBITDA",
+      "pme": "Plazo Medio de Cobro",
+      "pmp": "Plazo Medio de Pago"
+    },
+    "charts": {
+      "volume_negocios": "Cifra de Negocio",
+      "resultado_liquido": "Resultado Neto",
+      "ebitda": "EBITDA",
+      "capital": "Estructura de Capital",
+      "liquidez": "Ratios de Liquidez",
+      "rentabilidade": "Rentabilidad",
+      "ciclo": "Ciclo de Explotación (días)",
+      "autonomia": "Autonomía Financiera"
+    },
+    "swot": {
+      "forcas": "Fortalezas",
+      "fraquezas": "Debilidades",
+      "oportunidades": "Oportunidades",
+      "riscos": "Riesgos / Amenazas"
+    },
+    "actions": {
+      "imediato": "Inmediato",
+      "imediatoSub": "0 – 3 meses",
+      "medio": "Medio Plazo",
+      "medioSub": "3 – 12 meses",
+      "longo": "Largo Plazo",
+      "longoSub": "1 – 3 años"
+    },
+    "analysis": {
+      "rentabilidade": "Rentabilidad",
+      "liquidez_solvabilidade": "Liquidez y Solvencia",
+      "estrutura_capital": "Estructura de Capital",
+      "eficiencia_operacional": "Eficiencia Operacional"
+    },
+    "ratings": {
+      "Excelente": "Excelente",
+      "Bom": "Bueno",
+      "Aceitável": "Aceptable",
+      "Preocupante": "Preocupante",
+      "Crítico": "Crítico"
+    },
+    "footer": "Informe producido por Arrojo & Destreza — Consultoría Financiera",
+    "poweredBy": "Powered by Claude AI",
+    "activo": "Activo Total",
+    "capProprio": "Patrimonio Neto",
+    "divida": "Deuda",
+    "ref": "Referencia"
+  },
+
+  "aiPrompt": {
+    "role": "Usted es un analista financiero senior especializado en empresas europeas.",
+    "instruction": "Analice TODOS los documentos financieros proporcionados de la empresa \"{{company}}\" (años: {{years}}).",
+    "language": "Responda en español.",
+    "sections": "Produzca un análisis financiero completo y detallado con las siguientes secciones:\n\n1. VALORACIÓN GLOBAL (una palabra: Excelente, Bueno, Aceptable, Preocupante o Crítico)\n\n2. RESUMEN EJECUTIVO\nTexto de síntesis de 3-4 frases. Luego lista de 4-5 puntos destacados principales.\n\n3. DATOS FINANCIEROS (valores numéricos por año):\nCifra de negocio, Resultado neto, EBITDA, Total activo, Patrimonio neto, Deuda financiera, Fondo de maniobra.\n\n4. INDICADORES Y RATIOS (valores por año):\nRatio de Liquidez, Ratio Rápido, Autonomía Financiera (%), ROE (%), ROA (%), Margen Neto (%), Margen EBITDA (%), Deuda/EBITDA (x), PMC (días), PMP (días).\n\n5. ANÁLISIS DETALLADO\nCuatro párrafos sobre: Rentabilidad, Liquidez y Solvencia, Estructura de Capital, Eficiencia Operacional.\n\n6. FORTALEZAS Y DEBILIDADES\nLista de fortalezas, debilidades, oportunidades y riesgos.\n\n7. RECOMENDACIONES\nAcciones inmediatas (0-3 meses), medio plazo (3-12 meses), largo plazo (1-3 años).\n\n8. CONCLUSIÓN\nPárrafo final con perspectivas.\n\nSea específico con números y comparaciones entre años."
+  }
+}
 
