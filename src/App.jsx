@@ -682,6 +682,7 @@ export default function App() {
   const [paid, setPaid] = useState(false);
   const [paidPlan, setPaidPlan] = useState("standard");
   const [showPaywall, setShowPaywall] = useState(false);
+  const [showDemo, setShowDemo] = useState(false);
   const [error, setError] = useState(null);
 
   const uploaded = Object.keys(files).length;
@@ -796,7 +797,7 @@ ${t("aiPrompt.sections")}` });
             <p className="fade-up-2" style={{ fontFamily: F.body, fontSize: "17px", lineHeight: 1.8, color: C.steel, marginBottom: "36px", maxWidth: "480px" }}>{t("hero.description")}</p>
             <div className="fade-up-3" style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}>
               <button onClick={() => setPage("tool")} style={{ padding: "14px 32px", background: C.gold, border: "none", borderRadius: "4px", color: C.white, fontFamily: F.display, fontSize: "19px", cursor: "pointer", letterSpacing: "0.06em", display: "flex", alignItems: "center", gap: "10px" }}>{t("hero.cta")} <span>→</span></button>
-              <button style={{ padding: "14px 28px", background: "transparent", border: `1px solid ${C.line}`, borderRadius: "4px", color: C.steel, fontFamily: F.body, fontSize: "15px", cursor: "pointer" }}>{t("hero.ctaExample")}</button>
+              <button onClick={() => setShowDemo(true)} style={{ padding: "14px 28px", background: "transparent", border: `1px solid ${C.line}`, borderRadius: "4px", color: C.steel, fontFamily: F.body, fontSize: "15px", cursor: "pointer" }}>{t("hero.ctaExample")}</button>
             </div>
           </div>
           <div className="hero-visual fade-up-2" style={{ position: "relative" }}>
@@ -873,6 +874,31 @@ ${t("aiPrompt.sections")}` });
         <div style={{ fontSize: "12px", marginBottom: "12px" }}>{t("footer.rights")}</div>
         <a href="/legal.html" style={{ fontSize: "11px", color: C.fog, textDecoration: "none", letterSpacing: "0.08em", borderBottom: `1px solid ${C.fog}30`, paddingBottom: "2px" }}>{t("footer.legal")}</a>
       </footer>
+
+      {/* ── DEMO MODAL ── */}
+      {showDemo && (
+        <div onClick={() => setShowDemo(false)} style={{ position: "fixed", inset: 0, background: "rgba(11,12,14,0.85)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px", animation: "fadeIn 0.2s ease" }}>
+          <div onClick={e => e.stopPropagation()} style={{ background: C.white, borderRadius: "10px", width: "100%", maxWidth: "860px", height: "90vh", display: "flex", flexDirection: "column", animation: "fadeUp 0.3s ease", overflow: "hidden" }}>
+            {/* Header */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 24px", borderBottom: `1px solid ${C.line}`, flexShrink: 0 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <span style={{ fontFamily: F.display, fontSize: "18px", color: C.ink }}>Metalúrgica do Douro, S.A.</span>
+                <span style={{ display: "inline-block", padding: "2px 10px", border: `1px solid ${C.gold}`, borderRadius: "20px", fontSize: "9px", letterSpacing: "0.2em", textTransform: "uppercase", color: C.gold, fontFamily: F.body }}>Sample / Modelo</span>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <a href="/Arrojo_Destreza_Relatorio_Financeiro.pdf" download style={{ fontSize: "12px", color: C.fog, textDecoration: "none", fontFamily: F.body, border: `1px solid ${C.line}`, borderRadius: "4px", padding: "6px 12px" }}>⬇ Download PDF</a>
+                <button onClick={() => setShowDemo(false)} style={{ background: "none", border: "none", cursor: "pointer", color: C.fog, fontSize: "20px", lineHeight: 1, padding: "4px" }}>✕</button>
+              </div>
+            </div>
+            {/* PDF iframe */}
+            <iframe
+              src="/Arrojo_Destreza_Relatorio_Financeiro.pdf"
+              style={{ flex: 1, border: "none", width: "100%" }}
+              title="Exemplo de Relatório — YourCFO"
+            />
+          </div>
+        </div>
+      )}
     </>
   );
 
