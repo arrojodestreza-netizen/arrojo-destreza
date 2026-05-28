@@ -1,14 +1,12 @@
 {
   "lang": "en",
   "langName": "English",
-
   "nav": {
     "services": "Services",
     "methodology": "Methodology",
     "contact": "Contact",
     "startAnalysis": "Start Analysis"
   },
-
   "hero": {
     "tag": "AI-Powered Financial Analysis",
     "title1": "Precise and actionable",
@@ -18,7 +16,6 @@
     "ctaExample": "See report example",
     "recommendationLabel": "Key Recommendation"
   },
-
   "how": {
     "tag": "How It Works",
     "title": "Three steps to a complete diagnosis",
@@ -40,7 +37,6 @@
       }
     ]
   },
-
   "pricing": {
     "tag": "Pricing",
     "title": "Single report per analysis",
@@ -71,13 +67,11 @@
     ],
     "cta": "Get started →"
   },
-
   "footer": {
     "tagline": "FINANCIAL CONSULTING",
     "rights": "© 2025 Arrojo & Destreza Lda. · All rights reserved · Matosinhos, Portugal",
     "legal": "Terms & Conditions · Privacy Policy"
   },
-
   "tool": {
     "title": "Analyse your company",
     "description": "Upload the financial documents below. The analysis is ready in seconds — and is unlocked after payment confirmation.",
@@ -103,7 +97,6 @@
       "done": "Analysis complete"
     }
   },
-
   "paywall": {
     "tag": "Report Access",
     "title": "Financial Analysis",
@@ -181,7 +174,6 @@
       ]
     }
   },
-
   "report": {
     "tag": "Financial Analysis Report",
     "issued": "Issued on",
@@ -257,12 +249,98 @@
     "divida": "Debt",
     "ref": "Reference"
   },
-
   "aiPrompt": {
     "role": "You are a senior financial analyst specialised in European companies.",
     "instruction": "Analyse ALL financial documents provided for the company \"{{company}}\" (years: {{years}}).",
     "language": "Respond in English.",
     "sections": "Produce a complete and detailed financial analysis with the following sections:\n\n1. GLOBAL RATING (one word: Excellent, Good, Acceptable, Concerning or Critical)\n\n2. EXECUTIVE SUMMARY\nSummary text of 3-4 sentences. Then a list of 4-5 key highlights.\n\n3. FINANCIAL DATA (numerical values per year):\nRevenue, Net profit, EBITDA, Total assets, Equity, Financial debt, Working capital.\n\n4. INDICATORS & RATIOS (values per year):\nCurrent Ratio, Quick Ratio, Financial Autonomy (%), ROE (%), ROA (%), Net Margin (%), EBITDA Margin (%), Debt/EBITDA (x), DSO (days), DPO (days).\n\n5. DETAILED ANALYSIS\nFour paragraphs on: Profitability, Liquidity and Solvency, Capital Structure, Operational Efficiency.\n\n6. STRENGTHS & WEAKNESSES\nList of strengths, weaknesses, opportunities and risks.\n\n7. RECOMMENDATIONS\nImmediate actions (0-3 months), medium term (3-12 months), long term (1-3 years).\n\n8. CONCLUSION\nFinal paragraph with outlook.\n\nBe specific with numbers and year-on-year comparisons."
+  },
+  "legal": {
+    "tcTitle": "Terms and Conditions of Use",
+    "ppTitle": "Privacy Policy",
+    "updated": "Last updated: 28 May 2025",
+    "backHome": "← Back to website",
+    "tcTag": "Legal Documents",
+    "ppTag": "GDPR · Data Protection",
+    "tc": {
+      "s01": {
+        "title": "Service Provider",
+        "body": "The YourCFO service, accessible at yourcfo.app, is operated by Arrojo & Destreza Lda., VAT 517 674 670, Rua do Matim, 130, 4450-736 Matosinhos, Portugal. Email: info@yourcfo.app"
+      },
+      "s02": {
+        "title": "Scope and Purpose",
+        "body": "These Terms and Conditions govern access to and use of the YourCFO platform, which provides automated financial analysis services using artificial intelligence. The service is intended exclusively for legal entities and self-employed professionals. Use of the platform implies full acceptance of these Terms and Conditions."
+      },
+      "s03": {
+        "title": "Description of Service",
+        "body": "The YourCFO platform allows users to upload financial documents in PDF format, obtain automated AI-powered financial analysis, and access a report with indicators, ratios, SWOT analysis and recommendations. Standard Plan: €79 (VAT included). Premium Plan: €149 (VAT included). The report is made available immediately after payment confirmation."
+      },
+      "s04": {
+        "title": "Payment Process",
+        "body": "Payment is processed by credit/debit card (Stripe Payments Europe, Ltd.) or MB WAY (ifthenpay, Lda.). Arrojo & Destreza Lda. does not store card data. An invoice is issued after confirmed payment in accordance with Portuguese tax legislation."
+      },
+      "s05": {
+        "title": "Refund Policy",
+        "body": "No refunds are made after delivery of the report, as the service is provided immediately and in full at the time of payment, except in cases of error attributable to Arrojo & Destreza Lda. or proven technical failure. Complaints: info@yourcfo.app within 48 hours."
+      },
+      "s06": {
+        "title": "Nature and Limitations of Analysis",
+        "body": "The report is informational and for decision-support purposes only, and does not constitute financial, accounting, tax or legal advice. The quality of the analysis depends on the documents provided. Arrojo & Destreza Lda. is not responsible for business decisions made based on the report."
+      },
+      "s07": {
+        "title": "Intellectual Property",
+        "body": "The report is for the exclusive use of the paying user. Reproduction or commercialisation without express authorisation from Arrojo & Destreza Lda. is prohibited."
+      },
+      "s08": {
+        "title": "Liability",
+        "body": "Arrojo & Destreza Lda. is not liable for damages resulting from inability to use the platform, inaccuracies due to incorrect documents provided, or decisions made based on the report."
+      },
+      "s09": {
+        "title": "Applicable Law",
+        "body": "Governed by Portuguese law. Jurisdiction of Matosinhos courts. Online dispute resolution: ec.europa.eu/consumers/odr."
+      },
+      "s10": {
+        "title": "Amendments",
+        "body": "Arrojo & Destreza Lda. reserves the right to update these Terms at any time. Changes take effect upon publication at yourcfo.app."
+      }
+    },
+    "pp": {
+      "s01": {
+        "title": "Data Controller",
+        "body": "Arrojo & Destreza Lda., VAT 517 674 670, Rua do Matim, 130, 4450-736 Matosinhos, Portugal. Email: info@yourcfo.app"
+      },
+      "s02": {
+        "title": "Data Collected",
+        "body": "Billing data: name/company, VAT number, address, email. Usage data: Google Analytics (browsing, anonymised IP). Financial documents: processed solely for report generation, not stored permanently."
+      },
+      "s03": {
+        "title": "Purpose and Legal Basis",
+        "body": "Service performance — contract execution (Art. 6(1)(b) GDPR). Invoice issuance — legal obligation (Art. 6(1)(c) GDPR). Statistical analysis — legitimate interest via Google Analytics (Art. 6(1)(f) GDPR)."
+      },
+      "s04": {
+        "title": "Data Recipients",
+        "body": "Stripe (card payments), ifthenpay (MB WAY), weoInvoice (invoicing), Google LLC (Drive and Analytics), Anthropic PBC (AI), Cloudflare Inc. (infrastructure). We do not sell data to third parties for commercial purposes."
+      },
+      "s05": {
+        "title": "Data Retention",
+        "body": "Billing data: 10 years (legal obligation). Report copies (Google Drive): period necessary for service. Browsing data (Analytics): 26 months."
+      },
+      "s06": {
+        "title": "Cookies",
+        "body": "Necessary cookies: technical operation (Stripe, Cloudflare). Analytical cookies: Google Analytics — require consent. Manage preferences in browser settings."
+      },
+      "s07": {
+        "title": "Your Rights",
+        "body": "Rights of access, rectification, erasure, restriction, portability and objection. Contact info@yourcfo.app (response within 30 days). Complaints to the supervisory authority."
+      },
+      "s08": {
+        "title": "Security",
+        "body": "HTTPS/TLS encrypted transmission. Payments processed by PCI-DSS certified entities. Restricted data access."
+      },
+      "s09": {
+        "title": "Contact",
+        "body": "info@yourcfo.app · Rua do Matim, 130, 4450-736 Matosinhos, Portugal. We guarantee a response within 30 working days."
+      }
+    }
   }
 }
-
