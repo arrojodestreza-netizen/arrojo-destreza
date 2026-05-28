@@ -1,1 +1,268 @@
+{
+  "lang": "fr",
+  "langName": "Français",
+
+  "nav": {
+    "services": "Services",
+    "methodology": "Méthodologie",
+    "contact": "Contact",
+    "startAnalysis": "Démarrer l'Analyse"
+  },
+
+  "hero": {
+    "tag": "Analyse Financière par IA",
+    "title1": "Diagnostic financier",
+    "title2": "précis et actionnable",
+    "description": "Chargez les documents financiers de votre entreprise — bilans et comptes de résultats — et recevez en quelques minutes une analyse professionnelle complète avec des recommandations concrètes d'amélioration.",
+    "cta": "Analyser mon entreprise",
+    "ctaExample": "Voir un exemple de rapport",
+    "recommendationLabel": "Recommandation Principale"
+  },
+
+  "how": {
+    "tag": "Comment Ça Marche",
+    "title": "Trois étapes pour un diagnostic complet",
+    "steps": [
+      {
+        "num": "01",
+        "title": "Chargez les documents",
+        "desc": "Téléchargez les bilans et comptes de résultats en PDF pour 2 années ou plus. Le processus est sécurisé et confidentiel."
+      },
+      {
+        "num": "02",
+        "title": "L'IA analyse tout",
+        "desc": "Notre intelligence artificielle lit et interprète tous les documents, calcule les ratios, identifie les tendances et compare les périodes."
+      },
+      {
+        "num": "03",
+        "title": "Accédez au rapport complet",
+        "desc": "Après confirmation du paiement, accédez immédiatement au rapport détaillé avec indicateurs, points critiques et plan d'action."
+      }
+    ]
+  },
+
+  "pricing": {
+    "tag": "Tarifs",
+    "title": "Rapport unique par analyse",
+    "mostPopular": "LE PLUS POPULAIRE",
+    "plans": [
+      {
+        "name": "Standard",
+        "price": "79€",
+        "features": [
+          "Rapport complet par IA",
+          "Indicateurs financiers",
+          "Points forts et faibles",
+          "Recommandations priorisées",
+          "Téléchargement PDF"
+        ]
+      },
+      {
+        "name": "Premium",
+        "price": "149€",
+        "features": [
+          "Tout du Standard",
+          "Benchmarking sectoriel",
+          "Projections sur 3 ans",
+          "Analyse de risque détaillée",
+          "Support e-mail 30 jours"
+        ]
+      }
+    ],
+    "cta": "Commencer →"
+  },
+
+  "footer": {
+    "tagline": "CONSEIL FINANCIER",
+    "rights": "© 2025 Arrojo & Destreza Lda. · Tous droits réservés · Matosinhos, Portugal",
+    "legal": "Conditions Générales · Politique de Confidentialité"
+  },
+
+  "tool": {
+    "title": "Analysez votre entreprise",
+    "description": "Chargez les documents financiers ci-dessous. L'analyse est prête en quelques secondes — et se débloque après confirmation du paiement.",
+    "companyLabel": "Nom de l'Entreprise",
+    "companyPlaceholder": "Ex : Dupont & Associés SARL",
+    "addYear": "+ Ajouter une autre année",
+    "removeYear": "Supprimer",
+    "analyzeBtn": "Analyser l'Entreprise ✦",
+    "analyzingBtn": "Analyse en cours…",
+    "disclaimer": "Chargez au moins 2 documents pour commencer · Les résultats sont débloqués après paiement",
+    "uploadDrag": "Faites glisser le PDF ou cliquez pour sélectionner",
+    "uploadLoaded": "Chargé",
+    "docTypes": {
+      "balance": "Bilan",
+      "income": "Compte de Résultat"
+    },
+    "status": {
+      "preparing": "Préparation des documents…",
+      "processing": "Traitement de {{doc}} {{year}}…",
+      "analyzing": "Analyse par intelligence artificielle…",
+      "structuring": "Structuration du rapport…",
+      "finishing": "Préparation du rapport…",
+      "done": "Analyse terminée"
+    }
+  },
+
+  "paywall": {
+    "tag": "Accès au Rapport",
+    "title": "Analyse Financière",
+    "choosePlan": "Choisissez votre formule :",
+    "continueBtn": "Continuer vers le Paiement →",
+    "back": "← Retour",
+    "payCard": "🔒 Payer {{price}} par Carte",
+    "payMbway": "📱 Payer {{price}} par MB WAY",
+    "loading": "Chargement…",
+    "security": "Paiement sécurisé · Cryptage SSL · TVA incluse",
+    "unlockBtn": "Voir le Rapport Complet → à partir de 79€",
+    "unlockAccess": "Débloquer le Rapport Complet",
+    "processing": "Traitement du paiement…",
+    "processingWait": "Veuillez patienter",
+    "mbwayTitle": "Confirmez dans MB WAY",
+    "mbwayDesc": "Une demande de paiement de {{price}} a été envoyée au numéro {{phone}}. Ouvrez l'application MB WAY et confirmez le paiement.",
+    "mbwayWaiting": "En attente de confirmation…",
+    "mbwayExpires": "La demande expire dans 4 minutes",
+    "mbwayCancel": "Annuler",
+    "successTitle": "Paiement Confirmé",
+    "successSub": "Chargement de votre analyse…",
+    "paywallTitle": "Analyse complète",
+    "paywallSub": "disponible après paiement",
+    "paywallDesc": "Le résumé et l'évolution financière sont disponibles gratuitement. Pour accéder à tous les ratios, graphiques détaillés, analyse SWOT et recommandations, veuillez confirmer le paiement.",
+    "accessImmediate": "Accès immédiat · TVA incluse · Garantie de satisfaction",
+    "upgradeTitle": "Passez à",
+    "upgradePremium": "Premium",
+    "upgradeDesc": "La formule Standard inclut le Résumé, l'Évolution Financière et les Indicateurs. Pour accéder à l'Analyse Détaillée, SWOT, Recommandations et Conclusion, passez à Premium (149€).",
+    "upgradeBtn": "Passer à Premium → 149€",
+    "deblocked": "Débloqué ✓",
+    "print": "⬇ Imprimer / PDF",
+    "billing": "Informations de Facturation",
+    "fields": {
+      "name": "Nom / Entreprise",
+      "namePlaceholder": "Jean Dupont ou Entreprise SARL",
+      "nif": "Numéro de TVA",
+      "nifPlaceholder": "FR12345678901",
+      "morada": "Adresse",
+      "moradaPlaceholder": "12 rue de la Paix",
+      "cp": "Code Postal",
+      "cpPlaceholder": "75001",
+      "localidade": "Ville",
+      "localidadePlaceholder": "Paris",
+      "email": "E-mail pour le reçu",
+      "emailPlaceholder": "jean@entreprise.fr",
+      "phone": "Numéro MB WAY",
+      "phonePlaceholder": "912 345 678",
+      "card": "Données de la Carte"
+    },
+    "errors": {
+      "name": "Champ obligatoire",
+      "email": "E-mail invalide",
+      "nif": "Numéro de TVA invalide (9 chiffres)",
+      "morada": "Champ obligatoire",
+      "phone": "Numéro MB WAY invalide (ex : 912345678)"
+    },
+    "methods": {
+      "card": "💳 Carte",
+      "mbway": "📱 MB WAY"
+    },
+    "planFeatures": {
+      "standard": [
+        "Rapport complet par IA",
+        "Indicateurs financiers",
+        "Points forts et faibles",
+        "Recommandations",
+        "Téléchargement PDF"
+      ],
+      "premium": [
+        "Tout du Standard",
+        "Benchmarking sectoriel",
+        "Projections sur 3 ans",
+        "Analyse de risque détaillée",
+        "Support e-mail 30 jours"
+      ]
+    }
+  },
+
+  "report": {
+    "tag": "Rapport d'Analyse Financière",
+    "issued": "Émis le",
+    "exercise": "Exercice",
+    "sections": {
+      "s01": "Résumé Exécutif",
+      "s02": "Évolution Financière",
+      "s03": "Indicateurs et Ratios Financiers",
+      "s04": "Analyse Détaillée",
+      "s05": "Forces, Faiblesses, Opportunités et Risques",
+      "s06": "Recommandations et Plan d'Action",
+      "s07": "Conclusion"
+    },
+    "kpis": {
+      "volume_negocios": "Chiffre d'Affaires",
+      "resultado_liquido": "Résultat Net",
+      "ebitda": "EBITDA",
+      "total_ativo": "Total Actif",
+      "capital_proprio": "Capitaux Propres",
+      "divida_financeira": "Dette Financière",
+      "liquidez_geral": "Ratio de Liquidité",
+      "liquidez_reduzida": "Ratio de Liquidité Réduite",
+      "autonomia_financeira": "Autonomie Financière",
+      "roe": "ROE",
+      "roa": "ROA",
+      "margem_liquida": "Marge Nette",
+      "margem_ebitda": "Marge EBITDA",
+      "divida_ebitda": "Dette / EBITDA",
+      "pme": "Délai Moyen de Recouvrement",
+      "pmp": "Délai Moyen de Paiement"
+    },
+    "charts": {
+      "volume_negocios": "Chiffre d'Affaires",
+      "resultado_liquido": "Résultat Net",
+      "ebitda": "EBITDA",
+      "capital": "Structure du Capital",
+      "liquidez": "Ratios de Liquidité",
+      "rentabilidade": "Rentabilité",
+      "ciclo": "Cycle d'Exploitation (jours)",
+      "autonomia": "Autonomie Financière"
+    },
+    "swot": {
+      "forcas": "Forces",
+      "fraquezas": "Faiblesses",
+      "oportunidades": "Opportunités",
+      "riscos": "Risques / Menaces"
+    },
+    "actions": {
+      "imediato": "Immédiat",
+      "imediatoSub": "0 – 3 mois",
+      "medio": "Moyen Terme",
+      "medioSub": "3 – 12 mois",
+      "longo": "Long Terme",
+      "longoSub": "1 – 3 ans"
+    },
+    "analysis": {
+      "rentabilidade": "Rentabilité",
+      "liquidez_solvabilidade": "Liquidité et Solvabilité",
+      "estrutura_capital": "Structure du Capital",
+      "eficiencia_operacional": "Efficacité Opérationnelle"
+    },
+    "ratings": {
+      "Excelente": "Excellent",
+      "Bom": "Bon",
+      "Aceitável": "Acceptable",
+      "Preocupante": "Préoccupant",
+      "Crítico": "Critique"
+    },
+    "footer": "Rapport produit par Arrojo & Destreza — Conseil Financier",
+    "poweredBy": "Propulsé par Claude AI",
+    "activo": "Total Actif",
+    "capProprio": "Capitaux Propres",
+    "divida": "Dette",
+    "ref": "Référence"
+  },
+
+  "aiPrompt": {
+    "role": "Vous êtes un analyste financier senior spécialisé dans les entreprises européennes.",
+    "instruction": "Analysez TOUS les documents financiers fournis pour l'entreprise \"{{company}}\" (années : {{years}}).",
+    "language": "Répondez en français.",
+    "sections": "Produisez une analyse financière complète et détaillée avec les sections suivantes :\n\n1. ÉVALUATION GLOBALE (un mot : Excellent, Bon, Acceptable, Préoccupant ou Critique)\n\n2. RÉSUMÉ EXÉCUTIF\nTexte de synthèse de 3-4 phrases. Puis liste de 4-5 points forts principaux.\n\n3. DONNÉES FINANCIÈRES (valeurs numériques par année) :\nChiffre d'affaires, Résultat net, EBITDA, Total actif, Capitaux propres, Dette financière, Fonds de roulement.\n\n4. INDICATEURS ET RATIOS (valeurs par année) :\nRatio de liquidité, Liquidité réduite, Autonomie financière (%), ROE (%), ROA (%), Marge nette (%), Marge EBITDA (%), Dette/EBITDA (x), DMR (jours), DMP (jours).\n\n5. ANALYSE DÉTAILLÉE\nQuatre paragraphes sur : Rentabilité, Liquidité et Solvabilité, Structure du Capital, Efficacité Opérationnelle.\n\n6. FORCES ET FAIBLESSES\nListe des forces, faiblesses, opportunités et risques.\n\n7. RECOMMANDATIONS\nActions immédiates (0-3 mois), moyen terme (3-12 mois), long terme (1-3 ans).\n\n8. CONCLUSION\nParagraphe final avec perspectives.\n\nSoyez précis avec les chiffres et les comparaisons d'une année à l'autre."
+  }
+}
 
