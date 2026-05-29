@@ -750,7 +750,7 @@ export default function App() {
   const [page, setPage] = useState("home");
   const [mobileMenu, setMobileMenu] = useState(false);
   const [company, setCompany] = useState("");
-  const [years, setYears] = useState(["2022", "2023"]);
+  const [years, setYears] = useState(["2023", "2024"]);
   const [files, setFiles] = useState({});
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
