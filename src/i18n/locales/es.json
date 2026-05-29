@@ -9,7 +9,7 @@
   },
   "hero": {
     "tag": "Análisis Financiero con IA",
-    "title1": "Diagnóstico financiero",
+    "title1": "Diagnóstico financiero de CFO",
     "title2": "preciso y accionable",
     "description": "Cargue los documentos financieros de su empresa — balances y cuentas de resultados — y reciba en minutos un análisis profesional completo con recomendaciones concretas de mejora.",
     "cta": "Analizar mi empresa",
@@ -175,7 +175,7 @@
     }
   },
   "report": {
-    "tag": "Informe de Análisis Financiero",
+    "tag": "Diagnóstico CFO",
     "issued": "Emitido el",
     "exercise": "Ejercicio",
     "sections": {
