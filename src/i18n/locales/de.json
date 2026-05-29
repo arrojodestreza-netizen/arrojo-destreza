@@ -175,7 +175,7 @@
     }
   },
   "report": {
-    "tag": "Finanzbericht",
+    "tag": "CFO-Diagnose",
     "issued": "Ausgestellt am",
     "exercise": "Geschäftsjahr",
     "sections": {
