@@ -175,7 +175,7 @@
     }
   },
   "report": {
-    "tag": "Financial Analysis Report",
+    "tag": "CFO Diagnosis",
     "issued": "Issued on",
     "exercise": "Financial Year",
     "sections": {
