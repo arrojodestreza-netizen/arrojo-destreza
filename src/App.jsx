@@ -245,6 +245,9 @@ function PaywallModal({ onClose, onPay, companyName }) {
   const [stripeError, setStripeError] = useState("");
   const [cardReady, setCardReady] = useState(false);
   const [mbwayStatus, setMbwayStatus] = useState("");
+  const [couponCode, setCouponCode] = useState("");
+  const [couponStatus, setCouponStatus] = useState(null); // null | "checking" | "valid" | "invalid"
+  const [couponData, setCouponData] = useState(null); // { discount, couponId, name }
   const stripeRef = useRef(null);
   const cardRef = useRef(null);
   const cardMountRef = useRef(null);
@@ -275,6 +278,46 @@ function PaywallModal({ onClose, onPay, companyName }) {
 
   useEffect(() => () => { if (pollRef.current) clearInterval(pollRef.current); }, []);
 
+  const validateCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setCouponStatus("checking");
+    setCouponData(null);
+    try {
+      const resp = await fetch(WORKER_URL, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "validate_coupon", couponCode: couponCode.trim() }),
+      });
+      const data = await resp.json();
+      if (data.valid) {
+        setCouponStatus("valid");
+        setCouponData(data);
+      } else {
+        setCouponStatus("invalid");
+        setCouponData({ error: data.error || "Código inválido" });
+      }
+    } catch(e) {
+      setCouponStatus("invalid");
+      setCouponData({ error: "Erro ao validar código" });
+    }
+  };
+
+  const getFinalAmount = () => {
+    if (!couponData || couponStatus !== "valid") return selectedPlan?.amount || 0;
+    if (couponData.discount?.type === "percent") {
+      return Math.round((selectedPlan?.amount || 0) * (1 - couponData.discount.value / 100));
+    }
+    if (couponData.discount?.type === "amount") {
+      return Math.max(0, (selectedPlan?.amount || 0) - couponData.discount.value);
+    }
+    return selectedPlan?.amount || 0;
+  };
+
+  const getFinalPrice = () => {
+    const amt = getFinalAmount();
+    if (amt === 0) return "0€ (Gratuito)";
+    return `${(amt / 100).toFixed(0)}€`;
+  };
+
   const validate = () => {
     const e = {};
     if (!form.name.trim()) e.name = t("paywall.errors.name");
@@ -288,13 +331,32 @@ function PaywallModal({ onClose, onPay, companyName }) {
 
   const handlePayCard = async () => {
     if (!validate()) return;
+    const finalAmt = getFinalAmount();
+
+    // Cupão 100% — sem cobrar cartão
+    if (finalAmt === 0) {
+      setStep("processing");
+      try {
+        const intentResp = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "create_payment", amount: 0, currency: "eur", description: `${selectedPlan.label} — ${companyName}`, plan, cliente_nome: form.name, cliente_email: form.email, cliente_nif: form.nif, cliente_morada: form.morada, cliente_codigopostal: form.codigopostal, cliente_localidade: form.localidade, couponId: couponData?.couponId }) });
+        const intentData = await intentResp.json();
+        if (intentData.free || intentData.status === "succeeded") {
+          notificarFatura("card", selectedPlan, form, companyName);
+          setStep("success");
+          setTimeout(() => { onPay(plan); onClose(); }, 2500);
+        } else {
+          throw new Error("Erro ao processar código promocional");
+        }
+      } catch (err) { setStripeError(err.message); setStep("checkout"); }
+      return;
+    }
+
     const stripe = stripeRef.current; const card = cardRef.current;
     if (!stripe || !card) { setStripeError("Erro ao carregar o Stripe."); return; }
     const { error: pmError, paymentMethod } = await stripe.createPaymentMethod({ type: "card", card, billing_details: { name: form.name, email: form.email, address: { line1: form.morada, postal_code: form.codigopostal, city: form.localidade, country: "PT" } } });
     if (pmError) { setStripeError(pmError.message); return; }
     setStep("processing");
     try {
-      const intentResp = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "create_payment", amount: selectedPlan.amount, currency: "eur", description: `${selectedPlan.label} — ${companyName}`, plan, cliente_nome: form.name, cliente_email: form.email, cliente_nif: form.nif, cliente_morada: form.morada, cliente_codigopostal: form.codigopostal, cliente_localidade: form.localidade }) });
+      const intentResp = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "create_payment", amount: finalAmt, currency: "eur", description: `${selectedPlan.label} — ${companyName}`, plan, cliente_nome: form.name, cliente_email: form.email, cliente_nif: form.nif, cliente_morada: form.morada, cliente_codigopostal: form.codigopostal, cliente_localidade: form.localidade, couponId: couponData?.couponId }) });
       const intentData = await intentResp.json();
       if (intentData.error) throw new Error(intentData.error.message || "Erro ao criar pagamento");
       const { error, paymentIntent } = await stripe.confirmCardPayment(intentData.client_secret, { payment_method: paymentMethod.id });
@@ -415,7 +477,42 @@ function PaywallModal({ onClose, onPay, companyName }) {
                 <div style={{ fontSize: "13px", fontFamily: F.display }}>{selectedPlan?.label}</div>
                 <div style={{ fontSize: "11px", color: C.fog }}>{companyName}</div>
               </div>
-              <div style={{ fontFamily: F.display, fontSize: "22px", color: C.gold }}>{selectedPlan?.price}</div>
+              <div style={{ textAlign: "right" }}>
+                {couponStatus === "valid" && getFinalAmount() !== selectedPlan?.amount && (
+                  <div style={{ fontFamily: F.display, fontSize: "14px", color: C.fog, textDecoration: "line-through" }}>{selectedPlan?.price}</div>
+                )}
+                <div style={{ fontFamily: F.display, fontSize: "22px", color: C.gold }}>{couponStatus === "valid" ? getFinalPrice() : selectedPlan?.price}</div>
+              </div>
+            </div>
+
+            {/* Campo código promocional */}
+            <div style={{ marginBottom: "20px" }}>
+              <label style={{ fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: C.steel, display: "block", marginBottom: "6px", fontFamily: F.body }}>Código Promocional</label>
+              <div style={{ display: "flex", gap: "8px" }}>
+                <input
+                  type="text"
+                  value={couponCode}
+                  placeholder="Ex: OCC-BASTONARIA"
+                  onChange={e => { setCouponCode(e.target.value.toUpperCase()); setCouponStatus(null); setCouponData(null); }}
+                  style={{ flex: 1, padding: "10px 14px", border: `1px solid ${couponStatus === "valid" ? C.success : couponStatus === "invalid" ? C.danger : C.line}`, borderRadius: "5px", fontFamily: F.body, fontSize: "15px", color: C.ink, background: C.white, textTransform: "uppercase" }}
+                />
+                <button
+                  onClick={validateCoupon}
+                  disabled={!couponCode.trim() || couponStatus === "checking"}
+                  style={{ padding: "10px 16px", background: couponCode.trim() ? C.gold : C.line, border: "none", borderRadius: "5px", color: C.white, fontFamily: F.body, fontSize: "13px", cursor: couponCode.trim() ? "pointer" : "not-allowed", whiteSpace: "nowrap" }}
+                >
+                  {couponStatus === "checking" ? "…" : "Aplicar"}
+                </button>
+              </div>
+              {couponStatus === "valid" && (
+                <div style={{ fontSize: "12px", color: C.success, marginTop: "6px", fontFamily: F.body }}>
+                  ✓ Código aplicado — {couponData?.discount?.type === "percent" ? `${couponData.discount.value}% desconto` : `desconto aplicado`}
+                  {getFinalAmount() === 0 && " · Acesso gratuito"}
+                </div>
+              )}
+              {couponStatus === "invalid" && (
+                <div style={{ fontSize: "12px", color: C.danger, marginTop: "6px", fontFamily: F.body }}>✕ {couponData?.error || "Código inválido"}</div>
+              )}
             </div>
             <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
               {[{ id: "card", label: t("paywall.methods.card") }, { id: "mbway", label: t("paywall.methods.mbway") }].map(m => (
@@ -438,13 +535,6 @@ function PaywallModal({ onClose, onPay, companyName }) {
                   {errors[f.key] && <div style={{ fontSize: "11px", color: C.danger, marginTop: "4px" }}>{errors[f.key]}</div>}
                 </div>
               ))}
-              {payMethod === "card" && (
-                <div>
-                  <label style={{ fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: C.steel, display: "block", marginBottom: "6px", fontFamily: F.body }}>{t("paywall.fields.card")}</label>
-                  <div ref={cardMountRef} style={{ padding: "11px 14px", border: `1px solid ${stripeError ? C.danger : C.line}`, borderRadius: "5px", background: C.white, minHeight: "42px" }} />
-                  {stripeError && <div style={{ fontSize: "11px", color: C.danger, marginTop: "4px" }}>{stripeError}</div>}
-                </div>
-              )}
               {payMethod === "mbway" && (
                 <div>
                   <label style={{ fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: C.steel, display: "block", marginBottom: "6px", fontFamily: F.body }}>{t("paywall.fields.phone")}</label>
@@ -454,8 +544,24 @@ function PaywallModal({ onClose, onPay, companyName }) {
                 </div>
               )}
             </div>
-            <button onClick={handlePay} disabled={payMethod === "card" && !cardReady} style={{ width: "100%", padding: "14px", background: (payMethod === "mbway" || cardReady) ? C.gold : C.line, border: "none", borderRadius: "6px", color: C.white, fontFamily: F.display, fontSize: "18px", letterSpacing: "0.06em", cursor: (payMethod === "mbway" || cardReady) ? "pointer" : "not-allowed", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", transition: "all 0.2s" }}>
-              {payMethod === "card" ? (cardReady ? t("paywall.payCard", { price: selectedPlan?.price }) : t("paywall.loading")) : t("paywall.payMbway", { price: selectedPlan?.price })}
+            {/* Campos cartão — esconder se gratuito */}
+            {payMethod === "card" && getFinalAmount() > 0 && (
+              <div style={{ marginBottom: "14px" }}>
+                <label style={{ fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: C.steel, display: "block", marginBottom: "6px", fontFamily: F.body }}>{t("paywall.fields.card")}</label>
+                <div ref={cardMountRef} style={{ padding: "11px 14px", border: `1px solid ${stripeError ? C.danger : C.line}`, borderRadius: "5px", background: C.white, minHeight: "42px" }} />
+                {stripeError && <div style={{ fontSize: "11px", color: C.danger, marginTop: "4px" }}>{stripeError}</div>}
+              </div>
+            )}
+
+            <button onClick={handlePay}
+              disabled={payMethod === "card" && !cardReady && getFinalAmount() > 0}
+              style={{ width: "100%", padding: "14px", background: (payMethod === "mbway" || cardReady || getFinalAmount() === 0) ? C.gold : C.line, border: "none", borderRadius: "6px", color: C.white, fontFamily: F.display, fontSize: "18px", letterSpacing: "0.06em", cursor: (payMethod === "mbway" || cardReady || getFinalAmount() === 0) ? "pointer" : "not-allowed", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", transition: "all 0.2s" }}>
+              {getFinalAmount() === 0
+                ? "✦ Aceder Gratuitamente"
+                : payMethod === "card"
+                  ? (cardReady ? t("paywall.payCard", { price: getFinalPrice() }) : t("paywall.loading"))
+                  : t("paywall.payMbway", { price: getFinalPrice() })
+              }
             </button>
             <div style={{ textAlign: "center", fontSize: "11px", color: C.fog, marginTop: "12px", fontStyle: "italic" }}>{t("paywall.security")}</div>
           </div>
