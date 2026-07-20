@@ -1012,7 +1012,7 @@ export default function App() {
 
       content.push({ type: "text", text: `${t("aiPrompt.role")}
 ${t("aiPrompt.instruction", { company, years: yearsStr })}
-${cae ? t("aiPrompt.caeInstruction", { cae, sector: getCaeSector(cae) }) : ""}
+${""}
 ${t("aiPrompt.language")}
 
 ${t("aiPrompt.sections")}` });
