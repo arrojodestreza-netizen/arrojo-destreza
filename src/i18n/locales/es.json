@@ -95,7 +95,11 @@
       "structuring": "Estructurando el informe…",
       "finishing": "Preparando informe…",
       "done": "Análisis completado"
-    }
+    },
+    "caeLabel": "CAE Principal",
+    "caeOptional": "(opcional)",
+    "caePlaceholder": "Ej: 41100",
+    "caeHint": "Código de Actividad Económica de 2-5 dígitos. Permite comparar los indicadores de la empresa con la media del sector en Portugal."
   },
   "paywall": {
     "tag": "Acceso al Informe",
@@ -185,7 +189,8 @@
       "s04": "Análisis Detallado",
       "s05": "Fortalezas, Debilidades, Oportunidades y Riesgos",
       "s06": "Recomendaciones y Plan de Acción",
-      "s07": "Conclusión"
+      "s07": "Conclusión",
+      "s08": "Posicionamiento Sectorial"
     },
     "kpis": {
       "volume_negocios": "Cifra de Negocio",
@@ -253,7 +258,8 @@
     "role": "Usted es un analista financiero senior especializado en empresas europeas.",
     "instruction": "Analice TODOS los documentos financieros proporcionados de la empresa \"{{company}}\" (años: {{years}}).",
     "language": "Responda en español.",
-    "sections": "Produzca un análisis financiero completo y detallado con las siguientes secciones:\n\n1. VALORACIÓN GLOBAL (una palabra: Excelente, Bueno, Aceptable, Preocupante o Crítico)\n\n2. RESUMEN EJECUTIVO\nTexto de síntesis de 3-4 frases. Luego lista de 4-5 puntos destacados principales.\n\n3. DATOS FINANCIEROS (valores numéricos por año):\nCifra de negocio, Resultado neto, EBITDA, Total activo, Patrimonio neto, Deuda financiera, Fondo de maniobra.\n\n4. INDICADORES Y RATIOS (valores por año):\nRatio de Liquidez, Ratio Rápido, Autonomía Financiera (%), ROE (%), ROA (%), Margen Neto (%), Margen EBITDA (%), Deuda/EBITDA (x), PMC (días), PMP (días).\n\n5. ANÁLISIS DETALLADO\nCuatro párrafos sobre: Rentabilidad, Liquidez y Solvencia, Estructura de Capital, Eficiencia Operacional.\n\n6. FORTALEZAS Y DEBILIDADES\nLista de fortalezas, debilidades, oportunidades y riesgos.\n\n7. RECOMENDACIONES\nAcciones inmediatas (0-3 meses), medio plazo (3-12 meses), largo plazo (1-3 años).\n\n8. CONCLUSIÓN\nPárrafo final con perspectivas.\n\nSea específico con números y comparaciones entre años."
+    "sections": "Produzca un análisis financiero completo y detallado con las siguientes secciones:\n\n1. VALORACIÓN GLOBAL (una palabra: Excelente, Bueno, Aceptable, Preocupante o Crítico)\n\n2. RESUMEN EJECUTIVO\nTexto de síntesis de 3-4 frases. Luego lista de 4-5 puntos destacados principales.\n\n3. DATOS FINANCIEROS (valores numéricos por año):\nCifra de negocio, Resultado neto, EBITDA, Total activo, Patrimonio neto, Deuda financiera, Fondo de maniobra.\n\n4. INDICADORES Y RATIOS (valores por año):\nRatio de Liquidez, Ratio Rápido, Autonomía Financiera (%), ROE (%), ROA (%), Margen Neto (%), Margen EBITDA (%), Deuda/EBITDA (x), PMC (días), PMP (días).\n\n5. ANÁLISIS DETALLADO\nCuatro párrafos sobre: Rentabilidad, Liquidez y Solvencia, Estructura de Capital, Eficiencia Operacional.\n\n6. FORTALEZAS Y DEBILIDADES\nLista de fortalezas, debilidades, oportunidades y riesgos.\n\n7. RECOMENDACIONES\nAcciones inmediatas (0-3 meses), medio plazo (3-12 meses), largo plazo (1-3 años).\n\n8. CONCLUSIÓN\nPárrafo final con perspectivas.\n\nSea específico con números y comparaciones entre años.",
+    "caeInstruction": "La empresa tiene CAE {{cae}} — {{sector}}. Incluye obligatoriamente una sección '08 — Posicionamiento Sectorial' que compare los principales indicadores financieros de la empresa con los valores medios/medianos del sector en Portugal (fuente: Banco de Portugal, Central de Balances). Para cada indicador (liquidez general, autonomía financiera, ROE, ROA, margen neto, margen EBITDA, deuda/EBITDA, PMC, PMP) indica: valor de la empresa, media del sector, y si la empresa está por encima o por debajo de la media sectorial."
   },
   "legal": {
     "tcTitle": "Términos y Condiciones de Uso",
