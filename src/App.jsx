@@ -851,11 +851,108 @@ function LegalPage({ onBack }) {
   );
 }
 
+/* ─── CAE SECTOR MAP ─────────────────────────────────────────── */
+function getCaeSector(cae) {
+  if (!cae) return "";
+  const div = cae.toString().slice(0, 2);
+  const map = {
+    "01": "Agricultura, produção animal, caça e actividades dos serviços relacionados",
+    "02": "Silvicultura e exploração florestal",
+    "03": "Pesca e aquicultura",
+    "05": "Extracção de hulha e lenhite",
+    "06": "Extracção de petróleo bruto e gás natural",
+    "07": "Extracção e preparação de minérios metálicos",
+    "08": "Outras indústrias extractivas",
+    "09": "Actividades dos serviços relacionados com as indústrias extractivas",
+    "10": "Indústrias alimentares",
+    "11": "Indústria das bebidas",
+    "12": "Indústria do tabaco",
+    "13": "Fabricação de têxteis",
+    "14": "Indústria do vestuário",
+    "15": "Indústria do couro e dos produtos do couro",
+    "16": "Indústrias da madeira e da cortiça",
+    "17": "Fabricação de pasta, de papel, cartão e seus artigos",
+    "18": "Impressão e reprodução de suportes gravados",
+    "19": "Fabricação de coque, de produtos petrolíferos refinados",
+    "20": "Fabricação de produtos químicos e de fibras sintéticas ou artificiais",
+    "21": "Fabricação de produtos farmacêuticos de base e de preparações farmacêuticas",
+    "22": "Fabricação de artigos de borracha e de matérias plásticas",
+    "23": "Fabricação de outros produtos minerais não metálicos",
+    "24": "Indústrias metalúrgicas de base",
+    "25": "Fabricação de produtos metálicos, excepto máquinas e equipamentos",
+    "26": "Fabricação de equipamentos informáticos, electrónicos e ópticos",
+    "27": "Fabricação de equipamento eléctrico",
+    "28": "Fabricação de máquinas e de equipamentos",
+    "29": "Fabricação de veículos automóveis, reboques e semi-reboques",
+    "30": "Fabricação de outro equipamento de transporte",
+    "31": "Fabricação de mobiliário e de colchões",
+    "32": "Outras indústrias transformadoras",
+    "33": "Reparação, manutenção e instalação de máquinas e equipamentos",
+    "35": "Electricidade, gás, vapor, água quente e fria e ar frio",
+    "36": "Captação, tratamento e distribuição de água",
+    "37": "Recolha, drenagem e tratamento de águas residuais",
+    "38": "Recolha, tratamento e eliminação de resíduos",
+    "39": "Descontaminação e actividades similares",
+    "41": "Construção de edifícios",
+    "42": "Engenharia civil",
+    "43": "Actividades especializadas de construção",
+    "45": "Comércio, manutenção e reparação de veículos automóveis e motociclos",
+    "46": "Comércio por grosso",
+    "47": "Comércio a retalho",
+    "49": "Transportes terrestres e transportes por oleodutos ou gasodutos",
+    "50": "Transportes por via aquática",
+    "51": "Transportes aéreos",
+    "52": "Armazenagem e actividades auxiliares dos transportes",
+    "53": "Actividades postais e de courier",
+    "55": "Alojamento",
+    "56": "Restauração e similares",
+    "58": "Actividades de edição",
+    "59": "Actividades cinematográficas, de vídeo, de produção de programas de televisão",
+    "60": "Actividades de rádio e de televisão",
+    "61": "Telecomunicações",
+    "62": "Consultoria e programação informática e actividades relacionadas",
+    "63": "Actividades dos serviços de informação",
+    "64": "Actividades de serviços financeiros",
+    "65": "Seguros, resseguros e fundos de pensões",
+    "66": "Actividades auxiliares de serviços financeiros e dos seguros",
+    "68": "Actividades imobiliárias",
+    "69": "Actividades jurídicas e de contabilidade",
+    "70": "Actividades das sedes sociais e de consultoria para a gestão",
+    "71": "Actividades de arquitectura, de engenharia e técnicas afins",
+    "72": "Actividades de investigação científica e de desenvolvimento",
+    "73": "Publicidade, estudos de mercado e sondagens de opinião",
+    "74": "Outras actividades de consultoria, científicas, técnicas e similares",
+    "75": "Actividades veterinárias",
+    "77": "Actividades de aluguer",
+    "78": "Actividades de emprego",
+    "79": "Agências de viagem, operadores turísticos e outros serviços de reservas",
+    "80": "Actividades de investigação e segurança",
+    "81": "Actividades relacionadas com edifícios e plantação e manutenção de jardins",
+    "82": "Actividades de serviços administrativos e de apoio prestados às empresas",
+    "84": "Administração pública e defesa; segurança social obrigatória",
+    "85": "Educação",
+    "86": "Actividades de saúde humana",
+    "87": "Actividades de apoio social com alojamento",
+    "88": "Actividades de apoio social sem alojamento",
+    "90": "Actividades de teatro, de música, de dança e outras actividades artísticas e de espectáculo",
+    "91": "Actividades das bibliotecas, arquivos, museus e outras actividades culturais",
+    "92": "Lotarias e outros jogos de aposta",
+    "93": "Actividades desportivas, de diversão e recreativas",
+    "94": "Actividades das organizações associativas",
+    "95": "Reparação de computadores e de bens de uso pessoal e doméstico",
+    "96": "Outras actividades de serviços pessoais",
+    "97": "Actividades das famílias empregadoras de pessoal doméstico",
+    "99": "Actividades dos organismos internacionais e outras instituições extraterritoriais",
+  };
+  return map[div] || `Sector CAE ${div}`;
+}
+
 export default function App() {
   const { t, i18n: i18nInst } = useTranslation();
   const [page, setPage] = useState("home");
   const [mobileMenu, setMobileMenu] = useState(false);
   const [company, setCompany] = useState("");
+  const [cae, setCae] = useState("");
   const [years, setYears] = useState(["2023", "2024"]);
   const [files, setFiles] = useState({});
   const [loading, setLoading] = useState(false);
@@ -876,7 +973,7 @@ export default function App() {
 
   const DOC_TYPES = DOC_TYPE_IDS.map(id => ({ id, label: t(`tool.docTypes.${id}`) }));
 
-  const goHome = () => { setPage("home"); setResult(null); setRawResult(null); setFiles({}); setCompany(""); setPaid(false); setPaidPlan("standard"); setError(null); };
+  const goHome = () => { setPage("home"); setResult(null); setRawResult(null); setFiles({}); setCompany(""); setCae(""); setPaid(false); setPaidPlan("standard"); setError(null); };
 
   /* ── LEGAL PAGE ── */
   if (page === "legal") return <LegalPage onBack={() => setPage("home")} />;
@@ -915,6 +1012,7 @@ export default function App() {
 
       content.push({ type: "text", text: `${t("aiPrompt.role")}
 ${t("aiPrompt.instruction", { company, years: yearsStr })}
+${cae ? t("aiPrompt.caeInstruction", { cae, sector: getCaeSector(cae) }) : ""}
 ${t("aiPrompt.language")}
 
 ${t("aiPrompt.sections")}` });
@@ -927,7 +1025,7 @@ ${t("aiPrompt.sections")}` });
 
       setProgress(75); setStatusMsg(t("tool.status.structuring"));
       const yearsFiltered = years.filter(yr => Object.keys(files).some(k => k.startsWith(yr)));
-      const res2 = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "analyze", payload: { model: "claude-sonnet-4-5", max_tokens: 6000, system: "Convert financial analysis text to valid JSON. Respond ONLY with JSON, no markdown, no code blocks, no additional text. Response starts with { and ends with }.", messages: [{ role: "user", content: `Convert this financial analysis to JSON with exactly this structure. Use real values from the text. Respond only with valid JSON:\n\nANALYSIS:\n${analiseTexto}\n\nJSON STRUCTURE:\n{"empresa":"${company}","anos":${JSON.stringify(yearsFiltered)},"avaliacao_global":"Bom","sumario":{"texto":"summary text","destaques":["highlight 1","highlight 2","highlight 3"]},"financeiros":{"volume_negocios":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},"resultado_liquido":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},"ebitda":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},"total_ativo":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},"capital_proprio":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},"divida_financeira":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))}},"indicadores":{"liquidez_geral":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 1.5","descricao":"Current ratio"})},"liquidez_reduzida":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 1.0","descricao":"Quick ratio"})},"autonomia_financeira":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 33%","descricao":"Equity ratio"})},"roe":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 10%","descricao":"Return on equity"})},"roa":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 5%","descricao":"Return on assets"})},"margem_liquida":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 5%","descricao":"Net margin"})},"margem_ebitda":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 10%","descricao":"EBITDA margin"})},"divida_ebitda":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"< 3.0x","descricao":"Financial leverage"})},"pme":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"< 45 days","descricao":"Days sales outstanding"})},"pmp":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"30-60 days","descricao":"Days payable outstanding"})}},"analise_detalhada":{"rentabilidade":"text","liquidez_solvabilidade":"text","estrutura_capital":"text","eficiencia_operacional":"text"},"swot":{"forcas":["strength 1"],"fraquezas":["weakness 1"],"oportunidades":["opportunity 1"],"riscos":["risk 1"]},"recomendacoes":{"imediato":["action 1"],"medio":["action 1"],"longo":["action 1"]},"conclusao":"conclusion text"}` }] } }) });
+      const res2 = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "analyze", payload: { model: "claude-sonnet-4-5", max_tokens: 6000, system: "Convert financial analysis text to valid JSON. Respond ONLY with JSON, no markdown, no code blocks, no additional text. Response starts with { and ends with }.", messages: [{ role: "user", content: `Convert this financial analysis to JSON with exactly this structure. Use real values from the text. Respond only with valid JSON:\n\nANALYSIS:\n${analiseTexto}\n\nJSON STRUCTURE:\n{"empresa":"${company}","cae":"${cae}","setor":"${cae ? getCaeSector(cae) : ""}","anos":${JSON.stringify(yearsFiltered)},"avaliacao_global":"Bom","sumario":{"texto":"summary text","destaques":["highlight 1","highlight 2","highlight 3"]},"financeiros":{"volume_negocios":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},"resultado_liquido":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},"ebitda":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},"total_ativo":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},"capital_proprio":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},"divida_financeira":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))}},"indicadores":{"liquidez_geral":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 1.5","descricao":"Current ratio"})},"liquidez_reduzida":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 1.0","descricao":"Quick ratio"})},"autonomia_financeira":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 33%","descricao":"Equity ratio"})},"roe":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 10%","descricao":"Return on equity"})},"roa":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 5%","descricao":"Return on assets"})},"margem_liquida":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 5%","descricao":"Net margin"})},"margem_ebitda":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 10%","descricao":"EBITDA margin"})},"divida_ebitda":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"< 3.0x","descricao":"Financial leverage"})},"pme":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"< 45 days","descricao":"Days sales outstanding"})},"pmp":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"30-60 days","descricao":"Days payable outstanding"})}},"analise_detalhada":{"rentabilidade":"text","liquidez_solvabilidade":"text","estrutura_capital":"text","eficiencia_operacional":"text"},"posicionamento_sectorial":{"cae":"${cae}","setor":"${cae ? getCaeSector(cae) : ""}","texto":"sector positioning analysis text","indicadores":[{"nome":"Liquidez Geral","empresa":0,"setor":0,"posicao":"acima"},{"nome":"Autonomia Financeira","empresa":0,"setor":0,"posicao":"abaixo"},{"nome":"ROE","empresa":0,"setor":0,"posicao":"acima"},{"nome":"ROA","empresa":0,"setor":0,"posicao":"abaixo"},{"nome":"Margem Líquida","empresa":0,"setor":0,"posicao":"acima"},{"nome":"Margem EBITDA","empresa":0,"setor":0,"posicao":"acima"},{"nome":"Dívida/EBITDA","empresa":0,"setor":0,"posicao":"abaixo"},{"nome":"PMR","empresa":0,"setor":0,"posicao":"acima"},{"nome":"PMP","empresa":0,"setor":0,"posicao":"ok"}]},"swot":{"forcas":["strength 1"],"fraquezas":["weakness 1"],"oportunidades":["opportunity 1"],"riscos":["risk 1"]},"recomendacoes":{"imediato":["action 1"],"medio":["action 1"],"longo":["action 1"]},"conclusao":"conclusion text"}` }] } }) });
 
       setProgress(88); setStatusMsg(t("tool.status.finishing"));
       if (!res2.ok) { const e = await res2.json(); throw new Error(e.error?.message || "Erro na estruturação"); }
@@ -1115,6 +1213,12 @@ ${t("aiPrompt.sections")}` });
         <div style={{ marginBottom: "36px" }}>
           <label style={{ fontSize: "11px", letterSpacing: "0.18em", textTransform: "uppercase", color: C.steel, display: "block", marginBottom: "10px", fontFamily: F.body }}>{t("tool.companyLabel")}</label>
           <input value={company} onChange={e => setCompany(e.target.value)} placeholder={t("tool.companyPlaceholder")} style={{ width: "100%", padding: "13px 18px", border: `1px solid ${C.line}`, borderRadius: "6px", fontFamily: F.display, fontSize: "20px", color: C.ink, background: C.white }} />
+
+          <label style={{ fontSize: "11px", letterSpacing: "0.18em", textTransform: "uppercase", color: C.steel, display: "block", marginBottom: "10px", marginTop: "20px", fontFamily: F.body }}>{t("tool.caeLabel")} <span style={{ color: C.fog, letterSpacing: "0.05em", textTransform: "none", fontSize: "10px" }}>{t("tool.caeOptional")}</span></label>
+          <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
+            <input value={cae} onChange={e => setCae(e.target.value.replace(/\D/g, "").slice(0, 5))} placeholder={t("tool.caePlaceholder")} style={{ width: "180px", padding: "13px 18px", border: `1px solid ${C.line}`, borderRadius: "6px", fontFamily: F.mono, fontSize: "18px", color: C.ink, background: C.white, letterSpacing: "0.1em" }} />
+            <div style={{ flex: 1, padding: "12px 16px", background: "#FBF7EF", border: `1px solid ${C.line}`, borderRadius: "6px", fontFamily: F.body, fontSize: "13px", color: C.fog, lineHeight: 1.5 }}>{t("tool.caeHint")}</div>
+          </div>
         </div>
         {years.map(yr => (
           <div key={yr} style={{ marginBottom: "28px" }}>
@@ -1297,6 +1401,45 @@ ${t("aiPrompt.sections")}` });
                 {R.swot && (<ReportSection number="05" title={t("report.sections.s05")}><SwotTable data={R.swot} /></ReportSection>)}
                 {R.recomendacoes && (<ReportSection number="06" title={t("report.sections.s06")}><ActionPlan actions={R.recomendacoes} /></ReportSection>)}
                 {R.conclusao && (<ReportSection number="07" title={t("report.sections.s07")}><p style={{ fontFamily: F.body, fontSize: "16px", lineHeight: 1.9, color: C.steel, maxWidth: "720px" }}>{R.conclusao}</p></ReportSection>)}
+                {R.posicionamento_sectorial && R.posicionamento_sectorial.indicadores && R.posicionamento_sectorial.indicadores.length > 0 && (
+                  <ReportSection number="08" title={t("report.sections.s08")}>
+                    <div style={{ marginBottom: "16px" }}>
+                      <div style={{ display: "inline-block", padding: "3px 12px", border: `1px solid ${C.gold}`, borderRadius: "20px", fontSize: "10px", letterSpacing: "0.18em", textTransform: "uppercase", color: C.gold, fontFamily: F.body, marginBottom: "12px" }}>
+                        CAE {R.posicionamento_sectorial.cae} · {R.posicionamento_sectorial.setor}
+                      </div>
+                      {R.posicionamento_sectorial.texto && (
+                        <p style={{ fontFamily: F.body, fontSize: "15px", lineHeight: 1.8, color: C.steel, marginBottom: "24px" }}>{R.posicionamento_sectorial.texto}</p>
+                      )}
+                      <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: F.body }}>
+                        <thead>
+                          <tr style={{ borderBottom: `2px solid ${C.ink}` }}>
+                            {["Indicador", "Empresa", "Média Sector", "Posição"].map(h => (
+                              <th key={h} style={{ padding: "10px 14px", textAlign: h === "Indicador" ? "left" : "center", fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase", color: C.fog, fontWeight: 400 }}>{h}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {R.posicionamento_sectorial.indicadores.map((ind, i) => (
+                            <tr key={i} style={{ borderBottom: `1px solid ${C.line}`, background: i % 2 === 0 ? "transparent" : "#FAFAF8" }}>
+                              <td style={{ padding: "12px 14px", fontSize: "14px", color: C.ink, fontWeight: 500 }}>{ind.nome}</td>
+                              <td style={{ padding: "12px 14px", textAlign: "center", fontSize: "14px", color: C.steel }}>{typeof ind.empresa === "number" ? ind.empresa.toLocaleString("pt-PT") : ind.empresa}</td>
+                              <td style={{ padding: "12px 14px", textAlign: "center", fontSize: "14px", color: C.fog }}>{typeof ind.setor === "number" ? ind.setor.toLocaleString("pt-PT") : ind.setor}</td>
+                              <td style={{ padding: "12px 14px", textAlign: "center" }}>
+                                <span style={{
+                                  display: "inline-block", padding: "3px 10px", borderRadius: "20px", fontSize: "11px", fontWeight: 500,
+                                  background: ind.posicao === "acima" ? "#E8F5E9" : ind.posicao === "abaixo" ? "#FFEBEE" : "#FFF8E1",
+                                  color: ind.posicao === "acima" ? "#2E7D32" : ind.posicao === "abaixo" ? "#C62828" : "#F57F17"
+                                }}>
+                                  {ind.posicao === "acima" ? "↑ Acima" : ind.posicao === "abaixo" ? "↓ Abaixo" : "→ OK"}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </ReportSection>
+                )}
               </>) : (
                 <div style={{ background: C.cream, border: `1px solid ${C.line}`, borderRadius: "10px", padding: "36px", textAlign: "center", margin: "32px 0" }}>
                   <div style={{ fontFamily: F.display, fontSize: "24px", marginBottom: "10px", color: C.ink }}>{t("paywall.upgradeTitle")} <span style={{ color: C.gold, fontStyle: "italic" }}>{t("paywall.upgradePremium")}</span></div>
