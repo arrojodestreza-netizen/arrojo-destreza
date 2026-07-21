@@ -1018,7 +1018,7 @@ ${t("aiPrompt.language")}
 ${t("aiPrompt.sections")}` });
 
       setProgress(60);
-      const res1 = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "analyze", payload: { model: "claude-sonnet-4-5", max_tokens: 4000, messages: [{ role: "user", content }] } }) });
+      const res1 = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "analyze", payload: { model: "claude-sonnet-4-5", max_tokens: 4000, system: `You are an expert financial analyst. CRITICAL INSTRUCTION: You MUST write your ENTIRE response in ${getLangName()}. Every single word of your analysis must be in ${getLangName()}. Do not use Portuguese or any other language. The financial documents may be in Portuguese but your analysis must be entirely in ${getLangName()}.`, messages: [{ role: "user", content }] } }) });
       if (!res1.ok) { const e = await res1.json(); throw new Error(e.error?.message || "Erro na análise"); }
       const data1 = await res1.json();
       const analiseTexto = data1.content.map(b => b.text || "").join("\n");
