@@ -380,7 +380,7 @@ function PaywallModal({ onClose, onPay, companyName, nYears = 0 }) {
     setStep("processing");
     const orderId = `AD-${Date.now()}`;
     try {
-      const resp = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "create_mbway", phone: form.phone.replace(/\s/g, ""), amount: selectedPlan.amount, orderId, email: form.email, description: `${selectedPlan.label} — ${companyName}`, cliente_nome: form.name, cliente_nif: form.nif, cliente_morada: form.morada, cliente_codigopostal: form.codigopostal, cliente_localidade: form.localidade }) });
+      const resp = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "create_mbway", phone: form.phone.replace(/\s/g, ""), plan, amount: selectedPlan.amount, orderId, email: form.email, description: `${selectedPlan.label} — ${companyName}`, cliente_nome: form.name, cliente_nif: form.nif, cliente_morada: form.morada, cliente_codigopostal: form.codigopostal, cliente_localidade: form.localidade }) });
       const data = await resp.json();
       const sent = data.sent || data.Estado === "000";
       if (!sent) throw new Error(`Erro MB WAY: ${data.MsgDescricao || data.raw || "Verifique o número."}`);
