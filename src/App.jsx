@@ -625,7 +625,8 @@ const VAL_TXT = {
     sensAxis: "WACC ↓ · Crescimento perpétuo →",
     bridge: "Ponte de valor (cenário central)",
     ev: "Valor da empresa (EV) implícito", debt: "Dívida financeira", equity: "Valor do capital próprio",
-    bridgeNote: "Caixa e equivalentes não considerados (não disponíveis nos dados extraídos).",
+    cash: "Caixa e depósitos",
+    bridgeNote: "Não foi identificada caixa nas contas carregadas; se existir, o valor do capital próprio será superior.",
     risks: "Principais fatores de risco",
     fewYears: "Com apenas {{n}} ano de contas, a fiabilidade desta avaliação é limitada.",
     twoYears: "Com 2 anos de contas a avaliação é indicativa; com 3 anos seria mais robusta.",
@@ -658,7 +659,8 @@ const VAL_TXT = {
     sensAxis: "WACC ↓ · Perpetual growth →",
     bridge: "Value bridge (central scenario)",
     ev: "Implied enterprise value (EV)", debt: "Financial debt", equity: "Equity value",
-    bridgeNote: "Cash and equivalents not considered (not available in the extracted data).",
+    cash: "Cash and deposits",
+    bridgeNote: "No cash was identified in the uploaded accounts; if any exists, the equity value will be higher.",
     risks: "Key risk factors",
     fewYears: "With only {{n}} year of accounts, the reliability of this valuation is limited.",
     twoYears: "With 2 years of accounts the valuation is indicative; with 3 years it would be more robust.",
@@ -682,6 +684,7 @@ function computeValuation(result, A) {
   const ebitda0 = Number(f.ebitda?.[last]);
   const eq0 = Number(f.capital_proprio?.[last]);
   const debt = Math.max(0, Number(f.divida_financeira?.[last]) || 0);
+  const cash = Math.max(0, Number(f.caixa?.[last]) || 0);
   if (!isFinite(rev0) || rev0 <= 0) return null;
 
   const tri = (o, dMin, dMid, dMax, lo, hi) => ({
@@ -712,7 +715,7 @@ function computeValuation(result, A) {
     const tv = (fcfN * (1 + gg / 100)) / ((w - gg) / 100);
     return pv + tv / Math.pow(1 + w / 100, 5);
   };
-  const eqOf = (ev) => Math.max(0, ev - debt);
+  const eqOf = (ev) => Math.max(0, ev - debt + cash);
 
   const dcfV = { min: eqOf(dcf(P.wacc + 2, Math.max(0, P.g - 0.5), -2, 0.85)), mid: eqOf(dcf(P.wacc, P.g, 0, 1)), max: eqOf(dcf(P.wacc - 1, P.g + 0.5, 1.5, 1.1)) };
   const multEv = (k) => { const evS = rev0 * P.multS[k]; return ebitda0 > 0 ? 0.7 * ebitda0 * P.multE[k] + 0.3 * evS : evS; };
@@ -734,7 +737,7 @@ function computeValuation(result, A) {
   const waccs = [-2, -1, 0, 1, 2].map(d => P.wacc + d);
   const gs = [-1, -0.5, 0, 0.5, 1].map(d => Math.max(0, P.g + d));
   const sens = waccs.map(w => gs.map(gp => eqOf(dcf(w, gp, 0, 1))));
-  return { P, last, debt, rev0, ebitda0, metodos, range, sens, waccs, gs, nYears: anos.length };
+  return { P, last, debt, cash, rev0, ebitda0, metodos, range, sens, waccs, gs, nYears: anos.length };
 }
 
 function ValuationSection({ result, A, loading, error, onRetry, lang }) {
@@ -857,12 +860,13 @@ function ValuationSection({ result, A, loading, error, onRetry, lang }) {
         <div style={h3}>{T.bridge}</div>
         <table style={{ width: "100%", maxWidth: "460px", borderCollapse: "collapse", fontFamily: F.body }}>
           <tbody>
-            <tr><td style={td}>{T.ev}</td><td style={{ ...td, textAlign: "right" }}>{eur(V.range.mid + V.debt)}</td></tr>
+            <tr><td style={td}>{T.ev}</td><td style={{ ...td, textAlign: "right" }}>{eur(V.range.mid + V.debt - V.cash)}</td></tr>
             <tr><td style={td}>− {T.debt}</td><td style={{ ...td, textAlign: "right" }}>{eur(V.debt)}</td></tr>
+            <tr><td style={td}>+ {T.cash}</td><td style={{ ...td, textAlign: "right" }}>{eur(V.cash)}</td></tr>
             <tr><td style={{ ...td, color: C.ink, fontWeight: 600 }}>{T.equity}</td><td style={{ ...td, textAlign: "right", color: C.gold, fontWeight: 600 }}>{eur(V.range.mid)}</td></tr>
           </tbody>
         </table>
-        <p style={{ fontFamily: F.body, fontSize: "11px", color: C.fog, marginTop: "8px" }}>{T.bridgeNote}</p>
+        {V.cash === 0 && <p style={{ fontFamily: F.body, fontSize: "11px", color: C.fog, marginTop: "8px" }}>{T.bridgeNote}</p>}
 
         {Array.isArray(A.riscos) && A.riscos.length > 0 && (<>
           <div style={h3}>{T.risks}</div>
@@ -1342,7 +1346,7 @@ FINAL REMINDER — OUTPUT LANGUAGE = ${langName.toUpperCase()}. The source finan
 
       setProgress(75); setStatusMsg(t("tool.status.structuring"));
       const yearsFiltered = years.filter(yr => Object.keys(files).some(k => k.startsWith(yr)));
-      const res2 = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "analyze", payload: { model: "claude-sonnet-4-5", max_tokens: 8000, system: `Convert financial analysis text to valid JSON. IMPORTANT: every string value in the output JSON must be in ${langName}. If any part of the source text below is not already in ${langName} (for example, if it slipped into Portuguese), translate it into ${langName} as you place it into the JSON — do not copy non-${langName} text through unchanged. Respond ONLY with JSON, no markdown, no code blocks, no additional text. Response starts with { and ends with }.`, messages: [{ role: "user", content: `Convert this financial analysis to JSON with exactly this structure. Use real values from the text. Respond only with valid JSON:\n\nANALYSIS:\n${analiseTexto}\n\nJSON STRUCTURE:\n{"empresa":"${company}","cae":"${cae}","setor":"${cae ? getCaeSector(cae) : ""}","anos":${JSON.stringify(yearsFiltered)},"avaliacao_global":"Bom","sumario":{"texto":"summary text","destaques":["highlight 1","highlight 2","highlight 3"]},"financeiros":{"volume_negocios":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},"resultado_liquido":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},"ebitda":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},"total_ativo":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},"capital_proprio":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},"divida_financeira":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))}},"indicadores":{"liquidez_geral":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 1.5","descricao":"Current ratio"})},"liquidez_reduzida":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 1.0","descricao":"Quick ratio"})},"autonomia_financeira":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 33%","descricao":"Equity ratio"})},"roe":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 10%","descricao":"Return on equity"})},"roa":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 5%","descricao":"Return on assets"})},"margem_liquida":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 5%","descricao":"Net margin"})},"margem_ebitda":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 10%","descricao":"EBITDA margin"})},"divida_ebitda":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"< 3.0x","descricao":"Financial leverage"})},"pme":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"< 45 days","descricao":"Days sales outstanding"})},"pmp":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"30-60 days","descricao":"Days payable outstanding"})}},"analise_detalhada":{"rentabilidade":"text","liquidez_solvabilidade":"text","estrutura_capital":"text","eficiencia_operacional":"text"},"posicionamento_sectorial":{"cae":"${cae}","setor":"${cae ? getCaeSector(cae) : ""}","texto":"sector positioning analysis text","indicadores":[{"nome":"Liquidez Geral","empresa":0,"setor":0,"posicao":"acima","positivo":true},{"nome":"Autonomia Financeira","empresa":0,"setor":0,"posicao":"abaixo","positivo":true},{"nome":"ROE","empresa":0,"setor":0,"posicao":"acima","positivo":true},{"nome":"ROA","empresa":0,"setor":0,"posicao":"acima","positivo":true},{"nome":"Margem Líquida","empresa":0,"setor":0,"posicao":"acima","positivo":true},{"nome":"Margem EBITDA","empresa":0,"setor":0,"posicao":"acima","positivo":true},{"nome":"Dívida/EBITDA","empresa":0,"setor":0,"posicao":"abaixo","positivo":false},{"nome":"PMR","empresa":0,"setor":0,"posicao":"acima","positivo":false},{"nome":"PMP","empresa":0,"setor":0,"posicao":"ok","positivo":true}]},"swot":{"forcas":["strength 1"],"fraquezas":["weakness 1"],"oportunidades":["opportunity 1"],"riscos":["risk 1"]},"recomendacoes":{"imediato":["action 1"],"medio":["action 1"],"longo":["action 1"]},"conclusao":"conclusion text"}` }] } }) });
+      const res2 = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "analyze", payload: { model: "claude-sonnet-4-5", max_tokens: 8000, system: `Convert financial analysis text to valid JSON. IMPORTANT: every string value in the output JSON must be in ${langName}. If any part of the source text below is not already in ${langName} (for example, if it slipped into Portuguese), translate it into ${langName} as you place it into the JSON — do not copy non-${langName} text through unchanged. Respond ONLY with JSON, no markdown, no code blocks, no additional text. Response starts with { and ends with }.`, messages: [{ role: "user", content: `Convert this financial analysis to JSON with exactly this structure. Use real values from the text. Respond only with valid JSON:\n\nANALYSIS:\n${analiseTexto}\n\nJSON STRUCTURE:\n{"empresa":"${company}","cae":"${cae}","setor":"${cae ? getCaeSector(cae) : ""}","anos":${JSON.stringify(yearsFiltered)},"avaliacao_global":"Bom","sumario":{"texto":"summary text","destaques":["highlight 1","highlight 2","highlight 3"]},"financeiros":{"volume_negocios":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},"resultado_liquido":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},"ebitda":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},"total_ativo":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},"capital_proprio":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},"divida_financeira":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))},"caixa":${JSON.stringify(Object.fromEntries(yearsFiltered.map(y => [y, 0])))}},"indicadores":{"liquidez_geral":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 1.5","descricao":"Current ratio"})},"liquidez_reduzida":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 1.0","descricao":"Quick ratio"})},"autonomia_financeira":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 33%","descricao":"Equity ratio"})},"roe":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 10%","descricao":"Return on equity"})},"roa":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 5%","descricao":"Return on assets"})},"margem_liquida":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 5%","descricao":"Net margin"})},"margem_ebitda":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"> 10%","descricao":"EBITDA margin"})},"divida_ebitda":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"< 3.0x","descricao":"Financial leverage"})},"pme":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"< 45 days","descricao":"Days sales outstanding"})},"pmp":${JSON.stringify({...Object.fromEntries(yearsFiltered.map(y=>[y,0])),"referencia":"30-60 days","descricao":"Days payable outstanding"})}},"analise_detalhada":{"rentabilidade":"text","liquidez_solvabilidade":"text","estrutura_capital":"text","eficiencia_operacional":"text"},"posicionamento_sectorial":{"cae":"${cae}","setor":"${cae ? getCaeSector(cae) : ""}","texto":"sector positioning analysis text","indicadores":[{"nome":"Liquidez Geral","empresa":0,"setor":0,"posicao":"acima","positivo":true},{"nome":"Autonomia Financeira","empresa":0,"setor":0,"posicao":"abaixo","positivo":true},{"nome":"ROE","empresa":0,"setor":0,"posicao":"acima","positivo":true},{"nome":"ROA","empresa":0,"setor":0,"posicao":"acima","positivo":true},{"nome":"Margem Líquida","empresa":0,"setor":0,"posicao":"acima","positivo":true},{"nome":"Margem EBITDA","empresa":0,"setor":0,"posicao":"acima","positivo":true},{"nome":"Dívida/EBITDA","empresa":0,"setor":0,"posicao":"abaixo","positivo":false},{"nome":"PMR","empresa":0,"setor":0,"posicao":"acima","positivo":false},{"nome":"PMP","empresa":0,"setor":0,"posicao":"ok","positivo":true}]},"swot":{"forcas":["strength 1"],"fraquezas":["weakness 1"],"oportunidades":["opportunity 1"],"riscos":["risk 1"]},"recomendacoes":{"imediato":["action 1"],"medio":["action 1"],"longo":["action 1"]},"conclusao":"conclusion text"}` }] } }) });
 
       setProgress(88); setStatusMsg(t("tool.status.finishing"));
       if (!res2.ok) { const e = await res2.json(); throw new Error(e.error?.message || "Erro na estruturação"); }
@@ -1667,7 +1671,7 @@ FINAL REMINDER — OUTPUT LANGUAGE = ${langName.toUpperCase()}. The source finan
     return (
       <>
         <style>{GLOBAL_CSS}</style>
-        <style>{`@media print { nav, .no-print { display: none !important; } body { background: white !important; } }`}</style>
+        <style>{`@media print { nav, .no-print { display: none !important; } body { background: white !important; } li, tr, .swot-grid > div { break-inside: avoid; page-break-inside: avoid; } }`}</style>
         <nav className="no-print" style={{ position: "sticky", top: 0, zIndex: 100, background: "rgba(245,240,232,0.96)", backdropFilter: "blur(12px)", borderBottom: `1px solid ${C.line}`, padding: "0 6vw" }}>
           <div style={{ maxWidth: "960px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: "64px" }}>
             <button onClick={goHome} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px" }}>
