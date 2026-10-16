@@ -1062,6 +1062,8 @@ FINAL REMINDER — OUTPUT LANGUAGE = ${langName.toUpperCase()}. The source finan
               const s = bp.indicadores && bp.indicadores[d.src];
               const emp = parsed.indicadores[d.k] && Number(parsed.indicadores[d.k][lastYear]);
               if (!s || typeof s.valor !== "number" || !isFinite(emp)) continue;
+              /* PMR/PMP residuais (< 2 dias) não são comparáveis com a mediana do sector */
+              if ((d.k === "pme" || d.k === "pmp") && emp < 2) continue;
               const diff = (emp - s.valor) / (Math.abs(s.valor) || 1);
               rows.push({ nome: d.nome, empresa: emp, setor: s.valor, posicao: Math.abs(diff) <= 0.05 ? "ok" : (diff > 0 ? "acima" : "abaixo"), positivo: d.positivo });
               if (s.ano) bpYear = s.ano;
