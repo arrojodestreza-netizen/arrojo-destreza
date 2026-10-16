@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { useTranslation, I18nextProvider } from "react-i18next";
 import i18n from "./i18n/index.js";
 
@@ -145,7 +145,7 @@ const GLOBAL_CSS = `
   .swot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
   .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 12px; }
   .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
-  .plans-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .plans-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
   @media (max-width: 768px) {
     .nav-links { display: none; }
     .nav-menu-btn { display: block; }
@@ -235,8 +235,11 @@ async function loadStripe() {
 }
 
 /* ─── PAYWALL MODAL ──────────────────────────────────────── */
-function PaywallModal({ onClose, onPay, companyName }) {
-  const { t } = useTranslation();
+function PaywallModal({ onClose, onPay, companyName, nYears = 0 }) {
+  const { t, i18n: i18nPay } = useTranslation();
+  const VT = valTxt(i18nPay.language);
+  const [consent, setConsent] = useState(false);
+  const [consentYears, setConsentYears] = useState(false);
   const [step, setStep] = useState("choose");
   const [plan, setPlan] = useState("standard");
   const [payMethod, setPayMethod] = useState("card");
@@ -256,6 +259,7 @@ function PaywallModal({ onClose, onPay, companyName }) {
   const PLANS = [
     { id: "standard", label: t("paywall.planFeatures.standard", { returnObjects: true })[0] ? "Análise Standard" : "Standard", labelKey: "standard", price: "79€", amount: 7900, features: t("paywall.planFeatures.standard", { returnObjects: true }) },
     { id: "premium", label: "Premium", labelKey: "premium", price: "149€", amount: 14900, highlight: true, features: t("paywall.planFeatures.premium", { returnObjects: true }) },
+    { id: "valuation", label: VT.planName, labelKey: "valuation", price: "320€", amount: 32000, features: VT.planFeatures },
   ];
   const selectedPlan = PLANS.find(p => p.id === plan);
 
@@ -325,6 +329,8 @@ function PaywallModal({ onClose, onPay, companyName }) {
     if (!form.nif.trim() || form.nif.replace(/\s/g,"").length < 9) e.nif = t("paywall.errors.nif");
     if (!form.morada.trim()) e.morada = t("paywall.errors.morada");
     if (payMethod === "mbway" && !/^9[1236]\d{7}$/.test(form.phone.replace(/\s/g, ""))) e.phone = t("paywall.errors.phone");
+    if (plan === "valuation" && !consent) e.consent = VT.consentError;
+    if (plan === "valuation" && nYears === 1 && !consentYears) e.consentYears = VT.confirm1Error;
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -400,7 +406,7 @@ function PaywallModal({ onClose, onPay, companyName }) {
 
   const handlePay = () => payMethod === "card" ? handlePayCard() : handlePayMBWay();
   const overlay = { position: "fixed", inset: 0, background: "rgba(11,12,14,0.72)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", animation: "fadeIn 0.2s ease" };
-  const box = { background: C.white, borderRadius: "10px", maxWidth: "560px", width: "100%", maxHeight: "90vh", overflowY: "auto", position: "relative", animation: "fadeUp 0.3s ease" };
+  const box = { background: C.white, borderRadius: "10px", maxWidth: step === "choose" ? "820px" : "560px", width: "100%", maxHeight: "90vh", overflowY: "auto", position: "relative", animation: "fadeUp 0.3s ease" };
   const inp = (err) => ({ width: "100%", padding: "10px 14px", border: `1px solid ${err ? C.danger : C.line}`, borderRadius: "5px", fontFamily: F.body, fontSize: "15px", color: C.ink, background: C.white });
 
   if (step === "processing") return (
@@ -451,7 +457,7 @@ function PaywallModal({ onClose, onPay, companyName }) {
               {PLANS.map(p => (
                 <div key={p.id} onClick={() => setPlan(p.id)} style={{ border: `2px solid ${plan === p.id ? C.gold : C.line}`, borderRadius: "8px", padding: "18px", cursor: "pointer", background: plan === p.id ? "#FBF7EF" : C.white, transition: "all 0.2s", position: "relative" }}>
                   {p.highlight && <div style={{ position: "absolute", top: "-10px", left: "50%", transform: "translateX(-50%)", background: C.gold, color: C.white, fontSize: "9px", letterSpacing: "0.15em", padding: "3px 10px", borderRadius: "10px" }}>{t("pricing.mostPopular")}</div>}
-                  <div style={{ fontFamily: F.display, fontSize: "17px", marginBottom: "4px" }}>{p.labelKey === "standard" ? `${t("pricing.plans.0.name")} Analysis` : "Premium"}</div>
+                  <div style={{ fontFamily: F.display, fontSize: "17px", marginBottom: "4px" }}>{p.labelKey === "standard" ? `${t("pricing.plans.0.name")} Analysis` : p.labelKey === "valuation" ? VT.planName : "Premium"}</div>
                   <div style={{ fontFamily: F.display, fontSize: "28px", color: C.gold, marginBottom: "14px" }}>{p.price}</div>
                   <ul style={{ listStyle: "none", padding: 0 }}>
                     {(Array.isArray(p.features) ? p.features : []).map((f, i) => (
@@ -463,6 +469,11 @@ function PaywallModal({ onClose, onPay, companyName }) {
                 </div>
               ))}
             </div>
+            {plan === "valuation" && nYears > 0 && nYears < 3 && (
+              <div style={{ border: `1px solid ${nYears === 1 ? C.danger : C.gold}`, background: "#FBF7EF", borderRadius: "6px", padding: "10px 14px", marginBottom: "16px", fontFamily: F.body, fontSize: "12px", lineHeight: 1.6, color: C.steel }}>
+                {nYears === 1 ? VT.tip1 : VT.tip2}
+              </div>
+            )}
             <button onClick={() => setStep("checkout")} style={{ width: "100%", padding: "14px", background: C.gold, border: "none", borderRadius: "6px", color: C.white, fontFamily: F.display, fontSize: "18px", letterSpacing: "0.06em", cursor: "pointer" }}>
               {t("paywall.continueBtn")}
             </button>
@@ -553,6 +564,23 @@ function PaywallModal({ onClose, onPay, companyName }) {
               </div>
             )}
 
+            {plan === "valuation" && nYears > 0 && nYears < 3 && (
+              <div style={{ border: `1px solid ${nYears === 1 ? C.danger : C.gold}`, background: "#FBF7EF", borderRadius: "6px", padding: "10px 14px", marginBottom: "16px", fontFamily: F.body, fontSize: "12px", lineHeight: 1.6, color: C.steel }}>
+                {nYears === 1 ? VT.tip1 : VT.tip2}
+              </div>
+            )}
+            {plan === "valuation" && nYears === 1 && (
+              <label style={{ display: "flex", gap: "10px", alignItems: "flex-start", marginBottom: "12px", cursor: "pointer", fontFamily: F.body, fontSize: "12px", lineHeight: 1.6, color: C.steel }}>
+                <input type="checkbox" checked={consentYears} onChange={e => { setConsentYears(e.target.checked); setErrors(prev => ({ ...prev, consentYears: undefined })); }} style={{ marginTop: "3px", flexShrink: 0 }} />
+                <span>{VT.confirm1}{errors.consentYears && <span style={{ display: "block", color: C.danger, marginTop: "4px" }}>{errors.consentYears}</span>}</span>
+              </label>
+            )}
+            {plan === "valuation" && (
+              <label style={{ display: "flex", gap: "10px", alignItems: "flex-start", marginBottom: "16px", cursor: "pointer", fontFamily: F.body, fontSize: "12px", lineHeight: 1.6, color: C.steel }}>
+                <input type="checkbox" checked={consent} onChange={e => { setConsent(e.target.checked); setErrors(prev => ({ ...prev, consent: undefined })); }} style={{ marginTop: "3px", flexShrink: 0 }} />
+                <span>{VT.consent}{errors.consent && <span style={{ display: "block", color: C.danger, marginTop: "4px" }}>{errors.consent}</span>}</span>
+              </label>
+            )}
             <button onClick={handlePay}
               disabled={payMethod === "card" && !cardReady && getFinalAmount() > 0}
               style={{ width: "100%", padding: "14px", background: (payMethod === "mbway" || cardReady || getFinalAmount() === 0) ? C.gold : C.line, border: "none", borderRadius: "6px", color: C.white, fontFamily: F.display, fontSize: "18px", letterSpacing: "0.06em", cursor: (payMethod === "mbway" || cardReady || getFinalAmount() === 0) ? "pointer" : "not-allowed", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", transition: "all 0.2s" }}>
@@ -570,6 +598,284 @@ function PaywallModal({ onClose, onPay, companyName }) {
     </div>
   );
 }
+/* ─── AVALIAÇÃO DA EMPRESA (escalão "Premium + Avaliação") ──────
+   Textos estáticos em PT e EN; ES/FR/DE usam EN até existirem traduções. */
+const VAL_TXT = {
+  pt: {
+    planName: "Premium + Avaliação",
+    planFeatures: ["Tudo o que está incluído no Premium", "Avaliação da empresa (intervalo de valor)", "Múltiplos, DCF simplificado e valor patrimonial", "Pressupostos explícitos e justificados", "Análise de sensibilidade e ponte de valor"],
+    consent: "Compreendo que a avaliação é uma estimativa indicativa, baseada em pressupostos, e não constitui uma avaliação certificada nem um parecer de ROC, avaliador ou consultor financeiro.",
+    consentError: "Tem de confirmar para continuar.",
+    title: "Avaliação da Empresa",
+    disclaimerTitle: "Aviso importante",
+    disclaimer: "Esta avaliação é uma estimativa indicativa, gerada com apoio de inteligência artificial a partir das demonstrações financeiras fornecidas e de pressupostos explícitos. Não constitui uma avaliação certificada, um parecer de Revisor Oficial de Contas, de avaliador independente ou de consultor financeiro, nem uma recomendação de compra, venda ou investimento. Os valores dependem fortemente dos pressupostos e devem ser validados por um profissional qualificado antes de qualquer decisão.",
+    footnote: "Estimativa indicativa — ver aviso no início desta secção. Valores em euros.",
+    loading: "A calcular a avaliação da empresa…",
+    error: "Não foi possível gerar a avaliação.",
+    retry: "Tentar novamente",
+    range: "Intervalo de valor do capital próprio",
+    low: "Mínimo", mid: "Central", high: "Máximo",
+    methods: "Métodos e ponderação",
+    colMethod: "Método", colWeight: "Peso",
+    mMult: "Múltiplos de mercado", mDcf: "DCF simplificado (5 anos)", mNav: "Valor patrimonial ajustado",
+    assumptions: "Pressupostos",
+    colAssump: "Pressuposto", colValue: "Valor", colWhy: "Justificação",
+    wacc: "Taxa de desconto (WACC)", g: "Crescimento perpétuo", cresc: "Crescimento das vendas (anos 1–5)", margem: "Margem EBITDA alvo", capex: "CAPEX (% das vendas)", imposto: "Taxa de imposto", multE: "Múltiplo EV/EBITDA", multS: "Múltiplo EV/Vendas", ajuste: "Ajustamento ao capital próprio",
+    sens: "Sensibilidade do DCF (valor do capital próprio, cenário central)",
+    sensAxis: "WACC ↓ · Crescimento perpétuo →",
+    bridge: "Ponte de valor (cenário central)",
+    ev: "Valor da empresa (EV) implícito", debt: "Dívida financeira", equity: "Valor do capital próprio",
+    bridgeNote: "Caixa e equivalentes não considerados (não disponíveis nos dados extraídos).",
+    risks: "Principais fatores de risco",
+    fewYears: "Com apenas {{n}} ano de contas, a fiabilidade desta avaliação é limitada.",
+    twoYears: "Com 2 anos de contas a avaliação é indicativa; com 3 anos seria mais robusta.",
+    tip1: "Carregou apenas 1 ano de contas. Para este escalão recomendamos pelo menos 3 anos; com 1 ano a fiabilidade da avaliação é limitada.",
+    tip2: "Carregou 2 anos de contas. Recomendamos 3 anos para uma avaliação mais robusta.",
+    confirm1: "Confirmo que quero a avaliação com apenas 1 ano de contas, sabendo que a fiabilidade é limitada.",
+    confirm1Error: "Tem de confirmar para continuar.",
+  },
+  en: {
+    planName: "Premium + Valuation",
+    planFeatures: ["Everything included in Premium", "Company valuation (value range)", "Multiples, simplified DCF and net asset value", "Explicit, justified assumptions", "Sensitivity analysis and value bridge"],
+    consent: "I understand that the valuation is an indicative estimate based on assumptions and is not a certified valuation nor an opinion of a statutory auditor, appraiser or financial adviser.",
+    consentError: "You must confirm to continue.",
+    title: "Company Valuation",
+    disclaimerTitle: "Important notice",
+    disclaimer: "This valuation is an indicative estimate generated with the help of artificial intelligence from the financial statements provided and explicit assumptions. It is not a certified valuation, an opinion of a statutory auditor, independent appraiser or financial adviser, nor a recommendation to buy, sell or invest. Results depend heavily on the assumptions and should be validated by a qualified professional before any decision.",
+    footnote: "Indicative estimate — see the notice at the top of this section. Amounts in euros.",
+    loading: "Calculating the company valuation…",
+    error: "The valuation could not be generated.",
+    retry: "Try again",
+    range: "Equity value range",
+    low: "Low", mid: "Central", high: "High",
+    methods: "Methods and weighting",
+    colMethod: "Method", colWeight: "Weight",
+    mMult: "Market multiples", mDcf: "Simplified DCF (5 years)", mNav: "Adjusted net asset value",
+    assumptions: "Assumptions",
+    colAssump: "Assumption", colValue: "Value", colWhy: "Rationale",
+    wacc: "Discount rate (WACC)", g: "Perpetual growth", cresc: "Sales growth (years 1–5)", margem: "Target EBITDA margin", capex: "CAPEX (% of sales)", imposto: "Tax rate", multE: "EV/EBITDA multiple", multS: "EV/Sales multiple", ajuste: "Adjustment to book equity",
+    sens: "DCF sensitivity (equity value, central scenario)",
+    sensAxis: "WACC ↓ · Perpetual growth →",
+    bridge: "Value bridge (central scenario)",
+    ev: "Implied enterprise value (EV)", debt: "Financial debt", equity: "Equity value",
+    bridgeNote: "Cash and equivalents not considered (not available in the extracted data).",
+    risks: "Key risk factors",
+    fewYears: "With only {{n}} year of accounts, the reliability of this valuation is limited.",
+    twoYears: "With 2 years of accounts the valuation is indicative; with 3 years it would be more robust.",
+    tip1: "You uploaded only 1 year of accounts. For this plan we recommend at least 3 years; with 1 year the reliability of the valuation is limited.",
+    tip2: "You uploaded 2 years of accounts. We recommend 3 years for a more robust valuation.",
+    confirm1: "I confirm I want the valuation with only 1 year of accounts, knowing its reliability is limited.",
+    confirm1Error: "You must confirm to continue.",
+  },
+};
+const valTxt = (lang) => VAL_TXT[(lang || "pt").slice(0, 2)] || VAL_TXT.en;
+
+const valClamp = (v, lo, hi, d) => { const n = Number(v); return isFinite(n) ? Math.min(hi, Math.max(lo, n)) : d; };
+
+/* Cálculo determinístico da avaliação. A IA só propõe os pressupostos (A). */
+function computeValuation(result, A) {
+  if (!result || !A) return null;
+  const anos = [...(result.anos || [])].sort();
+  const last = anos[anos.length - 1];
+  const f = result.financeiros || {};
+  const rev0 = Number(f.volume_negocios?.[last]);
+  const ebitda0 = Number(f.ebitda?.[last]);
+  const eq0 = Number(f.capital_proprio?.[last]);
+  const debt = Math.max(0, Number(f.divida_financeira?.[last]) || 0);
+  if (!isFinite(rev0) || rev0 <= 0) return null;
+
+  const tri = (o, dMin, dMid, dMax, lo, hi) => ({
+    min: valClamp(o?.min, lo, hi, dMin), central: valClamp(o?.central, lo, hi, dMid), max: valClamp(o?.max, lo, hi, dMax),
+  });
+  const cresc = (Array.isArray(A.cresc) ? A.cresc : []).slice(0, 5).map(x => valClamp(x, -20, 40, 3));
+  while (cresc.length < 5) cresc.push(cresc.length ? cresc[cresc.length - 1] : 3);
+  const P = {
+    wacc: valClamp(A.wacc, 6, 20, 10), g: valClamp(A.g, 0, 3, 1.5), cresc,
+    margem: valClamp(A.margem_ebitda_alvo, -5, 60, 10), capex: valClamp(A.capex_pct, 0, 30, 3), da: valClamp(A.da_pct, 0, 30, 3),
+    nwc: valClamp(A.nwc_pct, 0, 60, 10), imposto: valClamp(A.imposto, 0, 40, 21),
+    multE: tri(A.mult_ebitda, 4, 5.5, 7, 1, 25), multS: tri(A.mult_vendas, 0.3, 0.6, 0.9, 0.05, 6),
+    ajuste: valClamp(A.ajuste_patrimonial_pct, -50, 50, 0),
+  };
+  const m0 = isFinite(ebitda0) && ebitda0 > 0 ? (ebitda0 / rev0) * 100 : P.margem;
+
+  const dcf = (w, gp, crescAdj, margAdj) => {
+    const gg = Math.min(gp, w - 2);
+    let prev = rev0, pv = 0, fcfN = 0;
+    for (let t = 1; t <= 5; t++) {
+      const rev = prev * (1 + (P.cresc[t - 1] + crescAdj) / 100);
+      const m = m0 + (P.margem * margAdj - m0) * (t / 5);
+      const ebitda = rev * m / 100, da = rev * P.da / 100;
+      const tax = Math.max(0, ebitda - da) * P.imposto / 100;
+      const fcf = ebitda - tax - rev * P.capex / 100 - (rev - prev) * P.nwc / 100;
+      pv += fcf / Math.pow(1 + w / 100, t); fcfN = fcf; prev = rev;
+    }
+    const tv = (fcfN * (1 + gg / 100)) / ((w - gg) / 100);
+    return pv + tv / Math.pow(1 + w / 100, 5);
+  };
+  const eqOf = (ev) => Math.max(0, ev - debt);
+
+  const dcfV = { min: eqOf(dcf(P.wacc + 2, Math.max(0, P.g - 0.5), -2, 0.85)), mid: eqOf(dcf(P.wacc, P.g, 0, 1)), max: eqOf(dcf(P.wacc - 1, P.g + 0.5, 1.5, 1.1)) };
+  const multEv = (k) => { const evS = rev0 * P.multS[k]; return ebitda0 > 0 ? 0.7 * ebitda0 * P.multE[k] + 0.3 * evS : evS; };
+  const multV = { min: eqOf(multEv("min")), mid: eqOf(multEv("central")), max: eqOf(multEv("max")) };
+  const navBase = isFinite(eq0) && eq0 > 0 ? eq0 * (1 + P.ajuste / 100) : null;
+  const navV = navBase == null ? null : { min: navBase * 0.9, mid: navBase, max: navBase * 1.1 };
+
+  const w0 = A.pesos || {};
+  const raw = [
+    { id: "mult", v: multV, w: valClamp(w0.multiplos, 0, 100, 40) },
+    { id: "dcf", v: dcfV, w: valClamp(w0.dcf, 0, 100, 40) },
+    ...(navV ? [{ id: "nav", v: navV, w: valClamp(w0.patrimonial, 0, 100, 20) }] : []),
+  ];
+  const sumW = raw.reduce((s, m) => s + m.w, 0) || 1;
+  const metodos = raw.map(m => ({ id: m.id, ...m.v, peso: (m.w / sumW) * 100 }));
+  const range = { low: 0, mid: 0, high: 0 };
+  metodos.forEach(m => { range.low += m.min * m.peso / 100; range.mid += m.mid * m.peso / 100; range.high += m.max * m.peso / 100; });
+
+  const waccs = [-2, -1, 0, 1, 2].map(d => P.wacc + d);
+  const gs = [-1, -0.5, 0, 0.5, 1].map(d => Math.max(0, P.g + d));
+  const sens = waccs.map(w => gs.map(gp => eqOf(dcf(w, gp, 0, 1))));
+  return { P, last, debt, rev0, ebitda0, metodos, range, sens, waccs, gs, nYears: anos.length };
+}
+
+function ValuationSection({ result, A, loading, error, onRetry, lang }) {
+  const T = valTxt(lang);
+  const loc = (lang || "pt").slice(0, 2) === "pt" ? "pt-PT" : (lang || "en");
+  const V = useMemo(() => computeValuation(result, A), [result, A]);
+  const eur = (v) => v == null ? "—" : Math.abs(v) >= 1e6 ? `${(v / 1e6).toLocaleString(loc, { maximumFractionDigits: 2 })} M€` : `${Math.round(v / 1e3).toLocaleString(loc)} K€`;
+  const pct = (v, d = 1) => `${Number(v).toLocaleString(loc, { maximumFractionDigits: d })}%`;
+  const th = { padding: "10px 12px", fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: C.fog, fontWeight: 400 };
+  const td = { padding: "10px 12px", fontSize: "13px", color: C.steel, borderBottom: `1px solid ${C.line}` };
+  const h3 = { fontSize: "11px", letterSpacing: "0.16em", textTransform: "uppercase", color: C.gold, fontFamily: F.body, margin: "28px 0 12px" };
+  const mName = { mult: T.mMult, dcf: T.mDcf, nav: T.mNav };
+  const J = A?.justificacoes || {};
+  const rows = V ? [
+    [T.wacc, pct(V.P.wacc), J.wacc],
+    [T.g, pct(V.P.g), J.g],
+    [T.cresc, V.P.cresc.map(x => pct(x, 0)).join(" · "), J.cresc],
+    [T.margem, pct(V.P.margem), J.margem],
+    [T.capex, pct(V.P.capex), J.capex],
+    [T.imposto, pct(V.P.imposto, 0), null],
+    [T.multE, `${V.P.multE.min}x – ${V.P.multE.central}x – ${V.P.multE.max}x`, J.multiplos],
+    [T.multS, `${V.P.multS.min}x – ${V.P.multS.central}x – ${V.P.multS.max}x`, null],
+    [T.ajuste, pct(V.P.ajuste, 0), J.patrimonial],
+  ] : [];
+  const span = V ? Math.max(1, V.range.high - V.range.low) : 1;
+
+  return (
+    <ReportSection number="09" title={T.title}>
+      <div style={{ border: `1px solid ${C.gold}`, background: "#FBF7EF", borderRadius: "8px", padding: "16px 20px", marginBottom: "24px" }}>
+        <div style={{ fontSize: "11px", letterSpacing: "0.16em", textTransform: "uppercase", color: C.gold, fontFamily: F.body, marginBottom: "8px" }}>{T.disclaimerTitle}</div>
+        <p style={{ fontFamily: F.body, fontSize: "13px", lineHeight: 1.7, color: C.steel, margin: 0 }}>{T.disclaimer}</p>
+      </div>
+
+      {loading && <p style={{ fontFamily: F.body, fontSize: "15px", color: C.fog, fontStyle: "italic" }}>{T.loading}</p>}
+      {!loading && (error || (A && !V)) && (
+        <div style={{ fontFamily: F.body, fontSize: "14px", color: C.danger }}>
+          {T.error} <button onClick={onRetry} style={{ marginLeft: "10px", padding: "6px 14px", background: C.gold, border: "none", borderRadius: "5px", color: C.white, cursor: "pointer", fontFamily: F.body, fontSize: "13px" }}>{T.retry}</button>
+        </div>
+      )}
+
+      {V && !loading && (<>
+        {V.nYears < 2 && <p style={{ fontFamily: F.body, fontSize: "13px", color: C.danger, marginBottom: "16px" }}>{T.fewYears.replace("{{n}}", V.nYears)}</p>}
+        {V.nYears === 2 && <p style={{ fontFamily: F.body, fontSize: "13px", color: C.gold, marginBottom: "16px" }}>{T.twoYears}</p>}
+
+        <div style={h3}>{T.range}</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px", marginBottom: "14px" }}>
+          {[[T.low, V.range.low, false], [T.mid, V.range.mid, true], [T.high, V.range.high, false]].map(([lab, val, hi]) => (
+            <div key={lab} style={{ border: `${hi ? 2 : 1}px solid ${hi ? C.gold : C.line}`, background: hi ? "#FBF7EF" : C.white, borderRadius: "8px", padding: "16px", textAlign: "center" }}>
+              <div style={{ fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase", color: C.fog, fontFamily: F.body, marginBottom: "6px" }}>{lab}</div>
+              <div style={{ fontFamily: F.display, fontSize: hi ? "28px" : "22px", color: hi ? C.gold : C.ink }}>{eur(val)}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ position: "relative", height: "8px", background: C.line, borderRadius: "4px", marginBottom: "8px" }}>
+          <div style={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0, background: `linear-gradient(90deg, ${C.line}, ${C.gold}, ${C.line})`, borderRadius: "4px", opacity: 0.6 }} />
+          <div style={{ position: "absolute", left: `${((V.range.mid - V.range.low) / span) * 100}%`, top: "-4px", width: "3px", height: "16px", background: C.ink }} />
+        </div>
+
+        {A.resumo && <p style={{ fontFamily: F.body, fontSize: "15px", lineHeight: 1.8, color: C.steel, margin: "20px 0 0" }}>{A.resumo}</p>}
+
+        <div style={h3}>{T.methods}</div>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: F.body }}>
+            <thead><tr style={{ borderBottom: `2px solid ${C.ink}` }}>
+              {[T.colMethod, T.low, T.mid, T.high, T.colWeight].map((h, i) => <th key={h} style={{ ...th, textAlign: i === 0 ? "left" : "center" }}>{h}</th>)}
+            </tr></thead>
+            <tbody>
+              {V.metodos.map(m => (
+                <tr key={m.id}>
+                  <td style={{ ...td, color: C.ink, fontWeight: 500 }}>{mName[m.id]}</td>
+                  <td style={{ ...td, textAlign: "center" }}>{eur(m.min)}</td>
+                  <td style={{ ...td, textAlign: "center" }}>{eur(m.mid)}</td>
+                  <td style={{ ...td, textAlign: "center" }}>{eur(m.max)}</td>
+                  <td style={{ ...td, textAlign: "center" }}>{pct(m.peso, 0)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {J.pesos && <p style={{ fontFamily: F.body, fontSize: "12px", color: C.fog, lineHeight: 1.6, marginTop: "10px" }}>{J.pesos}</p>}
+
+        <div style={h3}>{T.assumptions}</div>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: F.body }}>
+            <thead><tr style={{ borderBottom: `2px solid ${C.ink}` }}>
+              {[T.colAssump, T.colValue, T.colWhy].map((h, i) => <th key={h} style={{ ...th, textAlign: "left" }}>{h}</th>)}
+            </tr></thead>
+            <tbody>
+              {rows.map(([lab, val, why], i) => (
+                <tr key={i}>
+                  <td style={{ ...td, color: C.ink, fontWeight: 500 }}>{lab}</td>
+                  <td style={{ ...td, whiteSpace: "nowrap" }}>{val}</td>
+                  <td style={{ ...td, fontSize: "12px", color: C.fog }}>{why || ""}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div style={h3}>{T.sens}</div>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: F.body }}>
+            <thead><tr style={{ borderBottom: `2px solid ${C.ink}` }}>
+              <th style={{ ...th, textAlign: "left", fontSize: "10px" }}>{T.sensAxis}</th>
+              {V.gs.map(gp => <th key={gp} style={{ ...th, textAlign: "center" }}>{pct(gp)}</th>)}
+            </tr></thead>
+            <tbody>
+              {V.sens.map((rowV, i) => (
+                <tr key={i}>
+                  <td style={{ ...td, color: C.ink, fontWeight: 500 }}>{pct(V.waccs[i])}</td>
+                  {rowV.map((v, j) => (
+                    <td key={j} style={{ ...td, textAlign: "center", background: i === 2 && j === 2 ? "#FBF7EF" : "transparent", fontWeight: i === 2 && j === 2 ? 600 : 400 }}>{eur(v)}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div style={h3}>{T.bridge}</div>
+        <table style={{ width: "100%", maxWidth: "460px", borderCollapse: "collapse", fontFamily: F.body }}>
+          <tbody>
+            <tr><td style={td}>{T.ev}</td><td style={{ ...td, textAlign: "right" }}>{eur(V.range.mid + V.debt)}</td></tr>
+            <tr><td style={td}>− {T.debt}</td><td style={{ ...td, textAlign: "right" }}>{eur(V.debt)}</td></tr>
+            <tr><td style={{ ...td, color: C.ink, fontWeight: 600 }}>{T.equity}</td><td style={{ ...td, textAlign: "right", color: C.gold, fontWeight: 600 }}>{eur(V.range.mid)}</td></tr>
+          </tbody>
+        </table>
+        <p style={{ fontFamily: F.body, fontSize: "11px", color: C.fog, marginTop: "8px" }}>{T.bridgeNote}</p>
+
+        {Array.isArray(A.riscos) && A.riscos.length > 0 && (<>
+          <div style={h3}>{T.risks}</div>
+          <ul style={{ fontFamily: F.body, fontSize: "14px", color: C.steel, lineHeight: 1.7, paddingLeft: "20px", margin: 0 }}>
+            {A.riscos.map((r, i) => <li key={i}>{r}</li>)}
+          </ul>
+        </>)}
+        <p style={{ fontFamily: F.body, fontSize: "11px", color: C.fog, fontStyle: "italic", marginTop: "24px" }}>{T.footnote}</p>
+      </>)}
+    </ReportSection>
+  );
+}
+
 /* ─── CHART COMPONENTS ───────────────────────────────────── */
 const CHART_COLORS = ["#B8923A", "#3A4550", "#6B8A4E", "#8A5A2A", "#2A5A8A", "#8A2A5A"];
 
@@ -962,6 +1268,10 @@ export default function App() {
   const [result, setResult] = useState(null);
   const [paid, setPaid] = useState(false);
   const [paidPlan, setPaidPlan] = useState("standard");
+  const [valuation, setValuation] = useState(null);
+  const [valLoading, setValLoading] = useState(false);
+  const [valError, setValError] = useState(false);
+  const valStartedRef = useRef(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [showDemo, setShowDemo] = useState(false);
 
@@ -973,7 +1283,7 @@ export default function App() {
 
   const DOC_TYPES = DOC_TYPE_IDS.map(id => ({ id, label: t(`tool.docTypes.${id}`) }));
 
-  const goHome = () => { setPage("home"); setResult(null); setRawResult(null); setFiles({}); setCompany(""); setCae(""); setPaid(false); setPaidPlan("standard"); setError(null); };
+  const goHome = () => { setPage("home"); setResult(null); setRawResult(null); setFiles({}); setCompany(""); setCae(""); setPaid(false); setPaidPlan("standard"); setValuation(null); setValError(false); valStartedRef.current = false; setError(null); };
 
   /* ── LEGAL PAGE ── */
   if (page === "legal") return <LegalPage onBack={() => setPage("home")} />;
@@ -1098,6 +1408,38 @@ FINAL REMINDER — OUTPUT LANGUAGE = ${langName.toUpperCase()}. The source finan
       setError(e.message || "Erro inesperado");
     } finally { setLoading(false); }
   };
+
+  /* Avaliação da empresa: só é gerada depois da compra do escalão "valuation".
+     A IA propõe pressupostos (JSON); os cálculos são feitos em código (computeValuation). */
+  const runValuation = async () => {
+    if (!result || valLoading) return;
+    setValLoading(true); setValError(false);
+    try {
+      const langName = getLangName();
+      const R0 = result;
+      const dados = JSON.stringify({
+        empresa: R0.empresa || company, cae: R0.cae || cae, setor: R0.setor, anos: R0.anos,
+        financeiros: R0.financeiros,
+        indicadores_empresa: Object.fromEntries(Object.entries(R0.indicadores || {}).map(([k, v]) => [k, Object.fromEntries(Object.entries(v || {}).filter(([kk]) => /^\d{4}$/.test(kk)))])),
+        medianas_sector_bpstat: R0.posicionamento_sectorial?.bpstat ? R0.posicionamento_sectorial.indicadores : undefined,
+      });
+      const schema = `{"wacc":10,"g":1.5,"cresc":[5,5,4,3,3],"margem_ebitda_alvo":12,"capex_pct":3,"da_pct":3,"nwc_pct":10,"imposto":21,"mult_ebitda":{"min":4,"central":5.5,"max":7},"mult_vendas":{"min":0.4,"central":0.6,"max":0.8},"ajuste_patrimonial_pct":0,"pesos":{"multiplos":40,"dcf":40,"patrimonial":20},"justificacoes":{"wacc":"...","g":"...","cresc":"...","margem":"...","capex":"...","multiplos":"...","patrimonial":"...","pesos":"..."},"resumo":"...","riscos":["...","..."]}`;
+      const res = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "analyze", payload: { model: "claude-sonnet-4-5", max_tokens: 2500, system: `You are a senior company valuation analyst for Portuguese SMEs. You write exclusively in ${langName}: every text value in your JSON (justificacoes, resumo, riscos) must be in ${langName}. Respond ONLY with valid JSON, no markdown, no code blocks. The response starts with { and ends with }.`, messages: [{ role: "user", content: `Propose valuation assumptions for this Portuguese company based on its financial data (amounts in euros). Numbers must be plain numbers (percentages as numbers, e.g. 10 for 10%). Be realistic and conservative for a small, non-listed company (apply a size/illiquidity discount to multiples and a risk premium to WACC). "cresc" = expected sales growth in % for each of the next 5 years. "pesos" are method weights summing to 100: give less weight to the DCF when the history is short or results are volatile, and more weight to net asset value when profitability is weak. Each justification must be one or two sentences explaining WHY, referring to the company's data. "resumo" = 3-4 sentences summarising the valuation view and its main sensitivities. "riscos" = 3-5 short key risk factors for the valuation.\n\nCOMPANY DATA:\n${dados}\n\nJSON STRUCTURE (example values, replace them):\n${schema}` }] } }) });
+      if (!res.ok) throw new Error("val");
+      const data = await res.json();
+      const A = parseAnalysis(data.content.map(b => b.text || "").join("\n"));
+      if (!A || A._fallback || computeValuation(result, A) == null) throw new Error("val-parse");
+      setValuation(A);
+    } catch (_) { setValError(true); }
+    finally { setValLoading(false); }
+  };
+
+  useEffect(() => {
+    if (paid && paidPlan === "valuation" && result && !result._fallback && !valuation && !valLoading && !valStartedRef.current) {
+      valStartedRef.current = true;
+      runValuation();
+    }
+  }, [paid, paidPlan, result]);
 
   /* ── LANDING PAGE ──────────────────────────────────────── */
   if (page === "home") return (
@@ -1435,7 +1777,7 @@ FINAL REMINDER — OUTPUT LANGUAGE = ${langName.toUpperCase()}. The source finan
                 </ReportSection>
               )}
 
-              {paidPlan === "premium" ? (<>
+              {(paidPlan === "premium" || paidPlan === "valuation") ? (<>
                 {R.analise_detalhada && (
                   <ReportSection number="04" title={t("report.sections.s04")}>
                     <div className="analise-grid">
@@ -1509,6 +1851,10 @@ FINAL REMINDER — OUTPUT LANGUAGE = ${langName.toUpperCase()}. The source finan
                     </div>
                   </ReportSection>
                 )}
+                {paidPlan === "valuation" && (
+                  <ValuationSection result={R} A={valuation} loading={valLoading} error={valError} lang={i18nInst.language}
+                    onRetry={() => { setValError(false); runValuation(); }} />
+                )}
               </>) : (
                 <div style={{ background: C.cream, border: `1px solid ${C.line}`, borderRadius: "10px", padding: "36px", textAlign: "center", margin: "32px 0" }}>
                   <div style={{ fontFamily: F.display, fontSize: "24px", marginBottom: "10px", color: C.ink }}>{t("paywall.upgradeTitle")} <span style={{ color: C.gold, fontStyle: "italic" }}>{t("paywall.upgradePremium")}</span></div>
@@ -1528,7 +1874,7 @@ FINAL REMINDER — OUTPUT LANGUAGE = ${langName.toUpperCase()}. The source finan
         </div>
 
         {showPaywall && (
-          <PaywallModal companyName={company} onClose={() => setShowPaywall(false)} onPay={(p) => { setPaid(true); setPaidPlan(p || "standard"); setShowPaywall(false); }} />
+          <PaywallModal companyName={company} nYears={(result?.anos || []).length} onClose={() => setShowPaywall(false)} onPay={(p) => { setPaid(true); setPaidPlan(p || "standard"); setShowPaywall(false); }} />
         )}
       </>
     );
