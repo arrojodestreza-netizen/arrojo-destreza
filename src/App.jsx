@@ -1069,10 +1069,18 @@ FINAL REMINDER — OUTPUT LANGUAGE = ${langName.toUpperCase()}. The source finan
               if (s.ano) bpYear = s.ano;
             }
             if (rows.length > 0) {
+              /* Texto da Secção 08 escrito a partir das medianas reais (só os indicadores da tabela) */
+              let textoSetor = null;
+              try {
+                const tabela = rows.map(r => `${r.nome}: ${r.empresa} (company, ${lastYear}) vs ${r.setor} (sector median, Banco de Portugal ${bpYear || ""})`).join("\n");
+                const rt = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "analyze", payload: { model: "claude-sonnet-4-5", max_tokens: 700, system: `You are an expert financial analyst who writes exclusively in ${langName}. Every word of your answer must be in ${langName}.`, messages: [{ role: "user", content: `Write ONE paragraph (4-6 sentences, no headings, no lists) in ${langName} on the sector positioning of the company "${company}" (CAE ${cae}, sector: ${bp.sector_bpstat || getCaeSector(cae)}). Use ONLY the figures below, which compare the company with the real sector medians published by Banco de Portugal (BPstat). Do not mention any other indicator or invent sector figures. Say which indicators are above or below the median and what that implies. ROE, ROA and equity ratio are in %; PMR and PMP (if present) are in days, where lower is better.\n\n${tabela}\n\nRespond with the paragraph only.` }] } }) });
+                if (rt.ok) { const dt = await rt.json(); textoSetor = dt.content.map(b => b.text || "").join(" ").trim() || null; }
+              } catch (_) { /* mantém texto original */ }
               parsed.posicionamento_sectorial = {
                 ...(parsed.posicionamento_sectorial || {}),
                 cae,
                 setor: bp.sector_bpstat || (parsed.posicionamento_sectorial && parsed.posicionamento_sectorial.setor) || "",
+                ...(textoSetor ? { texto: textoSetor } : {}),
                 indicadores: rows,
                 bpstat: true,
                 bpstat_ano: bpYear,
