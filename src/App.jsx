@@ -1039,6 +1039,47 @@ FINAL REMINDER — OUTPUT LANGUAGE = ${langName.toUpperCase()}. The source finan
       const data2 = await res2.json();
       const text = data2.content.map(b => b.text || "").join("\n");
       const parsed = parseAnalysis(text);
+
+      /* BPstat — medianas reais do sector (Banco de Portugal). Falha silenciosa:
+         se o pedido falhar, mantém-se a tabela estimada pela IA. */
+      if (cae && parsed && parsed.indicadores) {
+        try {
+          setStatusMsg(t("tool.status.finishing"));
+          const rb = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "fetch_bpstat", cae }) });
+          if (rb.ok) {
+            const bp = await rb.json();
+            const lastYear = [...yearsFiltered].sort().slice(-1)[0];
+            const defs = [
+              { k: "roe", src: "roe", nome: "ROE", positivo: true },
+              { k: "roa", src: "roa", nome: "ROA", positivo: true },
+              { k: "autonomia_financeira", src: "autonomia_financeira", nome: "Autonomia Financeira", positivo: true },
+              { k: "pme", src: "pmr", nome: "PMR", positivo: false },
+              { k: "pmp", src: "pmp", nome: "PMP", positivo: false },
+            ];
+            const rows = [];
+            let bpYear = null;
+            for (const d of defs) {
+              const s = bp.indicadores && bp.indicadores[d.src];
+              const emp = parsed.indicadores[d.k] && Number(parsed.indicadores[d.k][lastYear]);
+              if (!s || typeof s.valor !== "number" || !isFinite(emp)) continue;
+              const diff = (emp - s.valor) / (Math.abs(s.valor) || 1);
+              rows.push({ nome: d.nome, empresa: emp, setor: s.valor, posicao: Math.abs(diff) <= 0.05 ? "ok" : (diff > 0 ? "acima" : "abaixo"), positivo: d.positivo });
+              if (s.ano) bpYear = s.ano;
+            }
+            if (rows.length > 0) {
+              parsed.posicionamento_sectorial = {
+                ...(parsed.posicionamento_sectorial || {}),
+                cae,
+                setor: bp.sector_bpstat || (parsed.posicionamento_sectorial && parsed.posicionamento_sectorial.setor) || "",
+                indicadores: rows,
+                bpstat: true,
+                bpstat_ano: bpYear,
+                empresa_ano: lastYear,
+              };
+            }
+          }
+        } catch (_) { /* mantém estimativas da IA */ }
+      }
       setRawResult(text); setResult(parsed);
       setProgress(100); setStatusMsg(t("tool.status.done"));
       saveToGoogleDrive(company, years, parsed);
@@ -1420,8 +1461,8 @@ FINAL REMINDER — OUTPUT LANGUAGE = ${langName.toUpperCase()}. The source finan
                       <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: F.body }}>
                         <thead>
                           <tr style={{ borderBottom: `2px solid ${C.ink}` }}>
-                            {["Indicador", "Empresa", "Média Sector", "Posição"].map(h => (
-                              <th key={h} style={{ padding: "10px 14px", textAlign: h === "Indicador" ? "left" : "center", fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase", color: C.fog, fontWeight: 400 }}>{h}</th>
+                            {[["Indicador", t("report.sectorCols.indicator", { defaultValue: "Indicador" })], ["Empresa", t("report.sectorCols.company", { defaultValue: "Empresa" })], ["Média Sector", t("report.sectorCols.sector", { defaultValue: "Mediana do Sector" })], ["Posição", t("report.sectorCols.position", { defaultValue: "Posição" })]].map(([hk, h]) => (
+                              <th key={hk} style={{ padding: "10px 14px", textAlign: hk === "Indicador" ? "left" : "center", fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase", color: C.fog, fontWeight: 400 }}>{h}</th>
                             ))}
                           </tr>
                         </thead>
@@ -1443,13 +1484,18 @@ FINAL REMINDER — OUTPUT LANGUAGE = ${langName.toUpperCase()}. The source finan
                                     return ind.posicao === "ok" ? "#F57F17" : bom ? "#2E7D32" : "#C62828";
                                   })()
                                 }}>
-                                  {ind.posicao === "acima" ? "↑ Acima" : ind.posicao === "abaixo" ? "↓ Abaixo" : "→ OK"}
+                                  {ind.posicao === "acima" ? "↑ " + t("report.sectorPos.above", { defaultValue: "Acima" }) : ind.posicao === "abaixo" ? "↓ " + t("report.sectorPos.below", { defaultValue: "Abaixo" }) : "→ " + t("report.sectorPos.ok", { defaultValue: "Em linha" })}
                                 </span>
                               </td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
+                      <p style={{ fontFamily: F.body, fontSize: "11px", color: C.fog, marginTop: "12px", lineHeight: 1.6 }}>
+                        {R.posicionamento_sectorial.bpstat
+                          ? t("report.bpstatNote", { defaultValue: "Fonte: Banco de Portugal – BPstat, mediana do sector (dados de {{ano}}). Valores da empresa referentes a {{empresaAno}}.", ano: R.posicionamento_sectorial.bpstat_ano || "—", empresaAno: R.posicionamento_sectorial.empresa_ano || "—" })
+                          : t("report.aiEstimateNote", { defaultValue: "Médias sectoriais estimadas por IA (indicativas)." })}
+                      </p>
                     </div>
                   </ReportSection>
                 )}
