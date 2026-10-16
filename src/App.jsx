@@ -234,6 +234,9 @@ async function loadStripe() {
   });
 }
 
+/* MB WAY desligado até a confirmação de pagamento ser corrigida (um pagamento recusado desbloqueava o relatório). */
+const MBWAY_ENABLED = false;
+
 /* ─── PAYWALL MODAL ──────────────────────────────────────── */
 function PaywallModal({ onClose, onPay, companyName, nYears = 0 }) {
   const { t, i18n: i18nPay } = useTranslation();
@@ -526,7 +529,7 @@ function PaywallModal({ onClose, onPay, companyName, nYears = 0 }) {
               )}
             </div>
             <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-              {[{ id: "card", label: t("paywall.methods.card") }, { id: "mbway", label: t("paywall.methods.mbway") }].map(m => (
+              {[{ id: "card", label: t("paywall.methods.card") }, ...(MBWAY_ENABLED ? [{ id: "mbway", label: t("paywall.methods.mbway") }] : [])].map(m => (
                 <button key={m.id} onClick={() => { setPayMethod(m.id); setStripeError(""); setErrors({}); }} style={{ flex: 1, padding: "10px", border: `2px solid ${payMethod === m.id ? C.gold : C.line}`, borderRadius: "6px", background: payMethod === m.id ? "#FBF7EF" : C.white, cursor: "pointer", fontFamily: F.body, fontSize: "14px", color: payMethod === m.id ? C.gold : C.steel, fontWeight: payMethod === m.id ? "600" : "400", transition: "all 0.2s" }}>{m.label}</button>
               ))}
             </div>
